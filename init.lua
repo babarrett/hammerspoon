@@ -6,7 +6,7 @@
 HyperFn = {"cmd", "alt", "ctrl", "shift"}
 
 hs.hotkey.bind(HyperFn, "W", function()
- hs.alert.show("Hello World!")
+ hs.alert.show("Hello World!!!")
 end)
 
 -- Found at: https://github.com/cmsj/hammerspoon-config/blob/master/init.lua
