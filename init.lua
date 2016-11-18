@@ -5,26 +5,23 @@
 --		Cycle through displays: http://bezhermoso.github.io/2016/01/20/making-perfect-ramen-lua-os-x-automation-with-hammerspoon/
 --		for app binding:	hs.hotkey.bind(HyperFn, 'D', function () hs.application.launchOrFocus("Dictionary") end)
 
---	For "requires" commands
-LUA_PATH = "?;?.lua;~/dev/git/hammerspoon/?.lua"
+--	For "require" commands
+--	TODO: test & perfect
+--	TODO: generic path (this is OS X and Linux only)
+LUA_PATH = os.getenv("HOME") .. "/dev/git/hammerspoon/?"
+-- "?;?.lua;~/dev/git/hammerspoon/?;?.lua"
 
 HyperFn = {"cmd", "alt", "ctrl", "shift"}	-- Mash the 4 modifier keys for some new function
 
-require "windowManagement"
-require "pastecurrentsafariurl"
-
---	TODO: This is a test, delete later (soon)
---	Hello world mapped to HyperFn+W
-hs.hotkey.bind(HyperFn, "W", function()
-  hs.alert.show("Hello World!")
-end)
+local pasteCurrentSafariUrl = require "pasteCurrentSafariUrl"
+local windowManagement = require "windowManagement"
 
 --	"Help" - brief descriptions of mapped f()s. 
 --	HyperFn+H to show
 --	HyperFn+Esc to stop showing before it times out
 helpAlertUUID = nil
 
-hs.hotkey.bind(HYPER_MODIFIER, "H", function()
+hs.hotkey.bind(HyperFn, "H", function()
 	if helpAlertUUID ~= nil then
 		hs.alert.closeSpecific(helpAlertUUID)
 	end
@@ -33,10 +30,11 @@ hs.hotkey.bind(HYPER_MODIFIER, "H", function()
 	.. "Hyper-Right - move window to right 1/2 of screen.\n"
 	.. "Hyper-Up    - move window to top 1/2 of screen.\n"
 	.. "Hyper-Down  - move window to bottom 1/2 of screen.\n"
-	.. "Hyper-V     - paste clipboard as text (avoid web site CMD-V blockers).\n"
+	.. "Hyper-V     - Type clipboard as text (avoid web site CMD-V blockers).\n"
+	.. "Hyper-U     - Fetch the current URL from Safari and type it.\n"
 	.. "\n"
 	-- BUG: This should loop through to accumulate active screens.
-	.. "Active screens: " .. hs.screen.allScreens()[1]:name() .. ", " .. hs.screen.allScreens()[2]:name() .. "\n"
+	.. "Active screens: " .. hs.screen.allScreens()[1]:name() .. ", " .. hs.screen.allScreens()[2]:name() 
 	, 
 	{textSize=14, textColor={white = 1.0, alpha = 1.00 }, 
 	textFont = "Andale Mono",	-- works for me. If missing reverts back to system default
@@ -44,17 +42,15 @@ hs.hotkey.bind(HYPER_MODIFIER, "H", function()
 	strokeColor={red = 1, green=0, blue=0}, strokeWidth=4 }
 	, 6	-- display 6 seconds
 	)
-  
+	-- DEBUG:  hs.console.printStyledtext(string.gsub(package.path, ";", "\n"))
+
 end)
 
 --Stop displaying Help if you've read it all
-hs.hotkey.bind(HYPER_MODIFIER, "escape", function()
-	hs.console.printStyledtext("found Esc")
-	if alertUUID ~= nil then
-		hs.alert.closeSpecific(alertUUID)
-		alertUUID = nil
-	else
-		hs.eventtap.keyStroke({}, "escape")
+hs.hotkey.bind(HyperFn, "escape", function()
+	if helpAlertUUID ~= nil then
+		hs.alert.closeSpecific(helpAlertUUID)
+		helpAlertUUID = nil
 	end
 end)
 
@@ -67,10 +63,10 @@ function reloadConfig(files)
         end
     end
     if doReload then
-        hs.reload()
+        hs.reload() 
     end
 end
+hs.alert.show("Config loaded")	-- Alert "Reloading" here, happens not as we call reload, but on the next load. Default=2 sec.
+
 local myWatcher = hs.pathwatcher.new(os.getenv("HOME") .. "/.hammerspoon/", reloadConfig):start()
-hs.alert.show("Config loaded")
-
-
+local myWatcher = hs.pathwatcher.new(os.getenv("HOME") .. "/dev/git/hammerspoon/", reloadConfig):start()
