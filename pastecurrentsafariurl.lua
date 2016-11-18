@@ -1,3 +1,5 @@
+pasteCurrentSafariUrl = {}
+
 -- Found at: https://github.com/cmsj/hammerspoon-config/blob/master/init.lua
 
 -- Rather than switch to Safari, copy the current URL, switch back to the previous app and paste,
@@ -16,5 +18,7 @@ function typeCurrentSafariURL()
     end
 end
 
--- Bind it to HyperFn+u
-hs.hotkey.bind(HyperFn, 'u', typeCurrentSafariURL)
+-- Bind it to HyperFn+U
+hs.hotkey.bind(HyperFn, 'U', typeCurrentSafariURL)
+
+return pasteCurrentSafariUrl
