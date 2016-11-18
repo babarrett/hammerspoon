@@ -10,6 +10,9 @@ LUA_PATH = "?;?.lua;~/dev/git/hammerspoon/?.lua"
 
 HyperFn = {"cmd", "alt", "ctrl", "shift"}	-- Mash the 4 modifier keys for some new function
 
+require "windowManagement"
+require "pastecurrentsafariurl"
+
 --	TODO: This is a test, delete later (soon)
 --	Hello world mapped to HyperFn+W
 hs.hotkey.bind(HyperFn, "W", function()
