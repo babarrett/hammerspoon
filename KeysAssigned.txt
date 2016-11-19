@@ -1,7 +1,7 @@
 Keys assigned, where, handled by what.
 
-!! Delete Caps Lock from USB Overdrive !!
-!! Add to .git/configure
+√ Delete Caps Lock from USB Overdrive !!
+√ Add to .git/configure
 	[credential "https://github.com"]
 		username = babarrett
 
@@ -11,10 +11,11 @@ Generally:
 	Karabiner for:		SpaceFn, ()-like pairs
 						private.xml (or SpaceFN_bruce.xml) Shared configurations. 
 						Capable, but not fully programable. No events?
-	USB Overdrive for:	(replace with?)
+	USB Overdrive for:	(replace with other?)
 						Easy to configure. Some sharing possible.
+						No Apple products
 	BBEdit for:			Code snippets. Auto-completion.  Navigate by f()
-	iTerm2 for:			Command-line keys, remap (begin/end like & word)
+	iTerm2 for:			Command-line keys, remap (begin/end line & word)
 	
 	
 
@@ -28,6 +29,11 @@ Kbd		OSX Pref	Seil	Hammer	Karab	USB Ov*	Function
 							Hyper+V					Type clipboard as text (avoid web site CMD-V blockers)
 							Hyper+H					Help, for Hammerspoon functions
 							Hyper+Esc				Stop displaying Help
+							HyperFn+Q				Quit App
+							HyperFn+W				Close window (or tab)
+							HyperFn+D				Dictate on/off
+							HyperFn+/				Cmd-Shift (for move to done in Mail)
+							
 							Hyper+<--				Window to left half of screen
 							Hyper+-->				Window to right half of screen
 							Hyper+Up				Window to top half of screen
@@ -62,9 +68,5 @@ Kbd		OSX Pref	Seil	Hammer	Karab	USB Ov*	Function
 Things to consider adding:
 	
 Screen and Space management
-HyperFn+Q	Quit
-HyperFn+W	Close window (or tab)
-HyperFn+D	Dictate on/off
-HyperFn+/	Cmd-Shift (for move to done in Mail)
-
 Rotate right by 1, maybe: SpaceFn+(TYUIOP)
+alias g=git
