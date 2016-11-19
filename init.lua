@@ -21,6 +21,7 @@ local windowManagement = require "windowManagement"
 --	HyperFn+Esc to stop showing before it times out
 helpAlertUUID = nil
 
+-- #mark H=Help
 hs.hotkey.bind(HyperFn, "H", function()
 	if helpAlertUUID ~= nil then
 		hs.alert.closeSpecific(helpAlertUUID)
