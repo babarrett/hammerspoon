@@ -5,6 +5,19 @@ Keys assigned, where, handled by what.
 	[credential "https://github.com"]
 		username = babarrett
 
+Generally:
+	Hammerspoon for:	HyperFn, Window sizing, Screen and Space management
+						init.lua. *.lua. Shared configurations. Fully programable.
+	Karabiner for:		SpaceFn, ()-like pairs
+						private.xml (or SpaceFN_bruce.xml) Shared configurations. 
+						Capable, but not fully programable. No events?
+	USB Overdrive for:	(replace with?)
+						Easy to configure. Some sharing possible.
+	BBEdit for:			Code snippets. Auto-completion.  Navigate by f()
+	iTerm2 for:			Command-line keys, remap (begin/end like & word)
+	
+	
+
 Kbd		OSX Pref	Seil	Hammer	Karab	USB Ov*	Function
 ---		--------	----	------	-----	-------	------------------------------------
 		CapsLok										No Action
@@ -44,3 +57,14 @@ Kbd		OSX Pref	Seil	Hammer	Karab	USB Ov*	Function
 	a) so that external Apple keyboards, such as those with numeric pads, work, and
 	b) so that fewer keyboard interceptors are in use, simplifying implementation
 		and tracking.
+
+---------------------------------------------------------------------
+Things to consider adding:
+	
+Screen and Space management
+HyperFn+Q	Quit
+HyperFn+W	Close window (or tab)
+HyperFn+D	Dictate on/off
+HyperFn+/	Cmd-Shift (for move to done in Mail)
+
+Rotate right by 1, maybe: SpaceFn+(TYUIOP)
