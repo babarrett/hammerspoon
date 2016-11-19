@@ -1,0 +1,43 @@
+Keys assigned, where, handled by what.
+
+!! Delete Caps Lock from USB Overdrive !!
+
+Kbd		OSX Pref	Seil	Hammer	Karab	USB Ov*	Function
+---		--------	----	------	-----	-------	------------------------------------
+		CapsLok										No Action
+					CapsLok							Map to F19
+													
+							HyperFn					Cmd+Opt+Ctrl+Shift
+							Hyper+U					Fetch the current URL from Safari, type it
+							Hyper+V					Type clipboard as text (avoid web site CMD-V blockers)
+							Hyper+H					Help, for Hammerspoon functions
+							Hyper+Esc				Stop displaying Help
+							Hyper+<--				Window to left half of screen
+							Hyper+-->				Window to right half of screen
+							Hyper+Up				Window to top half of screen
+							Hyper+Down				Window to bottom half of screen
+													
+									Space			Tap for Space, Hold+char for SpaceFn
+									[				()+Left
+									Shift+[			)
+									]				<>+Left
+									Shift+]			>
+									SpaceFn+9		[]+Left
+									Shift+9			]
+									SpaceFn+0		{}+Left
+									Shift+0			}
+									F1-F12			Apps & Web pages
+									
+											NumPad	Misc functions, Numeric pad, Razer Anansi only
+											M1-M4	Cut, Copy, Paste, Undo
+											M5		OS X Dictation on/off
+											T1-T7	Misc
+											
+
+
+* USB Overdrive cannot modify non-Apple products, by design.
+	These functions should be moved to other products/systems
+	such as Hammerspoon or Karabiner:
+	a) so that external Apple keyboards, such as those with numeric pads, work, and
+	b) so that fewer keyboard interceptors are in use, simplifying implementation
+		and tracking.
