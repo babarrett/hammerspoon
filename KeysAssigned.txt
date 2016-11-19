@@ -2,7 +2,7 @@ Keys assigned, where, handled by what.
 
 !! Delete Caps Lock from USB Overdrive !!
 !! Add to .git/configure
-	[credential "https://github.com/babarrett"]
+	[credential "https://github.com"]
 		username = babarrett
 
 Kbd		OSX Pref	Seil	Hammer	Karab	USB Ov*	Function
