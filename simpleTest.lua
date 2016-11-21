@@ -43,5 +43,5 @@ return SimTst
 -- --------------------------------------------
 -- -- Example usage:
 -- local ST = require 'simpleTest'
--- ST.bind({}, "U", some_funct_name)
+-- ST.bind({}, "U", myName1)
 -- helpString = helpString .. ST.getHelpString()	-- accumulate help strings
