@@ -15,6 +15,24 @@ HyperFn = {"cmd", "alt", "ctrl", "shift"}	-- Mash the 4 modifier keys for some n
 
 local pasteCurrentSafariUrl = require "pasteCurrentSafariUrl"
 local windowManagement = require "windowManagement"
+local ST = require "simpleTest"
+ST.bind(HyperFn, "X", "myName1")
+pasteCurrentSafariUrl.bind(HyperFn, "U", "pasteSafariUrl")
+
+local helpString = "Bruce's Hammerspoon functions\n"
+
+-- accumulate help strings
+helpString = helpString .. pasteCurrentSafariUrl.getHelpString()
+helpString = helpString .. windowManagement.getHelpString()
+
+--hs.alert.show(helpString, 
+--	{textSize=16, textColor={white = 1.0, alpha = 1.00 }, 
+--	textFont = "Andale Mono",	-- works for me. If missing reverts back to system default
+--	fillColor={white = 0.0, alpha = 1.00}, 
+--	strokeColor={red = 1, green=0, blue=0}, strokeWidth=4 }
+--	, 3	-- display 3 seconds
+--	)
+
 
 --	"Help" - brief descriptions of mapped f()s. 
 --	HyperFn+H to show
@@ -27,12 +45,9 @@ hs.hotkey.bind(HyperFn, "H", function()
 		hs.alert.closeSpecific(helpAlertUUID)
 	end
 	helpAlertUUID = hs.alert.show( "Help for Bruce's Hammerspoon functions:\n" 
-	.. "Hyper-Left  - move window to left 1/2 of screen.\n"
-	.. "Hyper-Right - move window to right 1/2 of screen.\n"
-	.. "Hyper-Up    - move window to top 1/2 of screen.\n"
-	.. "Hyper-Down  - move window to bottom 1/2 of screen.\n"
+	.. pasteCurrentSafariUrl.getHelpString()
 	.. "Hyper-V     - Type clipboard as text (avoid web site CMD-V blockers).\n"
-	.. "Hyper-U     - Fetch the current URL from Safari and type it.\n"
+	.. windowManagement.getHelpString()
 	.. "\n"
 	-- BUG: This should loop through to accumulate active screens.
 	.. "Active screens: " .. hs.screen.allScreens()[1]:name() .. ", " .. hs.screen.allScreens()[2]:name() 
