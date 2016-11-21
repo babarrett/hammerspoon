@@ -1,4 +1,4 @@
-windowManagement = {}
+local windowManagement = {}
 
 --	Window to (some) 1/2 of screen (left, right, top, bottom)
 --	Taken from: https://gist.github.com/swo/91ec23d09a3d6da5b684

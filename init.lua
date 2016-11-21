@@ -16,14 +16,14 @@ HyperFn = {"cmd", "alt", "ctrl", "shift"}	-- Mash the 4 modifier keys for some n
 HF = require "helpFunctions"
 local pasteCurrentSafariUrl = require "pasteCurrentSafariUrl"
 local windowManagement = require "windowManagement"
+local miscFunctions = require "miscFunctions"
 windowManagement.updateHelpString()		-- TODO: This should be internal to WindowManagement
 pasteCurrentSafariUrl.bind(HyperFn, "U", "pasteSafariUrl")
+miscFunctions.bind(HyperFn, "V", "typeClipboard")
 
 local helpString = "Bruce's Hammerspoon functions\n"
 
 -- accumulate help strings
-helpString = helpString .. pasteCurrentSafariUrl.getHelpString()
-
 
 --hs.alert.show(helpString, 
 --	{textSize=16, textColor={white = 1.0, alpha = 1.00 }, 

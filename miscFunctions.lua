@@ -13,8 +13,6 @@ function typeClipboardAsText()
 	hs.eventtap.keyStrokes(hs.pasteboard.getContents()) 
 end
 
-	
-end 		
 function quitApp()
 	
 end		
@@ -54,14 +52,14 @@ local funNameToHelpText = {
 	moveToDone =		'Move current mail item to "Done"',
 	moveToStatus =		'Move current mail item to "Status"'
 }
-function pasteCurrentSafariUrl.bind(modifiers, char, functName)
+function miscFunctions.bind(modifiers, char, functName)
 	hs.hotkey.bind(modifiers, char, funNameToFunction[functName] )	-- bind the key
 	-- Add to the help string
-	helpString =  helpString .. "Hyper+" .. char .. "     - " .. funNameToHelpText[functName] .. "\n"
+	HF.add("Hyper+" .. char .. "     - " .. funNameToHelpText[functName] .. "\n")
 end
 
 function miscFunctions.getHelpString()
 	return helpString
 end
 
-return pasteCurrentSafariUrl
+return miscFunctions

@@ -32,8 +32,4 @@ function pasteCurrentSafariUrl.bind(modifiers, char, functName)
 	hs.hotkey.bind(modifiers, char, funNameToFunction[functName] )
 end
 
-function pasteCurrentSafariUrl.getHelpString()
-	return helpString
-end
-
 return pasteCurrentSafariUrl
