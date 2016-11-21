@@ -60,6 +60,7 @@ function helpFunctions.stopHelp()
 	end
 end
 
+-- Binding happens at load (requires) time.
 hs.hotkey.bind(HyperFn, "H", helpFunctions.displayHelp)
 hs.hotkey.bind(HyperFn, "escape", helpFunctions.stopHelp)
 

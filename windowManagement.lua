@@ -34,13 +34,12 @@ hs.hotkey.bind(HyperFn, 'Right', baseMove(0.51, 0.03, 0.49, 1.00))
 hs.hotkey.bind(HyperFn, 'Down',  baseMove(0.00, 0.51, 0.98, 0.49))
 hs.hotkey.bind(HyperFn, 'Up',    baseMove(0.00, 0.03, 0.98, 0.46))
 
-function windowManagement.getHelpString()
-	helpString = "-- Window Management Help --\n"
-	helpString = helpString .. "Hyper-Left  - move window to left 1/2 of screen.\n"
-	helpString = helpString .. "Hyper-Right - move window to right 1/2 of screen.\n"
-	helpString = helpString .. "Hyper-Up    - move window to top 1/2 of screen.\n"
-	helpString = helpString .. "Hyper-Down  - move window to bottom 1/2 of screen.\n"
-	return helpString
+function windowManagement.updateHelpString()
+	HF.add("-- Window Management Help --\n")
+	HF.add("Hyper-Left  - move window to left 1/2 of screen.\n")
+	HF.add("Hyper-Right - move window to right 1/2 of screen.\n")
+	HF.add("Hyper-Up    - move window to top 1/2 of screen.\n")
+	HF.add("Hyper-Down  - move window to bottom 1/2 of screen.\n")
 end
 
 return windowManagement
