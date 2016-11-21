@@ -25,11 +25,14 @@ function baseMove(x, y, w, h)
         win:setFrame(f, 0)
     end
 end
+
+-- TODO: Is currently binding at load (requires) time.
+-- 		Need to make this in response to my bind call
 -- y = 0.03 to avoid Mac top menu bar
 hs.hotkey.bind(HyperFn, 'Left',  baseMove(0.00, 0.03, 0.49, 1.00))
 hs.hotkey.bind(HyperFn, 'Right', baseMove(0.51, 0.03, 0.49, 1.00))
-hs.hotkey.bind(HyperFn, 'Down',  baseMove(0.00, 0.51, 0.90, 0.49))
-hs.hotkey.bind(HyperFn, 'Up',    baseMove(0.00, 0.03, 0.90, 0.46))
+hs.hotkey.bind(HyperFn, 'Down',  baseMove(0.00, 0.51, 0.98, 0.49))
+hs.hotkey.bind(HyperFn, 'Up',    baseMove(0.00, 0.03, 0.98, 0.46))
 
 function windowManagement.getHelpString()
 	helpString = "-- Window Management Help --\n"

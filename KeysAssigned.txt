@@ -34,8 +34,8 @@ Kbd		OSX Pref	Seil	Hammer	Karab	USB Ov*	Function
 							HyperFn+D				Dictate on/off
 							HyperFn+/				Cmd-Shift (for move to done in Mail)
 							
-							Hyper+<--				Window to left half of screen
-							Hyper+-->				Window to right half of screen
+							Hyper+Left				Window to left half of screen
+							Hyper+Right				Window to right half of screen
 							Hyper+Up				Window to top half of screen
 							Hyper+Down				Window to bottom half of screen
 													
