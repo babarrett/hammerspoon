@@ -34,10 +34,6 @@ helpString = helpString .. windowManagement.getHelpString()
 --	)
 
 
---	"Help" - brief descriptions of mapped f()s. 
---	HyperFn+H to show
---	HyperFn+Esc to stop showing before it times out
-helpAlertUUID = nil
 
 -- #mark H=Help
 hs.hotkey.bind(HyperFn, "H", function()
@@ -60,14 +56,6 @@ hs.hotkey.bind(HyperFn, "H", function()
 	)
 	-- DEBUG:  hs.console.printStyledtext(string.gsub(package.path, ";", "\n"))
 
-end)
-
---Stop displaying Help if you've read it all
-hs.hotkey.bind(HyperFn, "escape", function()
-	if helpAlertUUID ~= nil then
-		hs.alert.closeSpecific(helpAlertUUID)
-		helpAlertUUID = nil
-	end
 end)
 
 --	Auto-reload config file.

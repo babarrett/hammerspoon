@@ -27,7 +27,7 @@ function baseMove(x, y, w, h)
 end
 
 -- TODO: Is currently binding at load (requires) time.
--- 		Need to make this in response to my bind call
+-- 		Need to make this in response to my bind calls
 -- y = 0.03 to avoid Mac top menu bar
 hs.hotkey.bind(HyperFn, 'Left',  baseMove(0.00, 0.03, 0.49, 1.00))
 hs.hotkey.bind(HyperFn, 'Right', baseMove(0.51, 0.03, 0.49, 1.00))
