@@ -13,10 +13,9 @@ LUA_PATH = os.getenv("HOME") .. "/dev/git/hammerspoon/?"
 
 HyperFn = {"cmd", "alt", "ctrl", "shift"}	-- Mash the 4 modifier keys for some new function
 
+HF = require "helpFunctions"
 local pasteCurrentSafariUrl = require "pasteCurrentSafariUrl"
 local windowManagement = require "windowManagement"
-local ST = require "simpleTest"
-ST.bind(HyperFn, "X", "myName1")
 pasteCurrentSafariUrl.bind(HyperFn, "U", "pasteSafariUrl")
 
 local helpString = "Bruce's Hammerspoon functions\n"
@@ -33,30 +32,6 @@ helpString = helpString .. windowManagement.getHelpString()
 --	, 3	-- display 3 seconds
 --	)
 
-
-
--- #mark H=Help
-hs.hotkey.bind(HyperFn, "H", function()
-	if helpAlertUUID ~= nil then
-		hs.alert.closeSpecific(helpAlertUUID)
-	end
-	helpAlertUUID = hs.alert.show( "Help for Bruce's Hammerspoon functions:\n" 
-	.. pasteCurrentSafariUrl.getHelpString()
-	.. "Hyper-V     - Type clipboard as text (avoid web site CMD-V blockers).\n"
-	.. windowManagement.getHelpString()
-	.. "\n"
-	-- BUG: This should loop through to accumulate active screens.
-	.. "Active screens: " .. hs.screen.allScreens()[1]:name() .. ", " .. hs.screen.allScreens()[2]:name() 
-	, 
-	{textSize=14, textColor={white = 1.0, alpha = 1.00 }, 
-	textFont = "Andale Mono",	-- works for me. If missing reverts back to system default
-	fillColor={white = 0.0, alpha = 1.00}, 
-	strokeColor={red = 1, green=0, blue=0}, strokeWidth=4 }
-	, 6	-- display 6 seconds
-	)
-	-- DEBUG:  hs.console.printStyledtext(string.gsub(package.path, ";", "\n"))
-
-end)
 
 --	Auto-reload config file.
 function reloadConfig(files)

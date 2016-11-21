@@ -28,7 +28,7 @@ local funNameToFunction = {
 
 function pasteCurrentSafariUrl.bind(modifiers, char, functName)
 	-- Bind it to HyperFn+U
-	helpString = "Hyper+" .. char .. "     - Fetch the current URL from Safari and type it.\n"
+	HF.add("Hyper+" .. char .. "     - Fetch the current URL from Safari and type it.\n")
 	hs.hotkey.bind(modifiers, char, funNameToFunction[functName] )
 end
 
