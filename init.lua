@@ -12,6 +12,7 @@ LUA_PATH = os.getenv("HOME") .. "/dev/git/hammerspoon/?"
 -- "?;?.lua;~/dev/git/hammerspoon/?;?.lua"
 
 HyperFn = {"cmd", "alt", "ctrl", "shift"}	-- Mash the 4 modifier keys for some new function
+HyperFnStriing = "⌘⌥⌃⇧"
 
 HF = require "helpFunctions"
 local pasteCurrentSafariUrl = require "pasteCurrentSafariUrl"

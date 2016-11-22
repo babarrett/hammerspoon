@@ -8,6 +8,7 @@ Keys assigned, where, handled by what.
 Generally:
 	Hammerspoon for:	HyperFn, Window sizing, Screen and Space management
 						init.lua. *.lua. Shared configurations. Fully programable.
+						HyperFnStriing = "⌘⌥⌃⇧"
 	Karabiner for:		SpaceFn, ()-like pairs
 						private.xml (or SpaceFN_bruce.xml) Shared configurations. 
 						Capable, but not fully programable. No events?
@@ -70,3 +71,21 @@ Things to consider adding:
 Screen and Space management
 Rotate right by 1, maybe: SpaceFn+(TYUIOP)
 alias g=git
+
+appCuts = {
+  d = 'Dictionary',
+  i = 'iterm',
+  c = 'Google chrome',
+  t = 'Paws For Trello',
+  -- 4 reserved for dash shortcut 
+  q = 'steam',
+  e = 'emacs',
+  r = 'reeder',
+  k = 'itunes',
+  z = 'Zim',
+  w = 'Whatsapp',
+  -- k = 'Chicken'
+  v = 'CalendarPro for Google',
+  g = 'WMail'
+}
+
