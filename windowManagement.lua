@@ -5,9 +5,11 @@ local windowManagement = {}
 --	HyperFn+Left moves window to left 1/2 of screen.
 --	Likewise for other arrows.
 
+--	TODO: Add 4,5,6 to set moved window size to 40, 50, or 60% of screen
+
 -- Private
 local helpString = ""
-
+local windowSizePercent = 0.50
 
 --[[ function factory that takes the multipliers of screen width
 and height to produce the window's x pos, y pos, width, and height ]]
@@ -26,20 +28,57 @@ function baseMove(x, y, w, h)
     end
 end
 
--- TODO: Is currently binding at load (requires) time.
--- 		Need to make this in response to my bind calls
--- y = 0.03 to avoid Mac top menu bar
-hs.hotkey.bind(HyperFn, 'Left',  baseMove(0.00, 0.03, 0.49, 1.00))
-hs.hotkey.bind(HyperFn, 'Right', baseMove(0.51, 0.03, 0.49, 1.00))
-hs.hotkey.bind(HyperFn, 'Down',  baseMove(0.00, 0.51, 0.98, 0.49))
-hs.hotkey.bind(HyperFn, 'Up',    baseMove(0.00, 0.03, 0.98, 0.46))
+-- private
+local funNameToHelpText = {
+	left =		'move window to left of screen.',
+	right = 	'move window to right of screen.',
+	down = 		'move window to bottom of screen.',
+	up =		'move window to top of screen.',
+	percent40 =	'Moved windows take 40% of screen',
+	percent50 =	'Moved windows take 50% of screen',
+	percent60 =	'Moved windows take 60% of screen'
+}
 
-function windowManagement.updateHelpString()
-	HF.add("-- Window Management Help --\n")
-	HF.add("Hyper-Left  - move window to left 1/2 of screen.\n")
-	HF.add("Hyper-Right - move window to right 1/2 of screen.\n")
-	HF.add("Hyper-Up    - move window to top 1/2 of screen.\n")
-	HF.add("Hyper-Down  - move window to bottom 1/2 of screen.\n")
+
+local function left()
+	hs.hotkey.bind(HyperFn, 'Left',  baseMove(0.00, 0.03, windowSizePercent-0.01, 1.00))
+end
+local function right()
+	hs.hotkey.bind(HyperFn, 'Right', baseMove(windowSizePercent+0.01, 0.03, windowSizePercent-0.01, 1.00))
+end
+local function down()
+	hs.hotkey.bind(HyperFn, 'Down',  baseMove(0.00, windowSizePercent+0.01, 0.98,  windowSizePercent-0.01))
+end
+local function up()
+	hs.hotkey.bind(HyperFn, 'Up',    baseMove(0.00, 0.03, 0.98,  windowSizePercent-0.03))
+end
+local function percent40()
+	windowSizePercent = 0.40
+end
+local function percent50()
+	windowSizePercent = 0.50
+end
+local function percent60()
+	windowSizePercent = 0.60
+end
+local funNameToFunction = {
+	left = left,
+	right = right,
+	down = down,
+	up = up,
+	percent40 = percent40,
+	percent50 = percent50,
+	percent60 = percent60
+}
+
+-- TODO: Is currently binding at load (requires) time.
+-- 		Need to make this in response to my bind calls, an only add help lines as we use them
+-- y = 0.03 to avoid Mac top menu bar
+
+function windowManagement.bind(modifiers, char, functName)
+	hs.hotkey.bind(modifiers, char, funNameToFunction[functName] )	-- bind the key
+	-- Add to the help string
+	HF.add("Hyper+" .. char .. "     - " .. funNameToHelpText[functName] .. "\n")
 end
 
 return windowManagement

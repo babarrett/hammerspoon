@@ -17,7 +17,11 @@ local miscFunctions = require "miscFunctions"
 HF.bind(HyperFn, "H", "hammerspoonHelp")
 HF.bind(HyperFn, "escape", "stopHelp")
 
-windowManagement.updateHelpString()		-- TODO: This should be internal to WindowManagement
+HF.add("\n-- Window Management Functions --\n")
+windowManagement.bind(HyperFn, "Left", "left")
+windowManagement.bind(HyperFn, "Right", "right")
+windowManagement.bind(HyperFn, "Up", "up")
+windowManagement.bind(HyperFn, "Down", "down")
 --		hammerspoonHelp
 --		stopHelp
 HF.add("\n-- Miscellaneous Functions --\n")
