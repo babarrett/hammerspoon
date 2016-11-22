@@ -32,17 +32,11 @@ end
 
 -- TODO: delete this
 function hammerspoonHelp()
-	-- #mark H=Help
 	if helpAlertUUID ~= nil then
 		hs.alert.closeSpecific(helpAlertUUID)
 	end
-	helpAlertUUID = hs.alert.show( "Help for Bruce's Hammerspoon functions:\n" 
-	.. pasteCurrentSafariUrl.getHelpString()
-	.. "Hyper-V     - Type clipboard as text (avoid web site CMD-V blockers).\n"
-	.. windowManagement.getHelpString()
-	.. "\n"
-	-- BUG: This should loop through to accumulate active screens.
-	.. "Active screens: " .. hs.screen.allScreens()[1]:name() .. ", " .. hs.screen.allScreens()[2]:name() 
+	helpAlertUUID = hs.alert.show( 
+		helpString
 	, 
 	{textSize=14, textColor={white = 1.0, alpha = 1.00 }, 
 	textFont = "Andale Mono",	-- works for me. If missing reverts back to system default
@@ -50,9 +44,8 @@ function hammerspoonHelp()
 	strokeColor={red = 1, green=0, blue=0}, strokeWidth=4 }
 	, 6	-- display 6 seconds
 	)
-	-- DEBUG:  hs.console.printStyledtext(string.gsub(package.path, ";", "\n"))
 end
-function helpFunctions.stopHelp()
+function stopHelp()
 	--Stop displaying Help if you've read it all
 	if helpAlertUUID ~= nil then
 		hs.alert.closeSpecific(helpAlertUUID)
@@ -60,8 +53,25 @@ function helpFunctions.stopHelp()
 	end
 end
 
--- Binding happens at load (requires) time.
+--[[ Binding happens at load (requires) time.
 hs.hotkey.bind(HyperFn, "H", helpFunctions.displayHelp)
 hs.hotkey.bind(HyperFn, "escape", helpFunctions.stopHelp)
+]]--
+local funNameToFunction = {
+	hammerspoonHelp = hammerspoonHelp,
+	stopHelp = stopHelp,
+}
+
+
+local funNameToHelpText = {
+	hammerspoonHelp = 	'Help, for Hammerspoon functions',
+	stopHelp = 			'Stop displaying Help',
+}
+
+function helpFunctions.bind(modifiers, char, functName)
+	hs.hotkey.bind(modifiers, char, funNameToFunction[functName] )	-- bind the key
+	-- Add to the help string
+	HF.add("Hyper+" .. char .. "     - " .. funNameToHelpText[functName] .. "\n")
+end
 
 return helpFunctions

@@ -14,19 +14,19 @@ function typeClipboardAsText()
 end
 
 function quitApp()
-	
+	hs.eventtap.keyStroke({"cmd"}, "Q")
 end		
 function closeWindow()
-	
+	hs.eventtap.keyStroke({"cmd"}, "W")
 end	
 function dictate()
-	
+	hs.eventtap.keyStroke({"cmd", "opt"}, "comma")
 end		
 function moveToDone()
-	
+	hs.eventtap.keyStroke({"cmd", "shift"}, "period")
 end	
 function moveToStatus()
-	
+	hs.eventtap.keyStroke({"cmd", "shift"}, "comma")
 end	
 
 -- private
@@ -56,10 +56,6 @@ function miscFunctions.bind(modifiers, char, functName)
 	hs.hotkey.bind(modifiers, char, funNameToFunction[functName] )	-- bind the key
 	-- Add to the help string
 	HF.add("Hyper+" .. char .. "     - " .. funNameToHelpText[functName] .. "\n")
-end
-
-function miscFunctions.getHelpString()
-	return helpString
 end
 
 return miscFunctions

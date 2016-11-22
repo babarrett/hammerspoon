@@ -6,34 +6,41 @@
 --		for app binding:	hs.hotkey.bind(HyperFn, 'D', function () hs.application.launchOrFocus("Dictionary") end)
 
 --	For "require" commands
---	TODO: test & perfect
---	TODO: generic path (this is OS X and Linux only)
-LUA_PATH = os.getenv("HOME") .. "/dev/git/hammerspoon/?"
+--	TODO: Support better path (there is none yet)
 -- "?;?.lua;~/dev/git/hammerspoon/?;?.lua"
+LUA_PATH = os.getenv("HOME") .. "/dev/git/hammerspoon/?"
 
 HyperFn = {"cmd", "alt", "ctrl", "shift"}	-- Mash the 4 modifier keys for some new function
-HyperFnStriing = "⌘⌥⌃⇧"
+HyperFnString = "⌘⌥⌃⇧"
 
-HF = require "helpFunctions"
+--[[	First we require all modules we'll later use
+		Note, as we bind to each function they add to the help string	--]]
+HF = require "helpFunctions"	-- global. Other modules call this too.
 local pasteCurrentSafariUrl = require "pasteCurrentSafariUrl"
 local windowManagement = require "windowManagement"
 local miscFunctions = require "miscFunctions"
+HF.bind(HyperFn, "H", "hammerspoonHelp")
+HF.bind(HyperFn, "escape", "stopHelp")
+
 windowManagement.updateHelpString()		-- TODO: This should be internal to WindowManagement
+--		hammerspoonHelp
+--		stopHelp
+HF.add("\n")
+HF.add("-- Miscellaneous Functions --\n")
 pasteCurrentSafariUrl.bind(HyperFn, "U", "pasteSafariUrl")
 miscFunctions.bind(HyperFn, "V", "typeClipboard")
+miscFunctions.bind(HyperFn, "Q", "quitApp")
+miscFunctions.bind(HyperFn, "W", "closeWindow")
+miscFunctions.bind(HyperFn, "D", "dictate")
+miscFunctions.bind(HyperFn, "/", "moveToDone")
+miscFunctions.bind(HyperFn, ",", "moveToStatus")
 
-local helpString = "Bruce's Hammerspoon functions\n"
-
--- accumulate help strings
-
---hs.alert.show(helpString, 
---	{textSize=16, textColor={white = 1.0, alpha = 1.00 }, 
---	textFont = "Andale Mono",	-- works for me. If missing reverts back to system default
---	fillColor={white = 0.0, alpha = 1.00}, 
---	strokeColor={red = 1, green=0, blue=0}, strokeWidth=4 }
---	, 3	-- display 3 seconds
---	)
-
+-- BUG: This should loop through to accumulate active screens.
+HF.add("\nActive screens: " 
+		.. hs.screen.allScreens()[1]:name() 
+		.. ", " 
+		.. hs.screen.allScreens()[2]:name() 
+		)
 
 --	Auto-reload config file.
 function reloadConfig(files)
@@ -47,7 +54,8 @@ function reloadConfig(files)
         hs.reload() 
     end
 end
-hs.alert.show("Config loaded")	-- Alert "Reloading" here, happens not as we call reload, but on the next load. Default=2 sec.
+-- Alert "Reloading" here, happens not as we call reload, but on the next load. Default=2 sec.
+hs.alert.show("Config loaded")
 
 local myWatcher = hs.pathwatcher.new(os.getenv("HOME") .. "/.hammerspoon/", reloadConfig):start()
 local myWatcher = hs.pathwatcher.new(os.getenv("HOME") .. "/dev/git/hammerspoon/", reloadConfig):start()
