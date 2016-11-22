@@ -78,14 +78,13 @@ appCuts = {
   c = 'Google chrome',
   t = 'Paws For Trello',
   -- 4 reserved for dash shortcut 
-  q = 'steam',
-  e = 'emacs',
-  r = 'reeder',
-  k = 'itunes',
   z = 'Zim',
-  w = 'Whatsapp',
-  -- k = 'Chicken'
-  v = 'CalendarPro for Google',
-  g = 'WMail'
+  v = 'Google Calendar',
+  ??= 'Google Hangouts'
 }
+
+Additional resources:
+	Tutorial:	http://www.hammerspoon.org/go/ 
+	Cycle through displays: http://bezhermoso.github.io/2016/01/20/making-perfect-ramen-lua-os-x-automation-with-hammerspoon/
+	for app binding:	hs.hotkey.bind(HyperFn, 'D', function () hs.application.launchOrFocus("Dictionary") end)
 

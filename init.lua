@@ -1,10 +1,5 @@
 --	Bruce's Hammerspoon functions.
 
---	Additional resources:
---		Tutorial:	http://www.hammerspoon.org/go/ 
---		Cycle through displays: http://bezhermoso.github.io/2016/01/20/making-perfect-ramen-lua-os-x-automation-with-hammerspoon/
---		for app binding:	hs.hotkey.bind(HyperFn, 'D', function () hs.application.launchOrFocus("Dictionary") end)
-
 --	For "require" commands
 --	TODO: Support better path (there is none yet)
 -- "?;?.lua;~/dev/git/hammerspoon/?;?.lua"
@@ -25,8 +20,7 @@ HF.bind(HyperFn, "escape", "stopHelp")
 windowManagement.updateHelpString()		-- TODO: This should be internal to WindowManagement
 --		hammerspoonHelp
 --		stopHelp
-HF.add("\n")
-HF.add("-- Miscellaneous Functions --\n")
+HF.add("\n-- Miscellaneous Functions --\n")
 pasteCurrentSafariUrl.bind(HyperFn, "U", "pasteSafariUrl")
 miscFunctions.bind(HyperFn, "V", "typeClipboard")
 miscFunctions.bind(HyperFn, "Q", "quitApp")
@@ -42,7 +36,7 @@ for i = 2, # hs.screen.allScreens() do
 end
 HF.add(myScreens)
 
---	Auto-reload config file.
+--	Auto-reload config file. Called whenever a *.lua in the directory changes
 function reloadConfig(files)
     doReload = false
     for _,file in pairs(files) do
@@ -54,7 +48,7 @@ function reloadConfig(files)
         hs.reload() 
     end
 end
--- Alert "Reloading" here, happens not as we call reload, but on the next load. Default=2 sec.
+-- Alert "Config loaded" here, happens not as we call reload, but as we load. Default durration=2 sec.
 hs.alert.show("Config loaded")
 
 local myWatcher = hs.pathwatcher.new(os.getenv("HOME") .. "/.hammerspoon/", reloadConfig):start()
