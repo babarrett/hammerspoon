@@ -35,12 +35,12 @@ miscFunctions.bind(HyperFn, "D", "dictate")
 miscFunctions.bind(HyperFn, "/", "moveToDone")
 miscFunctions.bind(HyperFn, ",", "moveToStatus")
 
--- BUG: This should loop through to accumulate active screens.
-HF.add("\nActive screens: " 
-		.. hs.screen.allScreens()[1]:name() 
-		.. ", " 
-		.. hs.screen.allScreens()[2]:name() 
-		)
+-- Add list of screens to bottom of Help
+local myScreens = "\nActive screens: \n  " .. hs.screen.allScreens()[1]:name()
+for i = 2, # hs.screen.allScreens() do
+	myScreens = myScreens .. "\n  " .. hs.screen.allScreens()[i]:name()
+end
+HF.add(myScreens)
 
 --	Auto-reload config file.
 function reloadConfig(files)

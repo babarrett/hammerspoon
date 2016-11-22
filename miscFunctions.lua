@@ -30,7 +30,6 @@ function moveToStatus()
 end	
 
 -- private
-local helpString = ""
 local funNameToFunction = {
 	typeClipboard = typeClipboardAsText,
 	hammerspoonHelp = hammerspoonHelp,
