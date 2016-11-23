@@ -41,14 +41,14 @@ Kbd		OSX Pref	Seil	Hammer	Karab	USB Ov*	Function
 							Hyper+Down				Window to bottom half of screen
 													
 									Space			Tap for Space, Hold+char for SpaceFn
-									[				()+Left
-									Shift+[			)
-									]				<>+Left
-									Shift+]			>
-									SpaceFn+9		[]+Left
-									Shift+9			]
-									SpaceFn+0		{}+Left
-									Shift+0			}
+deleted								[				()+Left
+deleted								Shift+[			)
+deleted								]				<>+Left
+deleted								Shift+]			>
+deleted								SpaceFn+9		[]+Left
+deleted								Shift+9			]
+deleted								SpaceFn+0		{}+Left
+deleted								Shift+0			}
 									F1-F12			Apps & Web pages
 									
 											NumPad	Misc functions, Numeric pad, Razer Anansi only
@@ -88,3 +88,74 @@ Additional resources:
 	Cycle through displays: http://bezhermoso.github.io/2016/01/20/making-perfect-ramen-lua-os-x-automation-with-hammerspoon/
 	for app binding:	hs.hotkey.bind(HyperFn, 'D', function () hs.application.launchOrFocus("Dictionary") end)
 
+Absolutely essential and I can hardly live without it. Tap to click is fine on
+the touchpad, but "click to drag" was something I hated until I did this
+mapping. If you haven't already mapped Caps Lock to something else you can't
+live without, I would highly recommend trying this. You'll probably need
+Karabiner's partner program Seil to do it:
+(https://pqrs.org/osx/karabiner/seil.html.en)
+
+mods - A table or a string containing (as elements, or as substrings with any
+separator) the keyboard modifiers required, which should be zero or more of the
+following:
+"cmd", "command" or "⌘"
+"ctrl", "control" or "⌃"
+"alt", "option" or "⌥"
+"shift" or "⇧"
+
+⌘ lister, per App
+https://www.mediaatelier.com/CheatSheet/?lang=en
+
+-- Launch applications
+
+local modalKey = hs.hotkey.modal.new(hyper, 'A', 'Launch Application mode')
+modalKey:bind('', 'escape', function() modalKey:exit() end)
+
+local appShortCuts = {
+
+    C = 'Visual Studio Code',
+    D = 'Dash',
+    E = 'evernote',
+    F = 'FirefoxDeveloperEdition',
+    G = 'GitKraken',
+    I = 'iterm',
+    J = 'Jump Desktop',
+    O = 'Microsoft Onenote',
+    P = '1Password 6',
+    S = 'Slack',
+    V = 'MacVim',
+    X = 'Xcode',
+    Z = 'Franz'
+}
+
+
+https://gist.github.com/dalemanthei/dde8bccb22c3a2d3487a6e7d77be33f5
+for key, app in pairs(appShortCuts) do
+
+    modalKey:bind('', key, 'Launching '..app, function() hs.application.launchOrFocus(app) end, function() modalKey:exit() end)
+end
+
+-- Enter Hyper Mode when F18 (Hyper/Capslock) is pressed
+pressedF18 = function()
+  k.triggered = false
+  k:enter()
+end
+
+-- Leave Hyper Mode when F18 (Hyper/Capslock) is pressed,
+--   send ESCAPE if no other keys are pressed.
+releasedF18 = function()
+  k:exit()
+  if not k.triggered then
+    hs.eventtap.keyStroke({}, 'ESCAPE')
+  end
+end
+
+-- Bind the Hyper key
+f18 = hs.hotkey.bind({}, 'F18', pressedF18, releasedF18)
+
+
+https://www.reddit.com/r/osx/comments/48h39q/keyboard_shortcut_for_moving_a_window_to_a/
+https://github.com/Hammerspoon/hammerspoon/wiki/Sample-Configurations
+
+Build cheatsheets for App - output html
+https://github.com/dharmapoudel/hammerspoon-config/blob/master/cheatsheets.lua
