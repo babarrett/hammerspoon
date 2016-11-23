@@ -81,6 +81,10 @@ appCuts = {
   z = 'Zim',
   v = 'Google Calendar',
   ??= 'Google Hangouts'
+  ??= indent selection
+  ??= outdent selection
+  cmd-l: go to URL & Send mail
+  spotlight - useful?
 }
 
 Additional resources:
@@ -159,3 +163,8 @@ https://github.com/Hammerspoon/hammerspoon/wiki/Sample-Configurations
 
 Build cheatsheets for App - output html
 https://github.com/dharmapoudel/hammerspoon-config/blob/master/cheatsheets.lua
+=======
+------------------------------------------------------
+Karabiner for shift --> ()
+	https://gist.github.com/carwin/4748951
+
