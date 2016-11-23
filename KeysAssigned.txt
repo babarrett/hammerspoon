@@ -81,10 +81,18 @@ appCuts = {
   z = 'Zim',
   v = 'Google Calendar',
   ??= 'Google Hangouts'
+  ??= indent selection
+  ??= outdent selection
+  cmd-l: go to URL & Send mail
+  spotlight - useful?
 }
 
 Additional resources:
 	Tutorial:	http://www.hammerspoon.org/go/ 
 	Cycle through displays: http://bezhermoso.github.io/2016/01/20/making-perfect-ramen-lua-os-x-automation-with-hammerspoon/
 	for app binding:	hs.hotkey.bind(HyperFn, 'D', function () hs.application.launchOrFocus("Dictionary") end)
+
+------------------------------------------------------
+Karabiner for shift --> ()
+	https://gist.github.com/carwin/4748951
 

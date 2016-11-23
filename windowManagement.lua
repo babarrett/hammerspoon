@@ -9,23 +9,21 @@ local windowManagement = {}
 
 -- Private
 local helpString = ""
-local windowSizePercent = 0.50
+windowSizePercent = 0.50
 
 --[[ function factory that takes the multipliers of screen width
 and height to produce the window's x pos, y pos, width, and height ]]
 function baseMove(x, y, w, h)
-    return function()
-        local win = hs.window.focusedWindow()
-        local f = win:frame()
-        local screen = win:screen()
-        local max = screen:frame()
+	local win = hs.window.focusedWindow()
+	local f = win:frame()
+	local screen = win:screen()
+	local max = screen:frame()
 
-        f.x = max.w * x
-        f.y = max.h * y
-        f.w = max.w * w
-        f.h = max.h * h
-        win:setFrame(f, 0)
-    end
+	f.x = max.w * x
+	f.y = max.h * y
+	f.w = max.w * w
+	f.h = max.h * h
+	win:setFrame(f, 0)
 end
 
 -- private
@@ -41,16 +39,16 @@ local funNameToHelpText = {
 
 
 local function left()
-	hs.hotkey.bind(HyperFn, 'Left',  baseMove(0.00, 0.03, windowSizePercent-0.01, 1.00))
+	baseMove(0.00, 0.03, windowSizePercent-0.01, 1.00)
 end
 local function right()
-	hs.hotkey.bind(HyperFn, 'Right', baseMove(windowSizePercent+0.01, 0.03, windowSizePercent-0.01, 1.00))
+	baseMove(1-windowSizePercent+0.01, 0.03, windowSizePercent-0.01, 1.00)
 end
 local function down()
-	hs.hotkey.bind(HyperFn, 'Down',  baseMove(0.00, windowSizePercent+0.01, 0.98,  windowSizePercent-0.01))
+	baseMove(0.00, 1-windowSizePercent+0.01, 0.98,  windowSizePercent-0.01)
 end
 local function up()
-	hs.hotkey.bind(HyperFn, 'Up',    baseMove(0.00, 0.03, 0.98,  windowSizePercent-0.03))
+	baseMove(0.00, 0.03, 0.98,  windowSizePercent-0.03)
 end
 local function percent40()
 	windowSizePercent = 0.40

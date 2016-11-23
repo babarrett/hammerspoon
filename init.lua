@@ -22,6 +22,9 @@ windowManagement.bind(HyperFn, "Left", "left")
 windowManagement.bind(HyperFn, "Right", "right")
 windowManagement.bind(HyperFn, "Up", "up")
 windowManagement.bind(HyperFn, "Down", "down")
+windowManagement.bind(HyperFn, "4", "percent40")
+windowManagement.bind(HyperFn, "5", "percent50")
+windowManagement.bind(HyperFn, "6", "percent60")
 --		hammerspoonHelp
 --		stopHelp
 HF.add("\n-- Miscellaneous Functions --\n")
