@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+        <html>
+        <head>
+        <style type="text/css">
+            *{margin:0; padding:0;}
+            html, body{ 
+              background-color:#eee;
+              font-family: arial;
+              font-size: 13px;
+            }
+            a{
+              text-decoration:none;
+              color:#000;
+              font-size:12px;
+            }
+            li.title{ text-align:center;}
+            ul, li{list-style: inside none; padding: 0 0 5px;}
+            footer{
+              position: fixed;
+              left: 0;
+              right: 0;
+              height: 48px;
+              background-color:#eee;
+            }
+            header{
+              position: fixed;
+              top: 0;
+              left: 0;
+              right: 0;
+              height:48px;
+              background-color:#eee;
+              z-index:99;
+            }
+            footer{ bottom: 0; }
+            header hr,
+            footer hr {
+              border: 0;
+              height: 0;
+              border-top: 1px solid rgba(0, 0, 0, 0.1);
+              border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+            }
+            .title{
+                padding: 15px;
+            }
+            li.title{padding: 0  10px 15px}
+            .content{
+              padding: 0 0 15px;
+              font-size:12px;
+              overflow:hidden;
+            }
+            .content.maincontent{
+            position: relative;
+              height: 750px;
+              margin-top: 46px;
+            }
+            .content > .col{
+              width: 23%;
+              padding:10px 0 20px 20px;
+            }
+            
+            li:after{
+              visibility: hidden;
+              display: block;
+              font-size: 0;
+              content: " ";
+              clear: both;
+              height: 0;
+            }
+            .cmdModifiers{
+              width: 60px;
+              padding-right: 15px;
+              text-align: right;
+              float: left;
+              font-weight: bold;
+            }
+            .cmdtext{
+              float: left;
+              overflow: hidden;
+              width: 165px;
+            }
+        </style>
+        </head>
+          <body>
+            <header>
+              <div class="title"><strong>BBEdit</strong></div>
+              <hr />
+            </header>
+            <div class="content maincontent"><ul class='col col1'><li class='title'><strong>BBEdit</strong></li><li><div class='cmdModifiers'>⌘ ,</div><div class='cmdtext'> Preferences…</div></li><li><div class='cmdModifiers'> C</div><div class='cmdtext'> Convert Text to Simplified Chinese</div></li><li><div class='cmdModifiers'>⇧ ⌃ ⌘ C</div><div class='cmdtext'> Convert Text to Traditional Chinese</div></li><li><div class='cmdModifiers'>⇧ ⌘ Y</div><div class='cmdtext'> Make New Sticky Note</div></li><li><div class='cmdModifiers'>⇧ ⌘ X</div><div class='cmdtext'> New Terminal Here</div></li><li><div class='cmdModifiers'>⇧ ⌘ L</div><div class='cmdtext'> Search With Google</div></li><li><div class='cmdModifiers'>⌘ H</div><div class='cmdtext'> Hide BBEdit</div></li><li><div class='cmdModifiers'>⌥ ⌘ H</div><div class='cmdtext'> Hide Others</div></li><li><div class='cmdModifiers'>⌘ Q</div><div class='cmdtext'> Quit BBEdit</div></li><li><div class='cmdModifiers'>⌥ ⌘ Q</div><div class='cmdtext'> Quit and Close All Windows</div></li></ul><ul class='col col2'><li class='title'><strong>File</strong></li><li><div class='cmdModifiers'>⌘ N</div><div class='cmdtext'> Text Document</div></li><li><div class='cmdModifiers'>⌃ ⌘ N</div><div class='cmdtext'> HTML Document…</div></li><li><div class='cmdModifiers'>⇧ ⌘ N</div><div class='cmdtext'> Text Window</div></li><li><div class='cmdModifiers'>⌥ ⌘ N</div><div class='cmdtext'> Disk Browser</div></li><li><div class='cmdModifiers'>⌘ O</div><div class='cmdtext'> Open…</div></li><li><div class='cmdModifiers'>⌃ ⌘ O</div><div class='cmdtext'> Open from FTP/SFTP Server…</div></li><li><div class='cmdModifiers'>⌘ D</div><div class='cmdtext'> Open File by Name…</div></li><li><div class='cmdModifiers'>⌥ ⌘ D</div><div class='cmdtext'> Reveal Selection</div></li><li><div class='cmdModifiers'>⇧ ⌘ W</div><div class='cmdtext'> Close Window</div></li><li><div class='cmdModifiers'>⌥ ⇧ ⌘ W</div><div class='cmdtext'> Close All Windows</div></li><li><div class='cmdModifiers'>⌘ W</div><div class='cmdtext'> Close Document</div></li><li><div class='cmdModifiers'>⌥ ⌘ W</div><div class='cmdtext'> Close All Documents</div></li><li><div class='cmdModifiers'>⌃ ⌘ W</div><div class='cmdtext'> Close All in Project</div></li><li><div class='cmdModifiers'>⌘ S</div><div class='cmdtext'> Save</div></li><li><div class='cmdModifiers'>⌥ ⌘ S</div><div class='cmdtext'> Save All</div></li><li><div class='cmdModifiers'>⌥ ⇧ ⌘ S</div><div class='cmdtext'> Save All in Window</div></li><li><div class='cmdModifiers'>⇧ ⌘ S</div><div class='cmdtext'> Save As…</div></li><li><div class='cmdModifiers'>⌃ ⌘ S</div><div class='cmdtext'> Save to FTP/SFTP Server…</div></li><li><div class='cmdModifiers'>⌃ ⌥ ⌘ S</div><div class='cmdtext'> Save a Copy to FTP/SFTP Server…</div></li><li><div class='cmdModifiers'>⇧ ⌘ P</div><div class='cmdtext'> Page Setup…</div></li><li><div class='cmdModifiers'>⌘ P</div><div class='cmdtext'> Print…</div></li><li><div class='cmdModifiers'>⌥ ⇧ ⌘ P</div><div class='cmdtext'> Print One Copy</div></li></ul><ul class='col col3'><li class='title'><strong>Edit</strong></li><li><div class='cmdModifiers'>⌘ Z</div><div class='cmdtext'> Undo Typing</div></li><li><div class='cmdModifiers'>⇧ ⌘ Z</div><div class='cmdtext'> Can’t Redo</div></li><li><div class='cmdModifiers'>⌃ ⌘ Z</div><div class='cmdtext'> Clear Undo History</div></li><li><div class='cmdModifiers'>⌘ X</div><div class='cmdtext'> Cut</div></li><li><div class='cmdModifiers'>⇧ ⌘ X</div><div class='cmdtext'> Cut & Append</div></li><li><div class='cmdModifiers'>⌘ C</div><div class='cmdtext'> Copy</div></li><li><div class='cmdModifiers'>⇧ ⌘ C</div><div class='cmdtext'> Copy & Append</div></li><li><div class='cmdModifiers'>⌘ V</div><div class='cmdtext'> Paste</div></li><li><div class='cmdModifiers'>⌥ ⌘ V</div><div class='cmdtext'> Paste & Select</div></li><li><div class='cmdModifiers'>⇧ ⌘ V</div><div class='cmdtext'> Paste Previous Clipboard</div></li><li><div class='cmdModifiers'>⌥ ⇧ ⌘ V</div><div class='cmdtext'> Paste & Match Indentation</div></li><li><div class='cmdModifiers'>⌃ ⌘ V</div><div class='cmdtext'> Paste Column</div></li><li><div class='cmdModifiers'>⌘ A</div><div class='cmdtext'> Select All</div></li><li><div class='cmdModifiers'>⌘ L</div><div class='cmdtext'> Line</div></li><li><div class='cmdModifiers'>⌥ ⌘ L</div><div class='cmdtext'> Paragraph</div></li><li><div class='cmdModifiers'>⇧ ⌘ A</div><div class='cmdtext'> Clear List Selection</div></li><li><div class='cmdModifiers'>⇧ ⌘ D</div><div class='cmdtext'> Duplicate</div></li><li><div class='cmdModifiers'>⌃ [</div><div class='cmdtext'> Previous Clipboard</div></li><li><div class='cmdModifiers'>⌃ ]</div><div class='cmdtext'> Next Clipboard</div></li><li><div class='cmdModifiers'>⌥ ⌘ ,</div><div class='cmdtext'> Text Options…</div></li><li><div class='cmdModifiers'>⌘ ;</div><div class='cmdtext'> Find Next Misspelled Word</div></li><li><div class='cmdModifiers'>⌥ ⌘ ;</div><div class='cmdtext'> Find All Misspelled Words</div></li><li><div class='cmdModifiers'>⇧ ⌘ ;</div><div class='cmdtext'> Show Spelling Panel</div></li><li><div class='cmdModifiers'>⌥ ⌘ ,</div><div class='cmdtext'> Start Dictation…</div></li></ul><ul class='col col4'><li class='title'><strong>Text</strong></li><li><div class='cmdModifiers'>⌘ [</div><div class='cmdtext'> Shift Left</div></li><li><div class='cmdModifiers'>⇧ ⌘ [</div><div class='cmdtext'> Shift Left One Space</div></li><li><div class='cmdModifiers'>⌘ ]</div><div class='cmdtext'> Shift Right</div></li><li><div class='cmdModifiers'>⇧ ⌘ ]</div><div class='cmdtext'> Shift Right One Space</div></li><li><div class='cmdModifiers'>⌘ /</div><div class='cmdtext'> Un/Comment Lines</div></li><li><div class='cmdModifiers'>⌥ ⌘ /</div><div class='cmdtext'> Un/Comment Block</div></li><li><div class='cmdModifiers'>⌘ \</div><div class='cmdtext'> Hard Wrap…</div></li><li><div class='cmdModifiers'>⌥ ⌘ \</div><div class='cmdtext'> Hard Wrap</div></li></ul><ul class='col col5'><li class='title'><strong>View</strong></li><li><div class='cmdModifiers'>⌘ T</div><div class='cmdtext'> Show Fonts</div></li><li><div class='cmdModifiers'>⌘ 0</div><div class='cmdtext'> Hide Sidebar</div></li><li><div class='cmdModifiers'>⌘ B</div><div class='cmdtext'> Balance</div></li><li><div class='cmdModifiers'>⇧ ⌘ B</div><div class='cmdtext'> Balance & Fold</div></li><li><div class='cmdModifiers'>⌥ ⌘ [</div><div class='cmdtext'> Previous Document</div></li><li><div class='cmdModifiers'>⌥ ⌘ ]</div><div class='cmdtext'> Next Document</div></li><li><div class='cmdModifiers'>⌥ ⌘ O</div><div class='cmdtext'> Move to New Window</div></li><li><div class='cmdModifiers'>⌘ I</div><div class='cmdtext'> Get Info</div></li><li><div class='cmdModifiers'>⌃ ⌘ F</div><div class='cmdtext'> Enter Full Screen</div></li></ul><ul class='col col6'><li class='title'><strong>Search</strong></li><li><div class='cmdModifiers'>⌘ F</div><div class='cmdtext'> Find…</div></li><li><div class='cmdModifiers'>⇧ ⌘ F</div><div class='cmdtext'> Multi-File Search…</div></li><li><div class='cmdModifiers'>⌥ ⌘ F</div><div class='cmdtext'> Live Search</div></li><li><div class='cmdModifiers'>⌘ G</div><div class='cmdtext'> Find Next</div></li><li><div class='cmdModifiers'>⇧ ⌘ G</div><div class='cmdtext'> Find Previous</div></li><li><div class='cmdModifiers'>⌥ ⌘ G</div><div class='cmdtext'> Find All</div></li><li><div class='cmdModifiers'>⌃ ⌘ G</div><div class='cmdtext'> Extract</div></li><li><div class='cmdModifiers'>⌘ E</div><div class='cmdtext'> Use Selection for Find</div></li><li><div class='cmdModifiers'>⇧ ⌘ E</div><div class='cmdtext'> Use Selection for Find (grep)</div></li><li><div class='cmdModifiers'>⌥ ⌘ E</div><div class='cmdtext'> Use Selection for Replace</div></li><li><div class='cmdModifiers'>⌥ ⇧ ⌘ E</div><div class='cmdtext'> Use Selection for Replace (grep)</div></li><li><div class='cmdModifiers'>⌘ =</div><div class='cmdtext'> Replace</div></li><li><div class='cmdModifiers'>⌥ ⌘ =</div><div class='cmdtext'> Replace All</div></li><li><div class='cmdModifiers'>⌃ ⌘ =</div><div class='cmdtext'> Replace All in Selection</div></li><li><div class='cmdModifiers'>⇧ ⌘ =</div><div class='cmdtext'> Replace to End</div></li><li><div class='cmdModifiers'>⌘ T</div><div class='cmdtext'> Replace & Find Next</div></li><li><div class='cmdModifiers'>⌃ G</div><div class='cmdtext'> Next Occurrence of Selected Text</div></li><li><div class='cmdModifiers'>⌃ ⌥ G</div><div class='cmdtext'> Previous Occurrence of Selected Text</div></li></ul><ul class='col col7'><li class='title'><strong>Go</strong></li><li><div class='cmdModifiers'>⌘ J</div><div class='cmdtext'> Line Number…</div></li><li><div class='cmdModifiers'>⌥ ⌘ J</div><div class='cmdtext'> Line Number</div></li><li><div class='cmdModifiers'>⇧ ⌘ J</div><div class='cmdtext'> Center Line</div></li><li><div class='cmdModifiers'>⌃ ⌘ J</div><div class='cmdtext'> Named Symbol…</div></li><li><div class='cmdModifiers'>⌃ ⇧ `</div><div class='cmdtext'> Previous Placeholder</div></li><li><div class='cmdModifiers'>⌃ `</div><div class='cmdtext'> Next Placeholder</div></li></ul><ul class='col col8'><li class='title'><strong>Markup</strong></li><li><div class='cmdModifiers'>⌃ ⌘ M</div><div class='cmdtext'> Edit Markup…</div></li><li><div class='cmdModifiers'>⌥ ⌘ B</div><div class='cmdtext'> Balance Tags</div></li><li><div class='cmdModifiers'>⌃ ⌘ T</div><div class='cmdtext'> Table…</div></li><li><div class='cmdModifiers'>⌃ ⌘ A</div><div class='cmdtext'> Anchor…</div></li><li><div class='cmdModifiers'>⌃ ⌘ I</div><div class='cmdtext'> Image…</div></li><li><div class='cmdModifiers'>⌃ ⌘ B</div><div class='cmdtext'> Break…</div></li><li><div class='cmdModifiers'>⌃ ⌘ Y</div><div class='cmdtext'> Document Syntax</div></li><li><div class='cmdModifiers'>⌃ ⌘ K</div><div class='cmdtext'> Document Links</div></li><li><div class='cmdModifiers'>⌃ ⌘ U</div><div class='cmdtext'> Document</div></li><li><div class='cmdModifiers'>⌥ ⇧ ⌘ F</div><div class='cmdtext'> Format…</div></li><li><div class='cmdModifiers'>⌃ ⌘ P</div><div class='cmdtext'> Preview in BBEdit</div></li></ul><ul class='col col9'><li class='title'><strong>Window</strong></li><li><div class='cmdModifiers'>⌘ M</div><div class='cmdtext'> Minimize Window</div></li><li><div class='cmdModifiers'>⌥ ⌘ M</div><div class='cmdtext'> Minimize All Windows</div></li><li><div class='cmdModifiers'>⌘ `</div><div class='cmdtext'> Cycle Through Windows</div></li><li><div class='cmdModifiers'>⇧ ⌘ `</div><div class='cmdtext'> Cycle Through Windows Backwards</div></li></ul><ul class='col col10'><li class='title'><strong>#!</strong></li><li><div class='cmdModifiers'>⌘ K</div><div class='cmdtext'> Check Syntax</div></li><li><div class='cmdModifiers'>⌘ R</div><div class='cmdtext'> Run</div></li></ul><ul class='col col11'><li class='title'><strong>Git</strong></li></ul><ul class='col col12'><li class='title'><strong>SVN</strong></li></ul><ul class='col col13'><li class='title'><strong>Sc</strong></li></ul><ul class='col col14'><li class='title'><strong>Cl</strong></li></ul></div>
+
+          <footer>
+            <hr />
+              <div class="content" > 
+                <div class="col">
+                  by <a href="https://github.com/dharmapoudel" target="_parent">dharma poudel</a>
+                </div>
+              </div>
+          </footer>
+          <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.isotope/2.2.2/isotope.pkgd.min.js"></script>
+        	<script type="text/javascript">
+              var elem = document.querySelector('.content');
+              var iso = new Isotope( elem, {
+                // options
+                itemSelector: '.col',
+                layoutMode: 'masonry'
+              });
+            </script>
+          </body>
+        </html>
+        

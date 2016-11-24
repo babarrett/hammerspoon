@@ -14,6 +14,8 @@ HF = require "helpFunctions"	-- global. Other modules call this too.
 local pasteCurrentSafariUrl = require "pasteCurrentSafariUrl"
 local windowManagement = require "windowManagement"
 local miscFunctions = require "miscFunctions"
+require "cheatsheets"
+
 HF.bind(HyperFn, "H", "hammerspoonHelp")
 HF.bind(HyperFn, "escape", "stopHelp")
 
@@ -33,8 +35,8 @@ miscFunctions.bind(HyperFn, "V", "typeClipboard")
 miscFunctions.bind(HyperFn, "Q", "quitApp")
 miscFunctions.bind(HyperFn, "W", "closeWindow")
 miscFunctions.bind(HyperFn, "D", "dictate")
-miscFunctions.bind(HyperFn, "/", "moveToDone")
-miscFunctions.bind(HyperFn, ",", "moveToStatus")
+--miscFunctions.bind(HyperFn, "/", "moveToDone")
+--miscFunctions.bind(HyperFn, ",", "moveToStatus")
 
 -- Add list of screens to bottom of Help
 local myScreens = "\nActive screens: \n  " .. hs.screen.allScreens()[1]:name()

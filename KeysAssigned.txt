@@ -167,4 +167,5 @@ https://github.com/dharmapoudel/hammerspoon-config/blob/master/cheatsheets.lua
 ------------------------------------------------------
 Karabiner for shift --> ()
 	https://gist.github.com/carwin/4748951
+	But would it work with "sticky keys" turned on?
 

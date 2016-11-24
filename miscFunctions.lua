@@ -5,7 +5,7 @@ local miscFunctions = {}
 --	HyperFn+Q		quitApp				Quit App
 --	HyperFn+W		closeWindow			Close window (or tab)
 --	HyperFn+D		dictate				Dictate on/off
---	HyperFn+.		moveToDone			Move current mail item to "Done"
+--	HyperFn+/		moveToDone			Move current mail item to "Done"
 --	HyperFn+,		moveToStatus		Move current mail item to "Status"
 
 -- private functions to be referenced & executed later.
@@ -23,10 +23,12 @@ function dictate()
 	hs.eventtap.keyStroke({"cmd", "opt"}, "comma")
 end		
 function moveToDone()
-	hs.eventtap.keyStroke({"cmd", "shift"}, "period")
+	hs.alert.show("moveTo Done")
+	hs.eventtap.keyStroke({"cmd", "shift"}, "period")	-- ">"
 end	
 function moveToStatus()
-	hs.eventtap.keyStroke({"cmd", "shift"}, "comma")
+	hs.alert.show("moveTo Status")
+	hs.eventtap.keyStroke({"cmd", "shift"}, "comma")	-- "<"
 end	
 
 -- private
@@ -42,7 +44,7 @@ local funNameToFunction = {
 }
 
 local funNameToHelpText = {
-	typeClipboard =		'Type clipboard as text (avoid web site CMD-V blockers)',
+	typeClipboard =		'Type clipboard as text (avoid web site ⌘-V blockers)',
 	hammerspoonHelp = 	'Help, for Hammerspoon functions',
 	stopHelp = 			'Stop displaying Help',
 	quitApp =			'Quit current App',

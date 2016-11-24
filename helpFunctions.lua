@@ -15,20 +15,6 @@ local helpString = ""		-- start empty, we'll add to it as we go along.
 function helpFunctions.add(newString)
 	 helpString = helpString .. newString
 end
-function helpFunctions.displayHelp()
-	helpAlertUUID = hs.alert.show( "Help for Bruce's Hammerspoon functions:\n" 
-	.. helpString 
-	, 
-	{textSize=14, textColor={white = 1.0, alpha = 1.00 }, 
-	textFont = "Andale Mono",	-- works for me. If missing reverts back to system default
-	fillColor={white = 0.0, alpha = 1.00}, 
-	strokeColor={red = 1, green=0, blue=0}, strokeWidth=4 }
-	, 6	-- display 6 seconds
-	)
-	
-end
-
-
 
 -- TODO: delete this
 function hammerspoonHelp()
@@ -42,7 +28,7 @@ function hammerspoonHelp()
 	textFont = "Andale Mono",	-- works for me. If missing reverts back to system default
 	fillColor={white = 0.0, alpha = 1.00}, 
 	strokeColor={red = 1, green=0, blue=0}, strokeWidth=4 }
-	, 6	-- display 6 seconds
+	, 20	-- display 20 seconds, or until Hyper-Escape
 	)
 end
 function stopHelp()
