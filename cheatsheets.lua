@@ -87,7 +87,7 @@ function generateHtml()
         <style type="text/css">
             *{margin:0; padding:0;}
             html, body{ 
-              background-color:#eee;
+              background-color:#ddf;
               font-family: arial;
               font-size: 13px;
             }
@@ -103,7 +103,7 @@ function generateHtml()
               left: 0;
               right: 0;
               height: 48px;
-              background-color:#eee;
+              background-color:#aab;
             }
             header{
               position: fixed;
@@ -111,7 +111,7 @@ function generateHtml()
               left: 0;
               right: 0;
               height:48px;
-              background-color:#eee;
+              background-color:#aab;
               z-index:99;
             }
             footer{ bottom: 0; }

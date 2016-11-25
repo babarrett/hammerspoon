@@ -1,12 +1,9 @@
 local helpFunctions = {}
 -- help.lua
---	Hyper+H			hammerspoonHelp		Help, for Hammerspoon functions
---	Hyper+Esc		stopHelp			Stop displaying Help
+--	Hyper+H			hammerspoonHelp		Help, for Hammerspoon functions, or dismiss if already up
 
 -- private fields
---	"Help" - brief descriptions of mapped f()s. 
---	HyperFn+H to show
---	HyperFn+Esc to stop showing before it times out
+--	"helpString" - brief descriptions of mapped f()s. 
 local helpAlertUUID = nil
 local helpString = ""		-- start empty, we'll add to it as we go along.
 
@@ -20,38 +17,27 @@ end
 function hammerspoonHelp()
 	if helpAlertUUID ~= nil then
 		hs.alert.closeSpecific(helpAlertUUID)
-	end
-	helpAlertUUID = hs.alert.show( 
-		helpString
-	, 
-	{textSize=14, textColor={white = 1.0, alpha = 1.00 }, 
-	textFont = "Andale Mono",	-- works for me. If missing reverts back to system default
-	fillColor={white = 0.0, alpha = 1.00}, 
-	strokeColor={red = 1, green=0, blue=0}, strokeWidth=4 }
-	, 20	-- display 20 seconds, or until Hyper-Escape
-	)
-end
-function stopHelp()
-	--Stop displaying Help if you've read it all
-	if helpAlertUUID ~= nil then
-		hs.alert.closeSpecific(helpAlertUUID)
 		helpAlertUUID = nil
+	else
+		helpAlertUUID = hs.alert.show( 
+			helpString
+		, 
+		{textSize=14, textColor={white = 1.0, alpha = 1.00 }, 
+		textFont = "Andale Mono",	-- works for me. If missing reverts back to system default
+		fillColor={white = 0.0, alpha = 1.00}, 
+		strokeColor={red = 1, green=0, blue=0}, strokeWidth=4 }
+		, 20	-- display 20 seconds, or until Hyper-Escape
+		)
 	end
 end
 
---[[ Binding happens at load (requires) time.
-hs.hotkey.bind(HyperFn, "H", helpFunctions.displayHelp)
-hs.hotkey.bind(HyperFn, "escape", helpFunctions.stopHelp)
-]]--
 local funNameToFunction = {
-	hammerspoonHelp = hammerspoonHelp,
-	stopHelp = stopHelp,
+	hammerspoonHelp = hammerspoonHelp
 }
 
 
 local funNameToHelpText = {
-	hammerspoonHelp = 	'Help, for Hammerspoon functions',
-	stopHelp = 			'Stop displaying Help',
+	hammerspoonHelp = 	'Help, for Hammerspoon functions, and again to dismiss.',
 }
 
 function helpFunctions.bind(modifiers, char, functName)

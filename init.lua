@@ -17,7 +17,6 @@ local miscFunctions = require "miscFunctions"
 require "cheatsheets"
 
 HF.bind(HyperFn, "H", "hammerspoonHelp")
-HF.bind(HyperFn, "escape", "stopHelp")
 
 HF.add("\n-- Window Management Functions --\n")
 windowManagement.bind(HyperFn, "Left", "left")
