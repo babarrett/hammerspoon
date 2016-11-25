@@ -26,7 +26,7 @@ function hammerspoonHelp()
 		textFont = "Andale Mono",	-- works for me. If missing reverts back to system default
 		fillColor={white = 0.0, alpha = 1.00}, 
 		strokeColor={red = 1, green=0, blue=0}, strokeWidth=4 }
-		, 20	-- display 20 seconds, or until Hyper-Escape
+		, 90	-- display 90 seconds, or usr hits Hyper-H again
 		)
 	end
 end

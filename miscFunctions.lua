@@ -4,7 +4,7 @@ local miscFunctions = {}
 --	Hyper+V			typeClipboard		Type clipboard as text (avoid web site CMD-V blockers)
 --	HyperFn+Q		quitApp				Quit App
 --	HyperFn+W		closeWindow			Close window (or tab)
---	HyperFn+D		dictate				Dictate on/off
+--	HyperFn+D		dictate				Dictate on/off (Cmd+Opt+,)
 --	HyperFn+/		moveToDone			Move current mail item to "Done"
 --	HyperFn+,		moveToStatus		Move current mail item to "Status"
 
@@ -20,6 +20,7 @@ function closeWindow()
 	hs.eventtap.keyStroke({"cmd"}, "W")
 end	
 function dictate()
+	hs.alert.show("Dictate")
 	hs.eventtap.keyStroke({"cmd", "opt"}, "comma")
 end		
 function moveToDone()
@@ -50,8 +51,8 @@ local funNameToHelpText = {
 	quitApp =			'Quit current App',
 	closeWindow =		'Close window (or tab)',
 	dictate =			'Dictate on/off',
-	moveToDone =		'Move current mail item to "Done"',
-	moveToStatus =		'Move current mail item to "Status"'
+	moveToDone =		'Mail: Move current item to "Done"',
+	moveToStatus =		'Mail: Move current item to "Status"'
 }
 function miscFunctions.bind(modifiers, char, functName)
 	hs.hotkey.bind(modifiers, char, funNameToFunction[functName] )	-- bind the key

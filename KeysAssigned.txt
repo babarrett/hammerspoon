@@ -18,6 +18,18 @@ Generally:
 	BBEdit for:			Code snippets. Auto-completion.  Navigate by f()
 	iTerm2 for:			Command-line keys, remap (begin/end line & word)
 	
+	NOTES on kext:
+		kextstat | grep -v com.apple
+		Name (Version)
+		com.usboverdrive.driver.hid (3.2)
+		com.razer.common.razerhid (16.45)
+		org.pqrs.driver.Karabiner (10.22.0)
+		org.pqrs.driver.Seil (12.1.0)
+
+		USBOverdrive is a kext.
+		RazerHid is a kext. Seems to be left behind even after uninstall. (Home laptop)
+		Karabiner is a kext, it hooks in at a much lower level than Hammerspoon.
+		
 	
 
 Kbd		OSX Pref	Seil	Hammer	Karab	USB Ov*	Function
@@ -58,7 +70,7 @@ deleted								Shift+0			}
 											
 
 
-* USB Overdrive cannot modify non-Apple products, by design.
+* USB Overdrive cannot modify Apple products, by design.
 	These functions should be moved to other products/systems
 	such as Hammerspoon or Karabiner:
 	a) so that external Apple keyboards, such as those with numeric pads, work, and
@@ -67,10 +79,11 @@ deleted								Shift+0			}
 
 ---------------------------------------------------------------------
 Things to consider adding:
-	
+
+Unload and delete the razer kext (still present on home MacBook Pro)
+
 Screen and Space management
-Rotate right by 1, maybe: SpaceFn+(TYUIOP)
-alias g=git
+Maybe, rotate right by 1, for line movement & selection: SpaceFn+(TYUIOP)
 
 appCuts = {
   d = 'Dictionary',
@@ -92,6 +105,9 @@ Additional resources:
 	Cycle through displays: http://bezhermoso.github.io/2016/01/20/making-perfect-ramen-lua-os-x-automation-with-hammerspoon/
 	for app binding:	hs.hotkey.bind(HyperFn, 'D', function () hs.application.launchOrFocus("Dictionary") end)
 
+https://gist.github.com/dalemanthei/dde8bccb22c3a2d3487a6e7d77be33f5
+
+
 Absolutely essential and I can hardly live without it. Tap to click is fine on
 the touchpad, but "click to drag" was something I hated until I did this
 mapping. If you haven't already mapped Caps Lock to something else you can't
@@ -107,11 +123,9 @@ following:
 "alt", "option" or "⌥"
 "shift" or "⇧"
 
-⌘ lister, per App
-https://www.mediaatelier.com/CheatSheet/?lang=en
 
 -- Launch applications
-
+-- from: https://github.com/talha131/dotfiles/blob/master/hammerspoon/launch-applications.lua
 local modalKey = hs.hotkey.modal.new(hyper, 'A', 'Launch Application mode')
 modalKey:bind('', 'escape', function() modalKey:exit() end)
 
@@ -132,12 +146,12 @@ local appShortCuts = {
     Z = 'Franz'
 }
 
-
-https://gist.github.com/dalemanthei/dde8bccb22c3a2d3487a6e7d77be33f5
 for key, app in pairs(appShortCuts) do
-
     modalKey:bind('', key, 'Launching '..app, function() hs.application.launchOrFocus(app) end, function() modalKey:exit() end)
 end
+
+
+
 
 -- Enter Hyper Mode when F18 (Hyper/Capslock) is pressed
 pressedF18 = function()
@@ -161,11 +175,8 @@ f18 = hs.hotkey.bind({}, 'F18', pressedF18, releasedF18)
 https://www.reddit.com/r/osx/comments/48h39q/keyboard_shortcut_for_moving_a_window_to_a/
 https://github.com/Hammerspoon/hammerspoon/wiki/Sample-Configurations
 
-Build cheatsheets for App - output html
-https://github.com/dharmapoudel/hammerspoon-config/blob/master/cheatsheets.lua
-=======
 ------------------------------------------------------
 Karabiner for shift --> ()
 	https://gist.github.com/carwin/4748951
-	But would it work with "sticky keys" turned on?
+	But it will not work with "sticky keys" turned on
 
