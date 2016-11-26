@@ -87,9 +87,6 @@ Maybe, rotate right by 1, for line movement & selection: SpaceFn+(TYUIOP)
 
 appCuts = {
   d = 'Dictionary',
-  i = 'iterm',
-  c = 'Google chrome',
-  t = 'Paws For Trello',
   -- 4 reserved for dash shortcut 
   z = 'Zim',
   v = 'Google Calendar',
@@ -97,7 +94,7 @@ appCuts = {
   ??= indent selection
   ??= outdent selection
   cmd-l: go to URL & Send mail
-  spotlight - useful?
+  spotlight - useful? Just Cmd+Space instead
 }
 
 Additional resources:

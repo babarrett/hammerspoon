@@ -16,6 +16,7 @@ local windowManagement = require "windowManagement"
 local miscFunctions = require "miscFunctions"
 require "cheatsheets"
 require "launch-applications"
+require "launchWebPages"
 
 HF.bind(HyperFn, "H", "hammerspoonHelp")
 
@@ -38,7 +39,7 @@ miscFunctions.bind(HyperFn, "D", "dictate")
 miscFunctions.bind(HyperFn, "/", "moveToDone")
 miscFunctions.bind(HyperFn, ",", "moveToStatus")
 
-HF.add("\nHyper+A     - Enter Application mode, next char launches an App\n               H for App Launch Help.")
+HF.add("\nHyper+A     - Enter Application mode, next char launches an App.\n               H for App Launch Help.")
 
 -- Add list of screens to bottom of Help
 local myScreens = "\nActive screens: \n  " .. hs.screen.allScreens()[1]:name()
