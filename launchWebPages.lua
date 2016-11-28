@@ -1,5 +1,5 @@
 -- Launch Web Pages
--- Patterened, roughly, after: https://github.com/talha131/dotfiles/blob/master/hammerspoon/launch-applications.lua
+-- Patterned, roughly, after: https://github.com/talha131/dotfiles/blob/master/hammerspoon/launch-applications.lua
 -- by: Talha Mansoor
 
 launchWebPages = {}

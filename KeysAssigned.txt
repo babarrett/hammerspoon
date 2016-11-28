@@ -6,9 +6,15 @@ Keys assigned, where, handled by what.
 		username = babarrett
 
 Generally:
+	Keyboard itself:	Keyboardio
+						Layers? Function key mapping?
+						If everything could be done in it we coule skip the other 
+						products, but that seems very unlikely. (Launch App, open Web page)
 	Hammerspoon for:	HyperFn, Window sizing, Screen and Space management
 						init.lua. *.lua. Shared configurations. Fully programable.
 						HyperFnStriing = "⌘⌥⌃⇧"
+						HyperFn+A - Apps
+						HyperFn+S - Web sites
 	Karabiner for:		SpaceFn, ()-like pairs
 						private.xml (or SpaceFN_bruce.xml) Shared configurations. 
 						Capable, but not fully programable. No events?
@@ -85,17 +91,7 @@ Unload and delete the razer kext (still present on home MacBook Pro)
 Screen and Space management
 Maybe, rotate right by 1, for line movement & selection: SpaceFn+(TYUIOP)
 
-appCuts = {
-  d = 'Dictionary',
-  -- 4 reserved for dash shortcut 
-  z = 'Zim',
-  v = 'Google Calendar',
-  ??= 'Google Hangouts'
-  ??= indent selection
-  ??= outdent selection
-  cmd-l: go to URL & Send mail
-  spotlight - useful? Just Cmd+Space instead
-}
+
 
 Additional resources:
 	Tutorial:	http://www.hammerspoon.org/go/ 
@@ -147,12 +143,22 @@ for key, app in pairs(appShortCuts) do
     modalKey:bind('', key, 'Launching '..app, function() hs.application.launchOrFocus(app) end, function() modalKey:exit() end)
 end
 
-
+appCuts = {
+  d = 'Dictionary',
+  -- 4 reserved for dash shortcut 
+  z = 'Zim',
+  v = 'Google Calendar',
+  ??= 'Google Hangouts'
+  ??= indent selection
+  ??= outdent selection
+  cmd-l: go to URL & Send mail
+  spotlight - useful? Just Cmd+Space instead
+}
 
 
 -- Enter Hyper Mode when F18 (Hyper/Capslock) is pressed
 pressedF18 = function()
-  k.triggered = false
+  k.triggered = false	-- start out with no Hyper key hit yet, maybe later
   k:enter()
 end
 
