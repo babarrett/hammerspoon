@@ -44,7 +44,7 @@ function regenTable(id, selx, sely)
 			html = html + "<tr>"
 			for (x = 0; x < 3; x++) {
 				// every TD
-				html = html + "<td class = 'jumpchar' width='5%'>" + jumpChars[i] +":";
+				html = html + "<td class = 'jumpchar' width='5%' align='right'>" + jumpChars[i] +":";
 				html = html + "<td class="
 				html = html +  ((x==selx && y==sely) ? "'sel'" : "'unsel'");
 				html = html + " width='22%'>" + appNmaes[i] + "</td>";

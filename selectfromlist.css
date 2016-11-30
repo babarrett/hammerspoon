@@ -19,29 +19,5 @@ body {
 .sel {
 	color: #ff0000;
 	font-weight: 900;
+	background-color: #ffffff;
 }
-#nav {
-	padding-top: 50px;
-	padding-left: 20px;
-}
-
-#nav a {
-	text-decoration: none;
-	color: #ffffff;
-}
-
-#nav a:hover {
-	color: #a2def9;
-}
-
-ul {
-	text-decoration: none;
-	list-style: none;
-	color: white;
-}
-
-li {
-	display: inline;
-	padding-right: 30px;
-}
-
