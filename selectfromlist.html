@@ -12,15 +12,40 @@
  </head>
  
 <body>
+<br>
+Use arrow keys to select App to launch.<br>
+Space or return to launch.<br>
+Esc to Cancel.
 	<div id="container">
-		<div id="nav">
-			<ul>
-				<li><a href="index.html">Home</a></li>
-				<li><a href="about.html">About</a></li>
-				<li><a href="portfolio.html">Portfolio</a></li>
-				<li><a href="contact.html">Contact</a></li>
-			</ul>
-		</div>
+		<table id="selTable" width="90%"  border="3">
+		<tr >
+			<td class="jumpchar" width="5%">A-</td>
+			<td class="unsel" width="22%">NW</td>
+			<td class="jumpchar" width="5%">B-</td>
+			<td class="unsel" width="22%">N</td>
+			<td class="jumpchar" width="5%">C-</td>
+			<td class="unsel" width="22%">NE</td>
+		</tr>
+		<tr>
+			<td class="jumpchar" width="5%">D-</td>
+			<td class="unsel" width="22%">W</td>
+			<td class="jumpchar" width="5%">E-</td>
+			<td class="sel" width="22%">Center</td>
+			<td class="jumpchar" width="5%">F-</td>
+			<td class="unsel" width="22%">E</td>
+		</tr>
+		<tr>
+			<td class="jumpchar" width="5%">G-</td>
+			<td class="unsel" width="22%">SW</td>
+			<td class="jumpchar" width="5%">H-</td>
+			<td class="unsel" width="22%">S</td>
+			<td class="jumpchar" width="5%">I-</td>
+			<td class="unsel" width="22%">SE</td>
+		</tr>
+		</table>
+	</div>
+	<div>
+		Selected cell = <span id="selCell">selected cell goes here</span>.
 	</div>
 	From: https://designshack.net/articles/navigation/how-to-build-a-site-with-keyboard-navigation-psd-to-html/
 </body>
