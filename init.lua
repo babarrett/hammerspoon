@@ -17,6 +17,7 @@ local miscFunctions = require "miscFunctions"
 require "cheatsheets"
 require "launch-applications"
 require "launchWebPages"
+require "simpletest"
 
 HF.bind(HyperFn, "H", "hammerspoonHelp")
 
