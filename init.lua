@@ -15,8 +15,8 @@ local pasteCurrentSafariUrl = require "pasteCurrentSafariUrl"
 local windowManagement = require "windowManagement"
 local miscFunctions = require "miscFunctions"
 require "cheatsheets"
-require "launch-applications"
-require "launchWebPages"
+--require "launch-applications"
+--require "launchWebPages"
 
 HF.bind(HyperFn, "H", "hammerspoonHelp")
 
