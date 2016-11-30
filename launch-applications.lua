@@ -8,7 +8,7 @@ launchApplications = {}
 --	<single key> to launch an application
 --	To leave "Application mode" without launching an application press Escape.
 local modalKey = hs.hotkey.modal.new(HyperFn, 'A', 'Launch Application mode')
-modalKey:bind('', 'escape', function() modalKey:exit() end)
+modalKey:bind('', 'escape', 'Exiting Launch Application mode', function() modalKey:exit() end)
 
 local appShortCuts = {
     B = 'BBEdit',
@@ -22,7 +22,9 @@ local appShortCuts = {
 }
 
 for key, app in pairs(appShortCuts) do
-    modalKey:bind('', key, 'Launching '..app, function() hs.application.launchOrFocus(app) end, function() modalKey:exit() end)
+    modalKey:bind('', key, 'Launching '..app, function()
+      hs.application.launchOrFocus(app) end, 
+      function() modalKey:exit() end)
 end
 
 -- Help for the App launcher
@@ -32,8 +34,8 @@ for key, app in hs.fnutils.sortByKeys(appShortCuts) do
 	appHelpText = appHelpText .. tostring(key) .. " - " .. app .. "\n"
 end
 
-local modalHekpKey = hs.hotkey.modal.new(HyperFn, 'A', 'Launch Application mode')
-modalHekpKey:bind('', 'escape', function() modalHekpKey:exit() end)
+local modalHelpKey = hs.hotkey.modal.new(HyperFn, 'A', 'Launch Application mode')
+modalHelpKey:bind('', 'escape', function() modalHelpKey:exit() end)
 
 function launchApplications.showHelp()
 	hs.alert.show( 
@@ -44,9 +46,12 @@ function launchApplications.showHelp()
 		strokeColor={red = 1, green=0, blue=0}, strokeWidth=4 }
 		, 6	-- display 6 seconds, t
 	)
-	modalHekpKey:exit()
+	hs.alert.show('Exiting App HELP')
+	modalHelpKey:exit()
 end
 
-modalHekpKey:bind('', "H", nil, function() launchApplications.showHelp() end, function() modalHekpKey:exit() end)
+modalHelpKey:bind('', "H", nil, function() launchApplications.showHelp() end, 
+  function() hs.alert.show('Exiting App HELP')
+    modalHelpKey:exit() end)
 
 return launchApplications
