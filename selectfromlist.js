@@ -11,35 +11,35 @@ function KeyCheck(e)
 	   {
 		  case 37:	// Left
 		  	selX = Math.max(0, selX-1);
-		  break;
+			break;
 	
 		  case 38:	// Up
 		  	selY = Math.max(0, selY-1);
-		  break;
+			break;
 	
 		  case 39:	// Right
 		  	selX = Math.min(2, selX+1);
-		  break;
+			break;
 	
 		  case 9:	// Tab. Move to right, also
 		  	selX = Math.min(2, selX+1);
-		  break;
+			break;
 	
 		  case 40:	// down
 		  	selY = Math.min(2, selY+1);
-		  break;
+			break;
 		  
 		  case 13:	// Return
 		  	// selY = Math.max(0, selY-1);
-		  break;
+			break;
 	
 		  case 32:	// Space
 		  	// selX = Math.min(2, selX+1);
-		  break;
+			break;
 	
 		  case 27:	// Escape
 		  	// selY = Math.min(2, selY+1);
-		  break;
+			break;
 		  // All other keys are ignored.
 	   }
 	   // alert("Setting span: " + selX + ", " + selY + "  -- KeyID = " + KeyID);
@@ -47,13 +47,15 @@ function KeyCheck(e)
 	   document.getElementById('selCell').innerHTML = "" + selX + ", " + selY + "  KeyID=" + KeyID;
 	}
 
+//	This will end up being translated and done in Lua
+//	Then we'll refresh all the HTML.
 function regenTable(id, selx, sely)
 	{
 		var x = 0;
 		var y = 0;
 		var i = 0;
-		jumpChars = ["M", "S", "C", "X", "T", "F", "P", "B", ""]
-		appNmaes  = ["Mail", "Safari", "Chrome", "Firefox", "iTerm", "Finder", "System Prefs", "BBedit", "" ]
+		jumpChars = ["M", "S", "C", "X", "I", "F", "P", "B", "N"]
+		appNmaes  = ["Mail", "Safari", "Chrome", "Firefox", "iTerm", "Finder", "System Prefs", "BBedit", "Notetaker" ]
 		var html = ""
 		for (y = 0; y < 3; y++) {
 			// every TR
