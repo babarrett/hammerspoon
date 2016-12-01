@@ -21,14 +21,30 @@ function KeyCheck(e)
 		  	selX = Math.min(2, selX+1);
 		  break;
 	
+		  case 9:	// Tab. Move to right, also
+		  	selX = Math.min(2, selX+1);
+		  break;
+	
 		  case 40:	// down
 		  	selY = Math.min(2, selY+1);
 		  break;
 		  
+		  case 13:	// Return
+		  	// selY = Math.max(0, selY-1);
+		  break;
+	
+		  case 32:	// Space
+		  	// selX = Math.min(2, selX+1);
+		  break;
+	
+		  case 27:	// Escape
+		  	// selY = Math.min(2, selY+1);
+		  break;
+		  // All other keys are ignored.
 	   }
 	   // alert("Setting span: " + selX + ", " + selY + "  -- KeyID = " + KeyID);
 	   regenTable("selTable", selX, selY);
-	   document.getElementById('selCell').innerHTML = "" + selX + ", " + selY;
+	   document.getElementById('selCell').innerHTML = "" + selX + ", " + selY + "  KeyID=" + KeyID;
 	}
 
 function regenTable(id, selx, sely)
