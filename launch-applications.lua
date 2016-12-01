@@ -16,6 +16,7 @@ local appShortCuts = {
     F = 'Finder',
     I = 'iTerm',
     M = 'Mail',
+    N = 'Notetaker',
     P = 'System Preferences',
     S = 'Safari',
     X = 'Firefox',
