@@ -3,6 +3,8 @@
 -- The idea is to provide an easy way of showing keystrokes on the
 --   screen. It's inspired by other tools like Keycastr.
 
+KeyPressShow = {}
+
 function showKeyPress(tap_event)
   local duration = 1.5  -- popup duration
   local modifiers = ""  -- key modifiers string representation
@@ -89,7 +91,7 @@ local key_tap = hs.eventtap.new(
 )
 
 -- Enable/Disable Keypress Show Mode with "C-⌘-⇧-p"
-k = hs.hotkey.modal.new({"cmd", "shift", "ctrl"}, 'P')
+k = hs.hotkey.modal.new(HyperFn, 'P')
 function k:entered()
   hs.alert.show("Enabling Keypress Show Mode", 1.5)
   key_tap:start()
@@ -97,7 +99,9 @@ end
 function k:exited()
   hs.alert.show("Disabling Keypress Show Mode", 1.5)
 end
-k:bind({"cmd", "shift", "ctrl"}, 'P', function()
+k:bind(HyperFn, 'P', function()
     key_tap:stop()
     k:exit()
 end)
+
+return KeyPressShow
