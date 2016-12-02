@@ -21,14 +21,16 @@ local DEFAULTBROWSER = 'Safari'
 --   Object with up to 3 items:
 --     DisplayText
 --     App to launch, or nil
---     Web site to open, or nil
+--     Web site to open, or nil TODDO: Actually support the web-site option
 local appShortCuts = {
     B = {'BBEdit', 'BBEdit', nil},
-    C = {'Chrome', 'Chrome', nil},
+    C = {'Chrome', 'Google Chrome', nil},
     F = {'Finder', 'Finder', nil},
+    
     I = {'iTerm', 'iTerm', nil},
     M = {'Mail', 'Mail', nil},
     N = {'Notetaker', 'Notetaker', nil},
+    
     P = {'System Preferences', 'System Preferences', nil},
     S = {'Safari', 'Safari', nil},
     X = {'Firefox', 'Firefox', nil},
@@ -46,12 +48,12 @@ local xmax =2
 local ymin =0
 local ymax =2
 
-local xsel = math.floor((xmax-xmin)/2)
-local ysel = math.floor((ymax-ymin)/2)
+local xsel
+local ysel
 
 local launchAppActive = nil		-- Inactive
 
-local modalKey = hs.hotkey.modal.new(HyperFn, 'A', helpAlertText)
+local modalKey = hs.hotkey.modal.new(HyperFn, 'A')	-- helpAlertText
 --	Bind keys of interest
 --	hs.hotkey.modal:bind(mods, key, message, pressedfn, releasedfn, repeatfn) -> hs.hotkey.modal object
 
@@ -59,35 +61,44 @@ local modalKey = hs.hotkey.modal.new(HyperFn, 'A', helpAlertText)
 	modalKey:bind('', 'escape', 'Exiting Launch Application mode', 
 		function() 
 		launchAppActive = nil
+		debuglog("Escape")
 		modalKey:exit() end)
 	modalKey:bind('', 'space', 'Launching current seleccted App', 
 		function() 
 		launchAppActive = nil
+		debuglog("Space")
 		-- TODO: Launch App
+		launchAppBySelection()
 		modalKey:exit() end)
 	modalKey:bind('', 'return', 'Launching current seleccted App', 
 		function() 
 		launchAppActive = nil
+		debuglog("Return")
 		-- TODO: Launch App
+		launchAppBySelection()
 		modalKey:exit() end)
 
 -- arrow keys
 	-- insert jikl or wasd as arrow keys here too, if you wish.
 	modalKey:bind('', 'left', nil, 
 		function() 
+		debuglog("Left")
 		xsel = math.max(xmin, xsel-1)
 		end)
 	modalKey:bind('', 'right', nil, 
 		function() 
+		debuglog("Right")
 		xsel = math.min(xmax, xsel+1)
 		end)
 	modalKey:bind('', 'up', nil, 
 		function() 
-		xsel = math.max(ymin, ysel-1)
+		debuglog("Up")
+		ysel = math.max(ymin, ysel-1)
 		end)
 	modalKey:bind('', 'down', nil, 
 		function() 
-		xsel = math.min(ymax, ysel+1)
+		debuglog("Down")
+		ysel = math.min(ymax, ysel+1)
 		end)
 
 
@@ -98,6 +109,33 @@ for key, appInfo in hs.fnutils.sortByKeys(appShortCuts) do
     modalKey:bind('', key, 'Launching '..appInfo[2], 
       function() hs.application.launchOrFocus(appInfo[2]) end,	-- Key down, launch
       function() modalKey:exit() end)							-- Key up, leave mode
+end
+
+function modalKey:entered() 
+  -- TODO: Remove help when web-page selection ois available
+  debuglog("LaunchApp2 entered" .. helpAlertText)
+  xsel = math.floor((xmax-xmin)/2)
+  ysel = math.floor((ymax-ymin)/2)
+  -- TODO: Display web page selector
+end
+function modalKey:exited() 
+  -- TODO: Take down web page selector
+  debuglog("LaunchApp2 exited")
+end
+
+function launchAppBySelection()
+  -- which index, based  on (x, y) cell selected
+  index = ysel * (xmax+1) + xsel
+  debuglog("(x, y) -- index= (" .. xsel .. ", " .. ysel .. ") -- " .. index)
+  for key, appInfo in hs.fnutils.sortByKeys(appShortCuts) do
+    if index == 0 then
+      app = appInfo[2]
+    end
+    index = index -1
+  end
+  if app ~= nil then
+    hs.application.launchOrFocus(app)
+  end
 end
 
 -- Help for the App launcher

@@ -8,6 +8,10 @@ LUA_PATH = os.getenv("HOME") .. "/dev/git/hammerspoon/?"
 HyperFn = {"cmd", "alt", "ctrl", "shift"}	-- Mash the 4 modifier keys for some new function
 HyperFnString = "⌘⌥⌃⇧"
 
+-- log debug info to Hyperspoon Console
+function debuglog(text) 
+  hs.console.printStyledtext("DEBUG: "..text) 
+end
 --[[	First we require all modules we'll later use
 		Note, as we bind to each function they add to the help string	--]]
 HF = require "helpFunctions"	-- global. Other modules call this too.
@@ -63,6 +67,7 @@ function reloadConfig(files)
     end
 end
 -- Alert "Config loaded" here, happens not as we call reload, but as we load. Default durration=2 sec.
+hs.console.clearConsole()
 hs.alert.show("Config loaded")
 
 local myWatcher = hs.pathwatcher.new(os.getenv("HOME") .. "/.hammerspoon/", reloadConfig):start()
