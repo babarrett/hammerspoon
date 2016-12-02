@@ -31,8 +31,10 @@ local appShortCuts = {
     M = {'Mail', 'Mail', nil},
     N = {'Notetaker', 'Notetaker', nil},
     
+    O = {'Oxygen', 'Oxygen XML Author', nil},
     P = {'System Preferences', 'System Preferences', nil},
     S = {'Safari', 'Safari', nil},
+    
     X = {'Firefox', 'Firefox', nil},
 }
 
@@ -42,11 +44,11 @@ for key, appInfo in hs.fnutils.sortByKeys(appShortCuts) do
     helpAlertText = helpAlertText .. key .. ": " .. appInfo[1] .. "\n"
 end
 
--- Build a 3x3 grid of app names
+-- Build a 3x4 grid of app names
 local xmin =0
 local xmax =2
 local ymin =0
-local ymax =2
+local ymax =3
 
 local xsel
 local ysel
