@@ -23,6 +23,7 @@ require "launchApplications2"
 --require "launch-applications"
 --require "launchWebPages"
 --require "simpletest"
+require "KeyPressShow"
 
 HF.bind(HyperFn, "H", "hammerspoonHelp")
 

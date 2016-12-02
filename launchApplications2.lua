@@ -15,6 +15,7 @@ launchApplications2 = {}
 --	To leave "Application mode" without launching an application press Escape.
 
 local DEFAULTBROWSER = 'Safari'
+local webPageView = nil
 
 -- Format is:
 --   Key_to_press. A single key
@@ -69,14 +70,12 @@ local modalKey = hs.hotkey.modal.new(HyperFn, 'A')	-- helpAlertText
 		function() 
 		launchAppActive = nil
 		debuglog("Space")
-		-- TODO: Launch App
 		launchAppBySelection()
 		modalKey:exit() end)
 	modalKey:bind('', 'return', 'Launching current seleccted App', 
 		function() 
 		launchAppActive = nil
 		debuglog("Return")
-		-- TODO: Launch App
 		launchAppBySelection()
 		modalKey:exit() end)
 
@@ -86,21 +85,25 @@ local modalKey = hs.hotkey.modal.new(HyperFn, 'A')	-- helpAlertText
 		function() 
 		debuglog("Left")
 		xsel = math.max(xmin, xsel-1)
+		reloadWebPage()
 		end)
 	modalKey:bind('', 'right', nil, 
 		function() 
 		debuglog("Right")
 		xsel = math.min(xmax, xsel+1)
+		reloadWebPage()
 		end)
 	modalKey:bind('', 'up', nil, 
 		function() 
 		debuglog("Up")
 		ysel = math.max(ymin, ysel-1)
+		reloadWebPage()
 		end)
 	modalKey:bind('', 'down', nil, 
 		function() 
 		debuglog("Down")
 		ysel = math.min(ymax, ysel+1)
+		reloadWebPage()
 		end)
 
 
@@ -114,14 +117,17 @@ for key, appInfo in hs.fnutils.sortByKeys(appShortCuts) do
 end
 
 function modalKey:entered() 
-  -- TODO: Remove help when web-page selection ois available
-  debuglog("LaunchApp2 entered" .. helpAlertText)
   xsel = math.floor((xmax-xmin)/2)
   ysel = math.floor((ymax-ymin)/2)
-  -- TODO: Display web page selector
+  reloadWebPage()
 end
+
 function modalKey:exited() 
-  -- TODO: Take down web page selector
+  -- Take down App selector
+  if webPageView ~= nil then
+    webPageView:delete()
+    webPageView=nil
+  end
   debuglog("LaunchApp2 exited")
 end
 
@@ -139,6 +145,147 @@ function launchAppBySelection()
     hs.application.launchOrFocus(app)
   end
 end
+
+function reloadWebPage()
+  if webPageView then
+  -- if it exists, refresh it
+	debuglog("Refresh web page")
+    webPageView:html(generateHtml())
+  else
+  -- if it doesn't exist, make it
+	debuglog("Create new web page")
+	webPageView = hs.webview.new({x = 200, y = 200, w = 650, h = 350}, { developerExtrasEnabled = false, suppressesIncrementalRendering = false })
+	:windowStyle("utility")
+	:closeOnEscape(true)
+	:html(generateHtml())
+	:allowGestures(false)
+	:windowTitle("Launch Applicatiion Mode")
+	:show()
+	-- These 2 lines were commented out. Don"t seem to help
+	-- webPageView:asHSWindow():focus()
+	-- webPageView:asHSDrawing():setAlpha(.98):bringToFront()
+	webPageView:bringToFront()
+  
+  end
+  
+end
+
+function generateHtml()
+    --local focusedApp= hs.window.frontmostWindow():application()
+    local focusedApp = hs.application.frontmostApplication()
+    local appTitle = focusedApp:title()
+    local allMenuItems = focusedApp:getMenuItems();
+    local myMenuItems = getAllMenuItems(allMenuItems)
+
+    local html = [[
+        <!DOCTYPE html>
+        <html>
+        <head>
+        <style type="text/css">
+            *{margin:10; padding:10;}
+            html, body{ 
+              background-color:#404040;
+              font-family: arial;
+              font-size: 13px;
+            }
+            header{
+              position: fixed;
+              top: 0;
+              left: 0;
+              right: 0;
+              height:30px;
+              background-color:#aab;
+              color:#000000;
+              z-index:99;
+            }
+            .title{
+                padding: 15px;
+            }
+
+			body {
+			   margin: 10px; padding: 10px;
+			   background-color: #404040;
+			   color: #c0c0c0;
+			   width: 600px;
+			   margin: auto;
+			   font-family: "HelveticaNeue-Light", "Helvetica Neue Light",
+				  "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
+			   font-weight: normal;
+			}
+
+			.jumpchar {
+				color: #ffff00;
+			}
+			.unsel {
+				color: #88ff80;
+				font-weight: 900;
+			}
+			.sel {
+				color: #ff0000;
+				font-weight: 900;
+				background-color: #ffffff;
+			}
+        </style>
+        <title>Launch Application Mode</title>
+        </head>
+          <body>
+            <header>
+              <div class="title"><strong>Launch Application Mode</strong></div>
+            </header>
+
+          </body>
+        </html><br>
+		Use arrow keys to select App to launch.<br>
+		Space or return to launch.<br>
+		Esc to Cancel.
+		<div id="container">
+		<table id="selTable" width="90%"  border="3">
+		]]..generateTable()..[[
+		</table>
+	</div>
+	<div>
+		Selected cell = <span id="selCell">selected cell goes here</span>.
+	</div>
+
+        ]]
+    -- Adding this will dump the HTML to the console where it can be copied, if desired.
+    -- hs.console.printStyledtext( html )
+    return html
+end
+
+function generateTable()
+	jumpChars = {"M", "S", "C", "X", "I", "F", "P", "B", "N"}
+	appNmaes  = {"Mail", "Safari", "Chrome", "Firefox", "iTerm", "Finder", "System Prefs", "BBedit", "Notetaker" }
+    local tableText =  "<tr>"
+
+	local x = 0;
+	local y = 0;
+	local i = 0;
+	
+	for key, appInfo in hs.fnutils.sortByKeys(appShortCuts) do
+		tableText = tableText .. "<td class = 'jumpchar' width='5%' align='right'>" .. key ..":";
+		tableText = tableText .. "<td class="
+		
+		if (x==xsel and y==ysel) then 
+			tableText = tableText .. "'sel'"
+		else
+			tableText = tableText ..  "'unsel'"
+		end
+		tableText = tableText .. " width='22%'>" .. appInfo[1] .. "</td>";
+		
+		x = x + 1
+		if x > xmax then
+			-- end tr
+			tableText = tableText .. "</tr>\n<tr>"
+			x = xmin
+			y = y + 1
+		end
+
+	end
+
+    return tableText
+end
+
 
 -- Help for the App launcher
 -- First gather all the help text we'll later need
