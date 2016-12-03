@@ -1,11 +1,10 @@
-local windowManagement = {}
-
---	Window to (some) 1/2 of screen (left, right, top, bottom)
---	Taken from: https://gist.github.com/swo/91ec23d09a3d6da5b684
---	HyperFn+Left moves window to left 1/2 of screen.
+--	Window to (some) 30,40,..70% of screen (left, right, top, bottom)
+--	Originally taken from: https://gist.github.com/swo/91ec23d09a3d6da5b684
+--	HyperFn+Left moves window to left part of the screen.
 --	Likewise for other arrows.
+--	BUG: Moves windows from off of other screens to "main" (laptop) screen.
 
---	TODO: Add 4,5,6 to set moved window size to 40, 50, or 60% of screen
+local windowManagement = {}
 
 -- Private
 local helpString = ""
@@ -34,10 +33,12 @@ local funNameToHelpText = {
 	up =		'move window to top of screen.',
 	percent40 =	'Moved windows take 40% of screen',
 	percent50 =	'Moved windows take 50% of screen',
-	percent60 =	'Moved windows take 60% of screen'
+	percent60 =	'Moved windows take 60% of screen',
+	percent70 =	'Moved windows take 70% of screen'
 }
 
 
+-- y = 0.03 to avoid Mac top menu bar
 local function left()
 	baseMove(0.00, 0.03, windowSizePercent-0.01, 1.00)
 end
@@ -59,6 +60,9 @@ end
 local function percent60()
 	windowSizePercent = 0.60
 end
+local function percent70()
+	windowSizePercent = 0.70
+end
 local funNameToFunction = {
 	left = left,
 	right = right,
@@ -66,12 +70,12 @@ local funNameToFunction = {
 	up = up,
 	percent40 = percent40,
 	percent50 = percent50,
-	percent60 = percent60
+	percent60 = percent60,
+	percent70 = percent70
 }
 
--- TODO: Is currently binding at load (requires) time.
+-- TODO: This is currently binding at load (requires) time.
 -- 		Need to make this in response to my bind calls, an only add help lines as we use them
--- y = 0.03 to avoid Mac top menu bar
 
 function windowManagement.bind(modifiers, char, functName)
 	hs.hotkey.bind(modifiers, char, funNameToFunction[functName] )	-- bind the key
