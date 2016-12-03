@@ -1,19 +1,19 @@
 local helpFunctions = {}
--- help.lua
---	Hyper+H			hammerspoonHelp		Help, for Hammerspoon functions, or dismiss if already up
+-- helpFunctions.lua
+-- Hyper+H		Help, for Hammerspoon functions, or dismiss if already up
 
--- private fields
---	"helpString" - brief descriptions of mapped f()s. 
+-- Private fields
+-- helpString - brief descriptions of mapped f()s. 
 local helpAlertUUID = nil
 local helpString = ""		-- start empty, we'll add to it as we go along.
 
--- Add help text to the end of what we have so far.
--- TODO: Add 1st parameter for modifiers or ""?
+-- Append help text to existing
 function helpFunctions.add(newString)
 	 helpString = helpString .. newString
 end
 
--- TODO: delete this
+-- TODO: Convert from alert to HTML for better controls, window placement,
+--		manual time-out to force exit.
 function hammerspoonHelp()
 	if helpAlertUUID ~= nil then
 		hs.alert.closeSpecific(helpAlertUUID)
@@ -40,9 +40,15 @@ local funNameToHelpText = {
 	hammerspoonHelp = 	'Help, for Hammerspoon functions, and again to dismiss.',
 }
 
+-- TODO: Make this a mode: modalKey = hs.hotkey.modal.new(HyperFn, 'H')
+--		so we can ignore all but HyperFn+H
 function helpFunctions.bind(modifiers, char, functName)
 	hs.hotkey.bind(modifiers, char, funNameToFunction[functName] )	-- bind the key
 	-- Add to the help string
+	-- TODO: Change to accept modifiers (table) and convert to visual (⌘⌥⌃⇧)
+	-- TODO: Change to adjust column widths so  they line up: 
+	--		Col 1: "Hyper+Right" = 11 char
+	--		Col 2: " - " + text
 	HF.add("Hyper+" .. char .. "     - " .. funNameToHelpText[functName] .. "\n")
 end
 
