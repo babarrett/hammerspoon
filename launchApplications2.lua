@@ -1,6 +1,9 @@
 -- Launch Applications
 -- (TODO: Can also be used for websites)
--- Displays a NxN grid of App names and short-cut letters
+-- TODO: Send up, down, left, right changes to web page as
+--	Javascript to increase speed over page load. Maybe something
+--	like: changeSelectionFromTo(fromCell, toCell)
+-- Displays a NxM grid of App names and short-cut letters
 -- User can use arrow keys to select an app to switch to, 
 -- Enter or Space to switch. Or may use short-cut letters
 -- to switch. Or Escape to cancel.
@@ -33,17 +36,13 @@ local appShortCuts = {
     N = {'Notetaker', 'Notetaker', nil},
     
     O = {'Oxygen', 'Oxygen XML Author', nil},
+    R = {'Remote Desktop', 'Microsoftt Remote Desktop', nil}, 
     P = {'System Preferences', 'System Preferences', nil},
-    S = {'Safari', 'Safari', nil},
     
+    S = {'Safari', 'Safari', nil},
+    T = {'Tunnelblick', 'Tunnelblick', nil},
     X = {'Firefox', 'Firefox', nil},
 }
-
--- Build Help alert string
-local helpAlertText = 'Launch Application mode\n\n'
-for key, appInfo in hs.fnutils.sortByKeys(appShortCuts) do
-    helpAlertText = helpAlertText .. key .. ": " .. appInfo[1] .. "\n"
-end
 
 -- Build a 3x4 grid of app names
 local xmin =0
@@ -56,23 +55,23 @@ local ysel
 
 local launchAppActive = nil		-- Inactive
 
-local modalKey = hs.hotkey.modal.new(HyperFn, 'A')	-- helpAlertText
+local modalKey = hs.hotkey.modal.new(HyperFn, 'A')
 --	Bind keys of interest
 --	hs.hotkey.modal:bind(mods, key, message, pressedfn, releasedfn, repeatfn) -> hs.hotkey.modal object
 
 -- Completion keys
-	modalKey:bind('', 'escape', 'Exiting Launch Application mode', 
+	modalKey:bind('', 'escape', 
 		function() 
 		launchAppActive = nil
 		debuglog("Escape")
 		modalKey:exit() end)
-	modalKey:bind('', 'space', 'Launching current seleccted App', 
+	modalKey:bind('', 'space',  
 		function() 
 		launchAppActive = nil
 		debuglog("Space")
 		launchAppBySelection()
 		modalKey:exit() end)
-	modalKey:bind('', 'return', 'Launching current seleccted App', 
+	modalKey:bind('', 'return',  
 		function() 
 		launchAppActive = nil
 		debuglog("Return")
@@ -81,6 +80,8 @@ local modalKey = hs.hotkey.modal.new(HyperFn, 'A')	-- helpAlertText
 
 -- arrow keys
 	-- insert jikl or wasd as arrow keys here too, if you wish.
+	-- better yet, just map them as you usually would and they'll
+	-- pass through here anyway.
 	modalKey:bind('', 'left', nil, 
 		function() 
 		debuglog("Left")
@@ -142,6 +143,7 @@ function launchAppBySelection()
     index = index -1
   end
   if app ~= nil then
+    hs.alert.show('Launching... '..app)
     hs.application.launchOrFocus(app)
   end
 end
@@ -285,33 +287,5 @@ function generateTable()
 
     return tableText
 end
-
-
--- Help for the App launcher
--- First gather all the help text we'll later need
---local appHelpText = "Application help\n"
---for key, app in hs.fnutils.sortByKeys(appShortCuts) do
---	appHelpText = appHelpText .. tostring(key) .. " - " .. app .. "\n"
---end
---
---local modalHelpKey = hs.hotkey.modal.new(HyperFn, 'A', 'Launch Application mode')
---modalHelpKey:bind('', 'escape', function() modalHelpKey:exit() end)
---
---function launchApplications2.showHelp()
---	hs.alert.show( 
---		appHelpText, 
---		{textSize=14, textColor={white = 1.0, alpha = 1.00 }, 
---		textFont = "Andale Mono",	-- works for me. If missing reverts back to system default
---		fillColor={white = 0.0, alpha = 1.00}, 
---		strokeColor={red = 1, green=0, blue=0}, strokeWidth=4 }
---		, 6	-- display 6 seconds, t
---	)
---	hs.alert.show('Exiting App HELP')
---	modalHelpKey:exit()
---end
---
---modalHelpKey:bind('', "H", nil, function() launchApplications2.showHelp() end, 
---  function() hs.alert.show('Exiting App HELP')
---    modalHelpKey:exit() end)
 
 return launchApplications2
