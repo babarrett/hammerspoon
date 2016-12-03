@@ -8,24 +8,27 @@ Keys assigned, where, handled by what.
 Generally:
 	Keyboard itself:	Keyboardio
 						Layers? Function key mapping?
-						If everything could be done in it we coule skip the other 
+						If everything could be done in it we could skip the other 
 						products, but that seems very unlikely. (Launch App, open Web page)
-	Hammerspoon for:	HyperFn, Window sizing, Screen and Space management
+	Hammerspoon for:	HyperFn, Window sizing, Screen and Space management, App launch
 						init.lua. *.lua. Shared configurations. Fully programable.
 						HyperFnStriing = "⌘⌥⌃⇧"
 						HyperFn+A - Apps
-						HyperFn+S - Web sites
-	Karabiner for:		SpaceFn, ()-like pairs
+						HyperFn+S - Web sites (TODO)
+						Fairly easily sharable
+	Karabiner for:		SpaceFn
 						private.xml (or SpaceFN_bruce.xml) Shared configurations. 
 						Capable, but not fully programable. No events?
+						Could all be replaced with Hammerspoon.
 	USB Overdrive for:	(replace with other?)
 						Easy to configure. Some sharing possible.
 						No Apple products
-	BBEdit for:			Code snippets. Auto-completion.  Navigate by f()
+	BBEdit for:			Code snippets. Auto-completion.  Navigate by f() TOC.
 	iTerm2 for:			Command-line keys, remap (begin/end line & word)
+	Razer:				Ignore/Delete
 	
 	NOTES on kext:
-		kextstat | grep -v com.apple
+		$ kextstat | grep -v com.apple
 		Name (Version)
 		com.usboverdrive.driver.hid (3.2)
 		com.razer.common.razerhid (16.45)
@@ -59,14 +62,6 @@ Kbd		OSX Pref	Seil	Hammer	Karab	USB Ov*	Function
 							Hyper+Down				Window to bottom half of screen
 													
 									Space			Tap for Space, Hold+char for SpaceFn
-deleted								[				()+Left
-deleted								Shift+[			)
-deleted								]				<>+Left
-deleted								Shift+]			>
-deleted								SpaceFn+9		[]+Left
-deleted								Shift+9			]
-deleted								SpaceFn+0		{}+Left
-deleted								Shift+0			}
 									F1-F12			Apps & Web pages
 									
 											NumPad	Misc functions, Numeric pad, Razer Anansi only
@@ -74,8 +69,6 @@ deleted								Shift+0			}
 											M5		OS X Dictation on/off
 											T1-T7	Misc
 											
-
-
 * USB Overdrive cannot modify Apple products, by design.
 	These functions should be moved to other products/systems
 	such as Hammerspoon or Karabiner:
@@ -124,36 +117,23 @@ modalKey:bind('', 'escape', function() modalKey:exit() end)
 
 local appShortCuts = {
 
-    C = 'Visual Studio Code',
-    D = 'Dash',
-    E = 'evernote',
-    F = 'FirefoxDeveloperEdition',
     G = 'GitKraken',
-    I = 'iterm',
     J = 'Jump Desktop',
-    O = 'Microsoft Onenote',
     P = '1Password 6',
     S = 'Slack',
-    V = 'MacVim',
     X = 'Xcode',
     Z = 'Franz'
+
+	-- 4 reserved for dash shortcut 
+	v = 'Google Calendar',
+	??= 'Google Hangouts'
+	cmd-l: go to URL & Send mail
+	? spotlight - useful? Just Cmd+Space instead
 }
 
 for key, app in pairs(appShortCuts) do
     modalKey:bind('', key, 'Launching '..app, function() hs.application.launchOrFocus(app) end, function() modalKey:exit() end)
 end
-
-appCuts = {
-  d = 'Dictionary',
-  -- 4 reserved for dash shortcut 
-  z = 'Zim',
-  v = 'Google Calendar',
-  ??= 'Google Hangouts'
-  ??= indent selection
-  ??= outdent selection
-  cmd-l: go to URL & Send mail
-  spotlight - useful? Just Cmd+Space instead
-}
 
 
 -- Enter Hyper Mode when F18 (Hyper/Capslock) is pressed
@@ -181,5 +161,5 @@ https://github.com/Hammerspoon/hammerspoon/wiki/Sample-Configurations
 ------------------------------------------------------
 Karabiner for shift --> ()
 	https://gist.github.com/carwin/4748951
-	But it will not work with "sticky keys" turned on
+	But it will not work with "sticky keys" turned on!
 
