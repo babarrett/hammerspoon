@@ -241,7 +241,7 @@ function generateHtml()
 		Space or return to launch.<br>
 		Esc to Cancel.
 		<div id="container">
-		<table id="selTable" width="90%"  border="3">
+		<table id="selTable" width="90%"  border="1">
 		]]..generateTable()..[[
 		</table>
 	</div>
