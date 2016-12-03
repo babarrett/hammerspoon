@@ -9,7 +9,7 @@
 -- to switch. Or Escape to cancel.
 -- by: Bruce Barrett
 
-launchApplications2 = {}
+launchApplications = {}
 -- Operation:
 --	HyperFn+A to enter "Application mode"
 --	arrow keys to select an app to switch to.
@@ -288,4 +288,4 @@ function generateTable()
     return tableText
 end
 
-return launchApplications2
+return launchApplications

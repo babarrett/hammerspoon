@@ -24,7 +24,7 @@ local pasteCurrentSafariUrl 	= require "pasteCurrentSafariUrl"
 local windowManagement 			= require "windowManagement"
 local miscFunctions 			= require "miscFunctions"
 								  require "cheatsheets"
-								  require "launchApplications2"
+								  require "launchApplications"
 --require "launchWebPages"		-- TODO: either add into HyperFn+A (apps table) or clone that code for HyperFn+S
 --require "KeyPressShow"
 
