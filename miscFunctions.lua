@@ -1,10 +1,13 @@
 local miscFunctions = {}
--- Things I care about and need
+-- Things I care about and need.
+-- Primarily Keyboard mapping from HyperFn+X to Command sequence, but could be more complex.
 -- Modified to fit my preferred method of adding functions
---	Hyper+V			typeClipboard		Type clipboard as text (avoid web site CMD-V blockers)
+
+--	HyperFn+V		typeClipboard		Type clipboard as unformatted text (avoid web site CMD-V blockers)
 --	HyperFn+Q		quitApp				Quit App
 --	HyperFn+W		closeWindow			Close window (or tab)
 --	HyperFn+D		dictate				Dictate on/off (Cmd+Opt+,)
+--	TODO: Only respond if in "Mail" App
 --	HyperFn+/		moveToDone			Move current mail item to "Done"
 --	HyperFn+,		moveToStatus		Move current mail item to "Status"
 

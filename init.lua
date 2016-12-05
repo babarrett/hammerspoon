@@ -23,8 +23,8 @@ HF 								= require "helpFunctions"	-- global. Other modules call this too.
 local pasteCurrentSafariUrl 	= require "pasteCurrentSafariUrl"
 local windowManagement 			= require "windowManagement"
 local miscFunctions 			= require "miscFunctions"
-								  require "cheatsheets"
-								  require "launchApplications"
+local cheatsheets				= require "cheatsheets"
+local launchApplications		= require "launchApplications"
 --require "launchWebPages"		-- TODO: either add into HyperFn+A (apps table) or clone that code for HyperFn+S
 --require "KeyPressShow"
 

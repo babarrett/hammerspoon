@@ -162,14 +162,14 @@ function reloadWebPage()
   if webPageView then
   -- if it exists, refresh it
 	debuglog("Refresh web page")
-    webPageView:html(generateHtml())
+    webPageView:html(launchApplications.generateHtml())
   else
   -- if it doesn't exist, make it
 	debuglog("Create new web page")
 	webPageView = hs.webview.new({x = 200, y = 200, w = 650, h = 350}, { developerExtrasEnabled = false, suppressesIncrementalRendering = false })
 	:windowStyle("utility")
 	:closeOnEscape(true)
-	:html(generateHtml())
+	:html(launchApplications.generateHtml())
 	:allowGestures(false)
 	:windowTitle("Launch Applicatiion Mode")
 	:show()
@@ -182,7 +182,7 @@ function reloadWebPage()
   
 end
 
-function generateHtml()
+function launchApplications.generateHtml()
     --local focusedApp= hs.window.frontmostWindow():application()
     local focusedApp = hs.application.frontmostApplication()
     local appTitle = focusedApp:title()
@@ -201,11 +201,11 @@ function generateHtml()
               font-size: 13px;
             }
             header{
-              position: fixed;
+              <!-- position: fixed; -->
               top: 0;
               left: 0;
               right: 0;
-              height:30px;
+              height:90px;
               background-color:#aab;
               color:#000000;
               z-index:99;
@@ -242,14 +242,15 @@ function generateHtml()
         </head>
           <body>
             <header>
-              <div class="title"><strong>Launch Application Mode</strong></div>
+              <div class="title"><strong>Launch Application Mode</strong><br>
+				Use arrow keys to select App to launch.<br>
+				Space or return to launch.<br>
+				Esc to Cancel.
+              </div>
             </header>
 
           </body>
         </html><br>
-		Use arrow keys to select App to launch.<br>
-		Space or return to launch.<br>
-		Esc to Cancel.
 		<div id="container">
 		<table id="selTable" width="90%"  border="1">
 		]]..generateTable()..[[
