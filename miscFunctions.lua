@@ -16,7 +16,8 @@ end
 function quitApp()
 	hs.eventtap.keyStroke({"cmd"}, "Q")
 end		
-function closeWindow()
+function miscFunctions.closeWindow()
+	hs.alert.show("Closing window")		-- BUG: We get this far, but the window does not close.
 	hs.eventtap.keyStroke({"cmd"}, "W")
 end	
 function dictate()
@@ -38,7 +39,7 @@ local funNameToFunction = {
 	hammerspoonHelp = hammerspoonHelp,
 	stopHelp = stopHelp,
 	quitApp = quitApp,
-	closeWindow = closeWindow,
+	closeWindow = miscFunctions.closeWindow,
 	dictate = dictate,
 	moveToDone = moveToDone,
 	moveToStatus = moveToStatus

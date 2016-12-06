@@ -12,11 +12,16 @@ modalHekpKey:bind('', 'escape', function() modalHekpKey:exit() end)
 
 
 local webShortCuts = {
+    ["3"]= {name = 'Conn3.7.download', addr = 'https://trac.aspera.us/process2/test/connect/3.7.0/'},
     B = {name = 'Bruce\'s Home', addr = 'http://brucebarrett.com/browserhome/brucehome.html'},
     C = {name = 'Confluence', addr = 'https://confluence.aspera.us'},
+    D = {name = 'A.Downloads', addr = 'https://downloads.asperasoft.com'},
     F = {name = 'Favorite sites', addr = 'https://jira.aspera.us'},
     J = {name = 'Jira', addr = 'https://jira.aspera.us'},
-    T = {name = 'Trac', addr = 'https://trac.aspera.us'}
+    M = {name = 'TP.Meet.Confluence', addr = 'https://confluence.aspera.us/display/TP/Meeting+Notes'},
+    P = {name = 'TP.Confluence', addr = 'https://confluence.aspera.us/display/TP'},
+    T = {name = 'Trac', addr = 'https://trac.aspera.us'},
+    V = {name = 'A.Developer', addr = 'https://developer.asperasoft.com'},
 }
 
 for key, web in pairs(webShortCuts) do
