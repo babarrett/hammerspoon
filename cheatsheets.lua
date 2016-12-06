@@ -73,7 +73,7 @@ function getAllMenuItems(t)
     return menu
 end
 
-function generateHtml()
+local function generateHtml()
     --local focusedApp= hs.window.frontmostWindow():application()
     local focusedApp = hs.application.frontmostApplication()
     local appTitle = focusedApp:title()
@@ -199,7 +199,7 @@ end
 
 local myView = nil
 
-hs.hotkey.bind({"cmd", "alt", "ctrl", "shift"}, "C", function() 
+hs.hotkey.bind(HyperFn, "C", function() 
   if not myView then
     -- Bruce updated these for larger MacBook Pro screen to prevent scrolling.
     myView = hs.webview.new({x = 100, y = 50, w = 1080, h = 800}, { developerExtrasEnabled = true })
@@ -212,6 +212,8 @@ hs.hotkey.bind({"cmd", "alt", "ctrl", "shift"}, "C", function()
     -- These 2 lines were commented out. Don"t seem to help
     -- myView:asHSWindow():focus()
     -- myView:asHSDrawing():setAlpha(.98):bringToFront()
+    -- This helped bringing to front
+	myView:bringToFront()
   else
     myView:delete()
     myView=nil

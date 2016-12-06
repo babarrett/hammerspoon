@@ -2,7 +2,7 @@
 -- (TODO: Can also be used for websites)
 -- TODO: Send up, down, left, right changes to web page as
 --	Javascript to increase speed over page load. Maybe something
---	like: changeSelectionFromTo(fromCell, toCell)
+--	like: changeSelectionFromTo(fromCell, toCell) to move a covering rectangle
 -- Displays a NxM grid of App names and short-cut letters
 -- User can use arrow keys to select an app to switch to, 
 -- Enter or Space to switch. Or may use short-cut letters
@@ -15,6 +15,7 @@ launchApplications = {}
 --	arrow keys to select an app to switch to.
 --	Enter or Space to switch.
 --	<single key> to launch an application
+--	TODO: <Tab> to move to part of table that doesn't have single-character launch.
 --	To leave "Application mode" without launching an application press Escape.
 
 local DEFAULTBROWSER = 'Safari'
@@ -32,30 +33,36 @@ local appShortCuts = {
     F = {'Finder', 'Finder', nil},
     
     I = {'iTerm', 'iTerm', nil},
+    J = {'Notes', 'Notes', nil},
     M = {'Mail', 'Mail', nil},
-    N = {'Notetaker', 'Notetaker', nil},
     
+    N = {'Notetaker', 'Notetaker', nil},
     O = {'Oxygen', 'Oxygen XML Author', nil},
     R = {'Remote Desktop', 'Microsoftt Remote Desktop', nil}, 
-    P = {'System Preferences', 'System Preferences', nil},
     
+    P = {'System Preferences', 'System Preferences', nil},
     S = {'Safari', 'Safari', nil},
     T = {'Tunnelblick', 'Tunnelblick', nil},
+    
     X = {'Firefox', 'Firefox', nil},
 }
 
--- Build a 3x4 grid of app names
+-- Build a 3x5 grid of app names
+-- TODO: Re-do these with '1'-based indexing.
 local xmin =0
 local xmax =2
 local ymin =0
-local ymax =3
+local ymax =4
 
 local xsel
 local ysel
 
 local launchAppActive = nil		-- Inactive
 
+--	HyperFn+A starts "Launch Application mode.
+--	It terminates with selection an app, or <Esc>
 local modalKey = hs.hotkey.modal.new(HyperFn, 'A')
+
 --	Bind keys of interest
 --	hs.hotkey.modal:bind(mods, key, message, pressedfn, releasedfn, repeatfn) -> hs.hotkey.modal object
 
@@ -117,7 +124,8 @@ for key, appInfo in hs.fnutils.sortByKeys(appShortCuts) do
       function() modalKey:exit() end)							-- Key up, leave mode
 end
 
-function modalKey:entered() 
+function modalKey:entered()
+  -- Select, approximately, the center cell of the App array
   xsel = math.floor((xmax-xmin)/2)
   ysel = math.floor((ymax-ymin)/2)
   reloadWebPage()
@@ -126,14 +134,16 @@ end
 function modalKey:exited() 
   -- Take down App selector
   if webPageView ~= nil then
+    debuglog("webPageView defined")
     webPageView:delete()
     webPageView=nil
   end
-  debuglog("LaunchApp2 exited")
+  debuglog("LaunchApp exited")
 end
 
 function launchAppBySelection()
-  -- which index, based  on (x, y) cell selected
+  app = nil
+  -- which index, based  on (x, y) cell was selected
   index = ysel * (xmax+1) + xsel
   debuglog("(x, y) -- index= (" .. xsel .. ", " .. ysel .. ") -- " .. index)
   for key, appInfo in hs.fnutils.sortByKeys(appShortCuts) do
@@ -152,18 +162,18 @@ function reloadWebPage()
   if webPageView then
   -- if it exists, refresh it
 	debuglog("Refresh web page")
-    webPageView:html(generateHtml())
+    webPageView:html(launchApplications.generateHtml())
   else
   -- if it doesn't exist, make it
 	debuglog("Create new web page")
 	webPageView = hs.webview.new({x = 200, y = 200, w = 650, h = 350}, { developerExtrasEnabled = false, suppressesIncrementalRendering = false })
 	:windowStyle("utility")
 	:closeOnEscape(true)
-	:html(generateHtml())
+	:html(launchApplications.generateHtml())
 	:allowGestures(false)
 	:windowTitle("Launch Applicatiion Mode")
 	:show()
-	-- These 2 lines were commented out. Don"t seem to help
+	-- These 2 lines were commented out. Don't seem to help
 	-- webPageView:asHSWindow():focus()
 	-- webPageView:asHSDrawing():setAlpha(.98):bringToFront()
 	webPageView:bringToFront()
@@ -172,7 +182,7 @@ function reloadWebPage()
   
 end
 
-function generateHtml()
+function launchApplications.generateHtml()
     --local focusedApp= hs.window.frontmostWindow():application()
     local focusedApp = hs.application.frontmostApplication()
     local appTitle = focusedApp:title()
@@ -191,11 +201,11 @@ function generateHtml()
               font-size: 13px;
             }
             header{
-              position: fixed;
+              <!-- position: fixed; -->
               top: 0;
               left: 0;
               right: 0;
-              height:30px;
+              height:90px;
               background-color:#aab;
               color:#000000;
               z-index:99;
@@ -232,14 +242,15 @@ function generateHtml()
         </head>
           <body>
             <header>
-              <div class="title"><strong>Launch Application Mode</strong></div>
+              <div class="title"><strong>Launch Application Mode</strong><br>
+				Use arrow keys to select App to launch.<br>
+				Space or return to launch.<br>
+				Esc to Cancel.
+              </div>
             </header>
 
           </body>
         </html><br>
-		Use arrow keys to select App to launch.<br>
-		Space or return to launch.<br>
-		Esc to Cancel.
 		<div id="container">
 		<table id="selTable" width="90%"  border="1">
 		]]..generateTable()..[[
