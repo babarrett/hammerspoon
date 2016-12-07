@@ -38,7 +38,7 @@ local appShortCuts = {
     
     N = {'Notetaker', 'Notetaker', nil},
     O = {'Oxygen', 'Oxygen XML Author', nil},
-    R = {'Remote Desktop', 'Microsoftt Remote Desktop', nil}, 
+    R = {'Remote Desktop', '/Applications/Microsoft Remote Desktop.app/', nil}, 
     
     P = {'System Preferences', 'System Preferences', nil},
     S = {'Safari', 'Safari', nil},
