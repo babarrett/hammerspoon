@@ -27,14 +27,16 @@ function dictate()
 	hs.eventtap.keyStroke({"cmd", "opt"}, "comma")
 end		
 function moveToDone()
-	hs.alert.show("moveTo Done", 4)
 	-- BUG: We don't get this far.
-	hs.eventtap.keyStroke({"cmd", "shift"}, "period")	-- ">"
+	debuglog("moveTo Done")
+	hs.alert.show("moveTo Done", 4)
+--	hs.eventtap.keyStroke({"cmd", "shift"}, "period")	-- ">"
 end	
 function moveToStatus()
+	-- BUG: We don't get this far if we try to use HyperFn+, or . (or /)?
+	debuglog("moveTo Status")
 	hs.alert.show("moveTo Status", 4)
-	-- BUG: We don't get this far.
-	hs.eventtap.keyStroke({"cmd", "shift"}, "comma")	-- "<"
+--	hs.eventtap.keyStroke({"cmd", "shift"}, "comma")	-- "<"
 end	
 
 -- private
@@ -60,6 +62,7 @@ local funNameToHelpText = {
 	moveToStatus =		'Mail: Move current item to "Status"'
 }
 function miscFunctions.bind(modifiers, char, functName)
+	debuglog("miscFunctions binding: "..char.." to "..functName)
 	hs.hotkey.bind(modifiers, char, nil, funNameToFunction[functName] )	-- bind the key
 	-- Add to the help string
 	HF.add("Hyper+" .. char .. "     - " .. funNameToHelpText[functName] .. "\n")
