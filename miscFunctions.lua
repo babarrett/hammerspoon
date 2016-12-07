@@ -20,7 +20,6 @@ function quitApp()
 	hs.eventtap.keyStroke({"cmd"}, "Q")
 end		
 function miscFunctions.closeWindow()
-	hs.alert.show("Closing window")		-- BUG: We get this far, but the window does not close.
 	hs.eventtap.keyStroke({"cmd"}, "W")
 end	
 function dictate()
@@ -28,11 +27,13 @@ function dictate()
 	hs.eventtap.keyStroke({"cmd", "opt"}, "comma")
 end		
 function moveToDone()
-	hs.alert.show("moveTo Done")
+	hs.alert.show("moveTo Done", 4)
+	-- BUG: We don't get this far.
 	hs.eventtap.keyStroke({"cmd", "shift"}, "period")	-- ">"
 end	
 function moveToStatus()
-	hs.alert.show("moveTo Status")
+	hs.alert.show("moveTo Status", 4)
+	-- BUG: We don't get this far.
 	hs.eventtap.keyStroke({"cmd", "shift"}, "comma")	-- "<"
 end	
 
@@ -59,7 +60,7 @@ local funNameToHelpText = {
 	moveToStatus =		'Mail: Move current item to "Status"'
 }
 function miscFunctions.bind(modifiers, char, functName)
-	hs.hotkey.bind(modifiers, char, funNameToFunction[functName] )	-- bind the key
+	hs.hotkey.bind(modifiers, char, nil, funNameToFunction[functName] )	-- bind the key
 	-- Add to the help string
 	HF.add("Hyper+" .. char .. "     - " .. funNameToHelpText[functName] .. "\n")
 end

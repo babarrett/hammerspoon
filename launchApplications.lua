@@ -38,7 +38,8 @@ local appShortCuts = {
     
     N = {'Notetaker', 'Notetaker', nil},
     O = {'Oxygen', 'Oxygen XML Author', nil},
-    R = {'Remote Desktop', '/Applications/Microsoft Remote Desktop.app/', nil}, 
+    R = {'Remote Desktop', '/Applications/Microsoft Remote Desktop.app/', nil}, -- > hs.application.nameForBundleID("com.microsoft.rdc.mac") --> "Microsoft Remote Desktop"
+
     
     P = {'System Preferences', 'System Preferences', nil},
     S = {'Safari', 'Safari', nil},
