@@ -163,3 +163,27 @@ Karabiner for shift --> ()
 	https://gist.github.com/carwin/4748951
 	But it will not work with "sticky keys" turned on!
 
+
+------------------------------------------------------
+------------------------------------------------------
+https://asylum.madhouse-project.org/blog/2016/10/15/multi-purpose-keys/
+
+His approach: 
+	* [({ and })] on 1 key each. One press for [. Two for (. (Why not "(" first??). Shift+Press for "{".
+	* Only 1 copy of each Mod key. Not one on each side.
+	* tap twice is less "work" then press & hold. 
+	* one-shot:
+		* Tap a modifier, release it, tap another key, the modifier is applied. The modifier deactivates.
+		* One-shot layers. Like modifiers.
+		* One-shot combos: Where you want to temporarily switch to a layer, and apply a modifier.
+	* Tap-dance keys: Tap N times for different characters. (, [, {
+		* Modifier/symbol dual-use: Hold = modifier. Tap once = character. Tap, Tap = regular repeating key.
+	* Leader key. <LEAD>+text executed desired function, enters emoji, etc.
+	
+Here's another idea...
+	- Mode key where...
+	- the mode is determined by the next key press (ex: up arrow, pause)
+	- and you continue in that mode as long as you stay in the relevant set of keys for that mode, or press escape
+	- use for things like navigation (up, down, left, right, pg up, home, end, top/bottom of doc, ...)
+		and AV (volume +/-, FF, pause, stop, mute,...) and window nav (resize, nudge, change tabs within)
+	
