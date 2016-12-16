@@ -163,3 +163,11 @@ Karabiner for shift --> ()
 	https://gist.github.com/carwin/4748951
 	But it will not work with "sticky keys" turned on!
 
+------------------------------------------------------
+Work toward an intermediate state between Raser and Keyboardio.
+	T1 to T7 map to Keyboardio thumb keys (up to 10)
+	Start integrating "SpaceFn" functions into Razer
+	Start integrating "Punctuation + Numeric" functions into Razer
+	etc.
+------------------------------------------------------
+Re-flow applications in table so they go top to bottom, then left to right.

@@ -25,26 +25,28 @@ local webPageView = nil
 --   Key_to_press. A single key
 --   Object with up to 3 items:
 --     DisplayText
---     App to launch, or nil
+--     App to launch, or bundleID, or nil
 --     Web site to open, or nil TODDO: Actually support the web-site option
 local appShortCuts = {
+	-- "/Users/bbarrett/" works, but "~/" does not. :-(
+	-- hs.application.launchOrFocusByBundleID("com.aspera.connect") works.
+    A = {'Connect', 'com.aspera.connect', nil}, -- > hs.application.bundleID(hs.application.applicationForPID(58463)) --> com.aspera.connect
     B = {'BBEdit', 'BBEdit', nil},
     C = {'Chrome', 'Google Chrome', nil},
+
     F = {'Finder', 'Finder', nil},
-    
     I = {'iTerm', 'iTerm', nil},
     J = {'Notes', 'Notes', nil},
+
     M = {'Mail', 'Mail', nil},
-    
     N = {'Notetaker', 'Notetaker', nil},
     O = {'Oxygen', 'Oxygen XML Author', nil},
-    R = {'Remote Desktop', '/Applications/Microsoft Remote Desktop.app/', nil}, -- > hs.application.nameForBundleID("com.microsoft.rdc.mac") --> "Microsoft Remote Desktop"
 
-    
+    R = {'Remote Desktop', '/Applications/Microsoft Remote Desktop.app/', nil}, -- > hs.application.nameForBundleID("com.microsoft.rdc.mac") --> "Microsoft Remote Desktop"
     P = {'System Preferences', 'System Preferences', nil},
     S = {'Safari', 'Safari', nil},
-    T = {'Tunnelblick', 'Tunnelblick', nil},
     
+    T = {'Tunnelblick', 'Tunnelblick', nil},
     X = {'Firefox', 'Firefox', nil},
 }
 
@@ -120,8 +122,12 @@ local modalKey = hs.hotkey.modal.new(HyperFn, 'A')
 -- Pick up Applications to offer, sorted by activation key
 for key, appInfo in hs.fnutils.sortByKeys(appShortCuts) do
     -- TODO: Test App for nil and Web site for != nil, open website instead
-    modalKey:bind('', key, 'Launching '..appInfo[2], 
-      function() hs.application.launchOrFocus(appInfo[2]) end,	-- Key down, launch
+    modalKey:bind('', key, 'Launching '..appInfo[1], 
+      function() 
+        if (not hs.application.launchOrFocus(appInfo[2])) then
+          hs.application.launchOrFocusByBundleID(appInfo[2])	-- use BundleID ("com.aspera.connect") if App name fails
+        end
+      end,	-- Key down, launch
       function() modalKey:exit() end)							-- Key up, leave mode
 end
 
