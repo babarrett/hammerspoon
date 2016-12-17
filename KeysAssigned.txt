@@ -170,20 +170,29 @@ https://asylum.madhouse-project.org/blog/2016/10/15/multi-purpose-keys/
 
 His approach: 
 	* [({ and })] on 1 key each. One press for [. Two for (. (Why not "(" first??). Shift+Press for "{".
-	* Only 1 copy of each Mod key. Not one on each side.
-	* tap twice is less "work" then press & hold. 
-	* one-shot:
+	* Only 1 copy of each Mod (thumb) key. Not one on each side.
+	* Tap twice is less "work" then press & hold. 
+	* One-shot:
 		* Tap a modifier, release it, tap another key, the modifier is applied. The modifier deactivates.
 		* One-shot layers. Like modifiers.
 		* One-shot combos: Where you want to temporarily switch to a layer, and apply a modifier.
 	* Tap-dance keys: Tap N times for different characters. (, [, {
 		* Modifier/symbol dual-use: Hold = modifier. Tap once = character. Tap, Tap = regular repeating key.
-	* Leader key. <LEAD>+text executed desired function, enters emoji, etc.
+	* Leader key. <LEAD>+text executed desired function, enters emoji by name, etc.
 	
 Here's another idea...
-	- Mode key where...
+	- Super-Mode key where...
 	- the mode is determined by the next key press (ex: up arrow, pause)
 	- and you continue in that mode as long as you stay in the relevant set of keys for that mode, or press escape
 	- use for things like navigation (up, down, left, right, pg up, home, end, top/bottom of doc, ...)
-		and AV (volume +/-, FF, pause, stop, mute,...) and window nav (resize, nudge, change tabs within)
+		and media (volume +/-, FF, pause, stop, mute,...) and window navigation (resize, nudge, change tabs within)
+	- Use: tap mode key (KB waits for next key), tap left-arrow (KB sets mode to cursor navigation), move
+		around with up, down, left, right, etc. Select by adding shift to the movements. Esc to exit mode.
+
+As I push toward Keyboardio 
+	- the left hand tends to be what used to be SpaceFn
+	- the right hand tends to be navigation (up, left, down, right as I, J, K, L)
+	- No need for single key Cut, Copy, Paste because thumb Command + X, C, V works easily. (?)
+		but use if numeric pad is around?
+	
 	
