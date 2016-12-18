@@ -10,6 +10,7 @@ function showKeyPress(tap_event)
   local modifiers = ""  -- key modifiers string representation
   local flags = tap_event:getFlags()
   local character = hs.keycodes.map[tap_event:getKeyCode()]
+  debuglog(tap_event:getKeyCode() .. " -- " .. character)
   -- we only want to read special characters via getKeyCode, so we
   -- use this subset of hs.keycodes.map
   local special_chars = {

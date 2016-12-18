@@ -26,7 +26,7 @@ local miscFunctions 			= require "miscFunctions"
 local cheatsheets				= require "cheatsheets"
 local launchApplications		= require "launchApplications"
 --require "launchWebPages"		-- TODO: either add into HyperFn+A (apps table) or clone that code for HyperFn+S
---require "KeyPressShow"
+require "KeyPressShow"
 
 HF.add("-- Window Management Functions --\n")
 windowManagement.bind(HyperFn, "Left", "left")
