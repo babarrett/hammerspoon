@@ -29,17 +29,7 @@ local launchApplications		= require "launchApplications"
 --require "launchWebPages"		-- TODO: either add into HyperFn+A (apps table) or clone that code for HyperFn+S
 require "KeyPressShow"
 
-HF.add("-- Window Management Functions -- "..VERSION.." --\n")
-windowManagement.bind(HyperFn, "Left", "left")
-windowManagement.bind(HyperFn, "Right", "right")
-windowManagement.bind(HyperFn, "Up", "up")
-windowManagement.bind(HyperFn, "Down", "down")
-windowManagement.bind(HyperFn, "4", "percent40")
-windowManagement.bind(HyperFn, "5", "percent50")
-windowManagement.bind(HyperFn, "6", "percent60")
-windowManagement.bind(HyperFn, "7", "percent70")
-
-HF.add("\n-- Miscellaneous Functions --\n")
+HF.add("-- Miscellaneous Functions -- "..VERSION.." --\n")
 HF.bind(HyperFn, "H", "hammerspoonHelp")
 pasteCurrentSafariUrl.bind(HyperFn, "U", "pasteSafariUrl")
 miscFunctions.bind(HyperFn, "V", "typeClipboard")
@@ -53,6 +43,16 @@ miscFunctions.bind(HyperFn, "=", "mouseHighlight")
 miscFunctions.bind(HyperFn, "L", "lockMyScreen")
 
 HF.add("Hyper+A     - Enter Application mode, Arrows or Char launches App.")
+
+HF.add("\n\n-- Window Management Functions --\n")
+windowManagement.bind(HyperFn, "Right", "right")
+windowManagement.bind(HyperFn, "Left", "left")
+windowManagement.bind(HyperFn, "Down", "down")
+windowManagement.bind(HyperFn, "Up", "up")
+windowManagement.bind(HyperFn, "4", "percent40")
+windowManagement.bind(HyperFn, "5", "percent50")
+windowManagement.bind(HyperFn, "6", "percent60")
+windowManagement.bind(HyperFn, "7", "percent70")
 
 -- Add list of screens to bottom of Help
 local myScreens = "\n\nActive screens:  {"

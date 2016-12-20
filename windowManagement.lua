@@ -13,16 +13,24 @@ windowSizePercent = 0.50
 --[[ function factory that takes the multipliers of screen width
 and height to produce the window's x pos, y pos, width, and height ]]
 function baseMove(x, y, w, h)
-	local win = hs.window.focusedWindow()
-	local f = win:frame()
-	local screen = win:screen()
-	local max = screen:frame()
-
-	f.x = max.w * x
-	f.y = max.h * y
-	f.w = max.w * w
-	f.h = max.h * h
-	win:setFrame(f, 0)
+	local win = hs.window.frontmostWindow()
+	debuglog("win: " .. tostring(win))
+	if win ~= nil then
+		local screen = win:screen()
+		local wf = win:frame()
+		local sf = screen:frame()
+		
+--		These were all messed up for other than the primary screen. Fixed
+--		f.x = max.w * x
+--		f.y = max.h * y
+--		f.w = max.w * w
+--		f.h = max.h * h
+		wf.x = sf.x + sf.w * x
+		wf.y = sf.y + sf.h * y
+		wf.w = sf.w * w
+		wf.h = sf.h * h
+		win:setFrame(wf, 0)
+	end
 end
 
 -- private
@@ -38,7 +46,7 @@ local funNameToHelpText = {
 }
 
 
--- y = 0.03 to avoid Mac top menu bar
+-- y = 0.03 to avoid Mac screen menu bar
 local function left()
 	baseMove(0.00, 0.03, windowSizePercent-0.01, 1.00)
 end
@@ -74,13 +82,16 @@ local funNameToFunction = {
 	percent70 = percent70
 }
 
--- TODO: This is currently binding at load (requires) time.
--- 		Need to make this in response to my bind calls, an only add help lines as we use them
-
 function windowManagement.bind(modifiers, char, functName)
 	hs.hotkey.bind(modifiers, char, funNameToFunction[functName] )	-- bind the key
 	-- Add to the help string
 	HF.add("Hyper+" .. char .. "     - " .. funNameToHelpText[functName] .. "\n")
 end
+
+-- TODO: Want to save screen & window locations when there are multiple screens
+-- and the computer sleeps.
+-- On wake, and there is only 1 screen, leave the location variables untouched.
+-- On wake, when there are multiple screens, restore the windows to their old 
+-- screens & locations. 
 
 return windowManagement
