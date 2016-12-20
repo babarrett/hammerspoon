@@ -4,6 +4,7 @@
 --	TODO: Support better path (there is none yet)
 -- "?;?.lua;~/dev/git/hammerspoon/?;?.lua"
 
+VERSION = "2016-Dec-19"
 hs.console.clearConsole()
 LUA_PATH = os.getenv("HOME") .. "/dev/git/hammerspoon/?"
 
@@ -28,7 +29,7 @@ local launchApplications		= require "launchApplications"
 --require "launchWebPages"		-- TODO: either add into HyperFn+A (apps table) or clone that code for HyperFn+S
 require "KeyPressShow"
 
-HF.add("-- Window Management Functions --\n")
+HF.add("-- Window Management Functions -- "..VERSION.." --\n")
 windowManagement.bind(HyperFn, "Left", "left")
 windowManagement.bind(HyperFn, "Right", "right")
 windowManagement.bind(HyperFn, "Up", "up")
@@ -54,10 +55,11 @@ miscFunctions.bind(HyperFn, "L", "lockMyScreen")
 HF.add("Hyper+A     - Enter Application mode, Arrows or Char launches App.")
 
 -- Add list of screens to bottom of Help
-local myScreens = "\nActive screens: \n  " .. hs.screen.allScreens()[1]:name()
-for i = 2, # hs.screen.allScreens() do
-	myScreens = myScreens .. "\n  " .. hs.screen.allScreens()[i]:name()
+local myScreens = "\n\nActive screens:  {"
+for i = 1, # hs.screen.allScreens() do
+	myScreens = myScreens .. " " .. hs.screen.allScreens()[i]:name() .. ","
 end
+myScreens = myScreens:sub(1, myScreens:len()-1) .. " }"
 HF.add(myScreens)
 
 --	Auto-reload config file. Called whenever a *.lua in the directory changes
