@@ -7,6 +7,7 @@ local miscFunctions = {}
 --	HyperFn+Q		quitApp				Quit App
 --	HyperFn+W		closeWindow			Close window (or tab)
 --	HyperFn+D		dictate				Dictate on/off (Cmd+Opt+,)
+--	HyperFn+L		Lock screens		Instantly lock screen so I can walk away
 --	TODO: Only respond if in "Mail" App
 --	HyperFn+/		moveToDone			Move current mail item to "Done"
 --	HyperFn+,		moveToStatus		Move current mail item to "Status"
@@ -39,33 +40,8 @@ function moveToStatus()
 --	hs.eventtap.keyStroke({"cmd", "shift"}, "comma")	-- "<"
 end	
 
--- private
-local funNameToFunction = {
-	typeClipboard = typeClipboardAsText,
-	hammerspoonHelp = hammerspoonHelp,
-	stopHelp = stopHelp,
-	quitApp = quitApp,
-	closeWindow = miscFunctions.closeWindow,
-	dictate = dictate,
-	moveToDone = moveToDone,
-	moveToStatus = moveToStatus
-}
-
-local funNameToHelpText = {
-	typeClipboard =		'Type clipboard as text (avoid web site ⌘-V blockers)',
-	hammerspoonHelp = 	'Help, for Hammerspoon functions',
-	stopHelp = 			'Stop displaying Help',
-	quitApp =			'Quit current App',
-	closeWindow =		'Close window (or tab)',
-	dictate =			'Dictate on/off',
-	moveToDone =		'Mail: Move current item to "Done"',
-	moveToStatus =		'Mail: Move current item to "Status"'
-}
-function miscFunctions.bind(modifiers, char, functName)
-	debuglog("miscFunctions binding: "..char.." to "..functName)
-	hs.hotkey.bind(modifiers, char, nil, funNameToFunction[functName] )	-- bind the key
-	-- Add to the help string
-	HF.add("Hyper+" .. char .. "     - " .. funNameToHelpText[functName] .. "\n")
+function lockMyScreen()
+	hs.caffeinate.lockScreen()
 end
 
 -- Cursor locator
@@ -103,6 +79,39 @@ function mouseHighlight()
     	--mouseCircle2:delete() 
     end)
 end
-hs.hotkey.bind(HyperFn, "=", mouseHighlight)
+
+-- private
+local funNameToFunction = {
+	typeClipboard = typeClipboardAsText,
+	hammerspoonHelp = hammerspoonHelp,
+	stopHelp = stopHelp,
+	quitApp = quitApp,
+	closeWindow = miscFunctions.closeWindow,
+	dictate = dictate,
+	moveToDone = moveToDone,
+	moveToStatus = moveToStatus,
+	lockMyScreen = lockMyScreen,
+	mouseHighlight = mouseHighlight
+}
+
+local funNameToHelpText = {
+	typeClipboard =		'Type clipboard as text (avoid web site ⌘-V blockers)',
+	hammerspoonHelp = 	'Help, for Hammerspoon functions',
+	stopHelp = 			'Stop displaying Help',
+	quitApp =			'Quit current App',
+	closeWindow =		'Close window (or tab)',
+	dictate =			'Dictate on/off',
+	moveToDone =		'Mail: Move current item to "Done"',
+	moveToStatus =		'Mail: Move current item to "Status"',
+	lockMyScreen = 		'Lock screen so you can walk away',
+	mouseHighlight = 	'Surround mouse cursor with red circle for 3 seconds'
+}
+function miscFunctions.bind(modifiers, char, functName)
+	debuglog("miscFunctions binding: "..char.." to "..functName)
+	hs.hotkey.bind(modifiers, char, nil, funNameToFunction[functName] )	-- bind the key
+	-- Add to the help string
+	HF.add("Hyper+" .. char .. "     - " .. funNameToHelpText[functName] .. "\n")
+end
+
 
 return miscFunctions

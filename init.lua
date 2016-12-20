@@ -48,6 +48,9 @@ miscFunctions.bind(HyperFn, "D", "dictate")
 --HyperFn+, and HyperFn+. get intercepted by OS X and will never call Hammerspoon
 --miscFunctions.bind({"ctrl", "shift"}, "/", "moveToDone")
 --miscFunctions.bind({"ctrl", "shift"}, ",", "moveToStatus")
+miscFunctions.bind(HyperFn, "=", "mouseHighlight")
+miscFunctions.bind(HyperFn, "L", "lockMyScreen")
+
 HF.add("Hyper+A     - Enter Application mode, Arrows or Char launches App.")
 
 -- Add list of screens to bottom of Help

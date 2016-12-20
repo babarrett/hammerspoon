@@ -1,6 +1,7 @@
 local helpFunctions = {}
 -- helpFunctions.lua
 -- Hyper+H		Help, for Hammerspoon functions, or dismiss if already up
+-- TODO: Keep Help up until HyperFn key is released?
 
 -- Private fields
 -- helpString - brief descriptions of mapped f()s. 
