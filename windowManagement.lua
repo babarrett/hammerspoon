@@ -15,7 +15,7 @@ and height to produce the window's x pos, y pos, width, and height ]]
 function baseMove(x, y, w, h)
 	local win = hs.window.frontmostWindow()
 	debuglog("win: " .. tostring(win))
-	if win ~= nil then
+	if win ~= nil then	-- only if there's a window to move
 		local screen = win:screen()
 		local wf = win:frame()
 		local sf = screen:frame()
