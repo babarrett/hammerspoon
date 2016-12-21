@@ -1,8 +1,9 @@
---	Window to (some) 30,40,..70% of screen (left, right, top, bottom)
+--	Move window to (some) 30,40,..70% of screen (left, right, top, bottom)
 --	Originally taken from: https://gist.github.com/swo/91ec23d09a3d6da5b684
 --	HyperFn+Left moves window to left part of the screen.
 --	Likewise for other arrows.
---	BUG: Moves windows from off of other screens to "main" (laptop) screen.
+--	If the window is already in place (say left edge) and we get another left
+--	command then move it to the *screen* to the left.
 
 local windowManagement = {}
 
@@ -120,9 +121,9 @@ function windowManagement.bind(modifiers, char, functName)
 end
 
 -- TODO: Want to save screen & window locations when there are multiple screens
--- and the computer sleeps.
+-- and the computer is about to sleep.
 -- On wake, and there is only 1 screen, leave the location variables untouched.
 -- On wake, when there are multiple screens, restore the windows to their old 
--- screens & locations. 
+-- screens & locations as best we can. Matching screen sizes and positions. 
 
 return windowManagement
