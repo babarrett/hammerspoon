@@ -29,6 +29,7 @@ local cheatsheets				= require "cheatsheets"
 local launchApplications		= require "launchApplications"
 --require "launchWebPages"		-- TODO: either add into HyperFn+A (apps table) or clone that code for HyperFn+S
 require "KeyPressShow"
+--require "characterMapping"
 
 HF.add("-- Miscellaneous Functions -- "..VERSION.." --\n")
 HF.bind(HyperFn, "H", "hammerspoonHelp")

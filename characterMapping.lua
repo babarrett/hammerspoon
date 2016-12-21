@@ -15,21 +15,21 @@ local characterMapping = {}
 --	hs.hotkey.bind(mods, key, message, pressedfn, releasedfn, repeatfn) --> hs.hotkey object
 
 	hs.hotkey.bind(nil, "pad0", nil, function() hs.eventtap.keyStroke({"shift"}) end, nil, nil)
-	hs.hotkey.bind(nil, "pad1", nil, function() hs.eventtap.keyStroke({"alt", "left"}) end, nil, nil)
-	hs.hotkey.bind(nil, "pad2", nil, function() hs.eventtap.keyStroke({"alt", "right"}) end, nil, nil)
-	hs.hotkey.bind(nil, "pad3", nil, function() hs.eventtap.keyStroke(L, {"cmd"}) end, nil, nil)	<!-- broken -->
-	hs.hotkey.bind(nil, "pad4", nil, function() hs.eventtap.keyStroke({"cmd", "left"}) end, nil, nil)
-	hs.hotkey.bind(nil, "pad5", nil, function() hs.eventtap.keyStroke({"cmd", "right"}) end, nil, nil)
+	hs.hotkey.bind(nil, "pad1", nil, function() hs.eventtap.keyStroke({"alt"}, "left") end, nil, nil)
+	hs.hotkey.bind(nil, "pad2", nil, function() hs.eventtap.keyStroke({"alt"}, "right") end, nil, nil)
+	hs.hotkey.bind(nil, "pad3", nil, function() hs.eventtap.keyStroke({"cmd"}, "l") end, nil, nil)	-- broken
+	hs.hotkey.bind(nil, "pad4", nil, function() hs.eventtap.keyStroke({"cmd"}, "left") end, nil, nil)
+	hs.hotkey.bind(nil, "pad5", nil, function() hs.eventtap.keyStroke({"cmd"}, "right") end, nil, nil)
 	hs.hotkey.bind(nil, "pad6", nil, function() hs.eventtap.keyStroke({"cmd", "shift"}, "[") end, nil, nil)
-	hs.hotkey.bind(nil, "pad7", nil, function() hs.eventtap.keyStroke(F, {"cmd"}) end, nil, nil)
-	hs.hotkey.bind(nil, "pad8", nil, function() hs.eventtap.keyStroke(G, {"cmd"}) end, nil, nil)
+	hs.hotkey.bind(nil, "pad7", nil, function() hs.eventtap.keyStroke({"cmd"}, "f") end, nil, nil)
+	hs.hotkey.bind(nil, "pad8", nil, function() hs.eventtap.keyStroke({"cmd"}, "g") end, nil, nil)
 	hs.hotkey.bind(nil, "pad9", nil, function() hs.eventtap.keyStroke({"cmd", "shift"}, "]") end, nil, nil)
 
-	hs.hotkey.bind(nil, "pad.", nil, function() hs.eventtap.keyStroke("tab") end, nil, nil)
-	hs.hotkey.bind(nil, "pad-", nil, function() hs.eventtap.keyStroke({"cmd", "shift"}, "]") end, nil, nil)	<!-- broken -->
-	hs.hotkey.bind(nil, "pad*", nil, function() hs.eventtap.keyStroke({"cmd", "shift"}, "[") end, nil, nil)	<!-- broken -->
+	hs.hotkey.bind(nil, "pad.", nil, function() hs.eventtap.keyStroke(nil, "tab") end, nil, nil)
+	hs.hotkey.bind(nil, "pad-", nil, function() hs.eventtap.keyStroke({"cmd", "shift"}, "]") end, nil, nil)	-- broken
+	hs.hotkey.bind(nil, "pad*", nil, function() hs.eventtap.keyStroke({"cmd", "shift"}, "[") end, nil, nil)	-- broken
 	hs.hotkey.bind(nil, "pad+", nil, function() hs.eventtap.keyStroke({"cmd"}, "]") end, nil, nil)
-	hs.hotkey.bind(nil, "pad/", nil, function() hs.eventtap.keyStroke("space", {"cmd"}) end, nil, nil)
+	hs.hotkey.bind(nil, "pad/", nil, function() hs.eventtap.keyStroke({"cmd"}, "space") end, nil, nil)
 	hs.hotkey.bind(nil, "padenter", nil, function() hs.eventtap.keyStroke({"cmd"}, "[" ) end, nil, nil)
 --	hs.hotkey.bind(nil, "padclear", 
 
