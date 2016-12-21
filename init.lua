@@ -3,6 +3,7 @@
 --	For "require" commands
 --	TODO: Support better path (there is none yet)
 -- "?;?.lua;~/dev/git/hammerspoon/?;?.lua"
+--	TODO: Create another modual for KeyToKey mappings such as Numeric Pad to move functions.
 
 VERSION = "2016-Dec-20"
 hs.console.clearConsole()

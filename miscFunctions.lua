@@ -8,7 +8,7 @@ local miscFunctions = {}
 --	HyperFn+W		closeWindow			Close window (or tab)
 --	HyperFn+D		dictate				Dictate on/off (Cmd+Opt+,)
 --	HyperFn+L		Lock screens		Instantly lock screen so I can walk away
---	TODO: Only respond if in "Mail" App
+--	TODO: Only respond if in "Mail" App; Add BBEdit-only functions
 --	HyperFn+/		moveToDone			Move current mail item to "Done"
 --	HyperFn+,		moveToStatus		Move current mail item to "Status"
 
