@@ -9,15 +9,17 @@ local windowManagement = {}
 -- Private
 local helpString = ""
 windowSizePercent = 0.50
+newScreen = nil
 
 --[[ function factory that takes the multipliers of screen width
 and height to produce the window's x pos, y pos, width, and height ]]
-function baseMove(x, y, w, h)
+function baseMove(x, y, w, h, direction)
 	local win = hs.window.frontmostWindow()
-	debuglog("win: " .. tostring(win))
+	local fudge = 40
 	if win ~= nil then	-- only if there's a window to move
 		local screen = win:screen()
-		local wf = win:frame()
+		local wfold = win:frame()
+		local wfnew = win:frame()
 		local sf = screen:frame()
 		
 --		These were all messed up for other than the primary screen. Fixed
@@ -25,11 +27,40 @@ function baseMove(x, y, w, h)
 --		f.y = max.h * y
 --		f.w = max.w * w
 --		f.h = max.h * h
-		wf.x = sf.x + sf.w * x
-		wf.y = sf.y + sf.h * y
-		wf.w = sf.w * w
-		wf.h = sf.h * h
-		win:setFrame(wf, 0)
+		wfnew.x = math.floor(sf.x + sf.w * x)
+		wfnew.y = math.floor(sf.y + sf.h * y)
+		wfnew.w = math.floor(sf.w * w)
+		wfnew.h = math.floor(sf.h * h)
+		-- Now see if this = no change... in which case we'll push it to the next screen
+--		debuglog("x fudge: ".. math.abs(wfold.x - wfnew.x))
+--		debuglog("y fudge: ".. math.abs(wfold.y - wfnew.y))
+--		debuglog("w fudge: ".. math.abs(wfold.w - wfnew.w))
+--		debuglog("h fudge: ".. math.abs(wfold.h - wfnew.h))
+		if (math.abs(wfold.x - wfnew.x) < fudge
+		and math.abs(wfold.y - wfnew.y) < fudge
+		and math.abs(wfold.w - wfnew.w) < fudge
+		and math.abs(wfold.h - wfnew.h) < fudge) then
+			action = {
+				["left"] =	function () windowManagement.newScreen = screen:toWest() end,
+				["right"] =	function () windowManagement.newScreen = screen:toEast() end,
+				["up"] =	function () windowManagement.newScreen = screen:toNorth() end,
+				["down"] =	function () windowManagement.newScreen = screen:toSouth() end
+			}
+			action[direction]()
+
+			-- test to see if there is a screen to move to...
+--			debuglog("window within fudge factor, push to next screen, if available.")
+			if windowManagement.newScreen then
+--				debuglog("OK to move to next screen: "..direction)
+				sf = windowManagement.newScreen:frame()
+				wfnew.x = math.floor(sf.x + sf.w * x)
+				wfnew.y = math.floor(sf.y + sf.h * y)
+				wfnew.w = math.floor(sf.w * w)
+				wfnew.h = math.floor(sf.h * h)
+			
+			end
+		end
+		win:setFrame(wfnew, 0)
 	end
 end
 
@@ -48,16 +79,16 @@ local funNameToHelpText = {
 
 -- y = 0.03 to avoid Mac screen menu bar
 local function left()
-	baseMove(0.00, 0.03, windowSizePercent-0.01, 1.00)
+	baseMove(0.00, 0.03, windowSizePercent-0.01, 1.00, "left")
 end
 local function right()
-	baseMove(1-windowSizePercent+0.01, 0.03, windowSizePercent-0.01, 1.00)
+	baseMove(1-windowSizePercent+0.01, 0.03, windowSizePercent-0.01, 1.00 , "right")
 end
 local function down()
-	baseMove(0.00, 1-windowSizePercent+0.01, 0.98,  windowSizePercent-0.01)
+	baseMove(0.00, 1-windowSizePercent+0.01, 0.98,  windowSizePercent-0.01, "down")
 end
 local function up()
-	baseMove(0.00, 0.03, 0.98,  windowSizePercent-0.03)
+	baseMove(0.00, 0.03, 0.98,  windowSizePercent-0.03, "up")
 end
 local function percent40()
 	windowSizePercent = 0.40

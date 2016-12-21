@@ -4,7 +4,7 @@
 --	TODO: Support better path (there is none yet)
 -- "?;?.lua;~/dev/git/hammerspoon/?;?.lua"
 
-VERSION = "2016-Dec-19"
+VERSION = "2016-Dec-20"
 hs.console.clearConsole()
 LUA_PATH = os.getenv("HOME") .. "/dev/git/hammerspoon/?"
 
