@@ -41,10 +41,10 @@ function baseMove(x, y, w, h, direction)
 		and math.abs(wfold.w - wfnew.w) < fudge
 		and math.abs(wfold.h - wfnew.h) < fudge) then
 			action = {
-				["left"] =	function () windowManagement.newScreen = screen:toWest() end,
-				["right"] =	function () windowManagement.newScreen = screen:toEast() end,
-				["up"] =	function () windowManagement.newScreen = screen:toNorth() end,
-				["down"] =	function () windowManagement.newScreen = screen:toSouth() end
+				["left"] =	function () windowManagement.newScreen = screen:toWest(nil, true) end,
+				["right"] =	function () windowManagement.newScreen = screen:toEast(nil, true) end,
+				["up"] =	function () windowManagement.newScreen = screen:toNorth(nil, true) end,
+				["down"] =	function () windowManagement.newScreen = screen:toSouth(nil, true) end
 			}
 			action[direction]()
 
