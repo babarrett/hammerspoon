@@ -1,6 +1,6 @@
 local characterMapping = {}
 -- Numeric pad to match older USB Overdrive settings, Bruce
--- Numeric Pad to common, desired functions (Bruce)
+-- Numeric Pad to common, desired functions
 -- Should work on:
 --	Razer
 --	External numeric pad
@@ -10,6 +10,40 @@ local characterMapping = {}
 --	pad1:	Opt-<--	Move left end of line
 --	pad2:	Opt--->	Move right end of line
 -- Notice, pad0, which maps to "shift", is not "sticky" like all the other keyboard shift keys.
+
+--[[
+Keypad / Numeric Pad mapping.
+
+Orico	Orico	Anansi	Anansi	To			Causes this
+Glyph	Keycode	Glyph	Keycode	Generate	Function
+------	-------	-------	------	--------	-----------
+0		pad0	0		pad0	⇧			Shift
+1		pad1	1		pad1	⌥-←		Prev. Word
+2		pad2	2		pad2	⌥-→			Next word
+3		pad3	3		pad3	⌘-L			Go to URL field (or send mail)
+4		pad4	4		pad4	⌘-←		Start of line			
+5		pad5	5		pad5	⌘-→			End of line	
+6		pad6	6		pad6	⌘-[			Outdent
+7		pad7	7		pad7	⌘-F			Find
+8		pad8	8		pad8	⌘-G			Find Next
+9		pad9	9		pad9	⌘-]			Indent
+
+Enter	padenterEnter	padenter								
++		pad+	+										
+-		pad-	-										
+*		pad*	*										
+/		pad/	/										
+NumLock	padclearNumLock	padclear		
+
+<<Can't map these keys>>
+.		. 		.		.		.			.			
+Delete	Delete	Delete	Delete		
+Tab		tab		n/a		n/a		
+000		000		n/a		n/a		000			000
+Home
+Email
+Calculator
+]]--
 
 --	From Key...					To Key...
 --	hs.hotkey.bind(mods, key, message, pressedfn, releasedfn, repeatfn) --> hs.hotkey object
