@@ -12,10 +12,11 @@ Generally:
 						products, but that seems very unlikely. (Launch App, open Web page)
 	Hammerspoon for:	HyperFn, Window sizing, Screen and Space management, App launch
 						init.lua. *.lua. Shared configurations. Fully programable.
-						HyperFnStriing = "⌘⌥⌃⇧"
+						HyperFnString = "⌘⌥⌃⇧"
 						HyperFn+A - Apps
 						HyperFn+S - Web sites (TODO)
 						Fairly easily sharable
+						Under my source control
 	Karabiner for:		SpaceFn
 						private.xml (or SpaceFN_bruce.xml) Shared configurations. 
 						Capable, but not fully programable. No events?
@@ -23,7 +24,10 @@ Generally:
 	USB Overdrive for:	(replace with other?)
 						Easy to configure. Some sharing possible.
 						No Apple products
-	BBEdit for:			Code snippets. Auto-completion.  Navigate by f() TOC.
+						Numeric Pad (about to replace)
+						M1-M5 left macro kays
+						T1-T7 Thumb keys
+	BBEdit for:			Code snippets. Auto-completion (F5).  Navigate by f() TOC.
 	iTerm2 for:			Command-line keys, remap (begin/end line & word)
 	Razer:				Ignore/Delete
 	
@@ -64,10 +68,10 @@ Kbd		OSX Pref	Seil	Hammer	Karab	USB Ov*	Function
 									Space			Tap for Space, Hold+char for SpaceFn
 									F1-F12			Apps & Web pages
 									
-											NumPad	Misc functions, Numeric pad, Razer Anansi only
+							NumPad					Misc functions, Numeric pad, Razer Anansi + external keypad
 											M1-M4	Cut, Copy, Paste, Undo
 											M5		OS X Dictation on/off
-											T1-T7	Misc
+											T1-T7	Misc.
 											
 * USB Overdrive cannot modify Apple products, by design.
 	These functions should be moved to other products/systems
@@ -84,14 +88,15 @@ Unload and delete the razer kext (still present on home MacBook Pro)
 Screen and Space management
 Maybe, rotate right by 1, for line movement & selection: SpaceFn+(TYUIOP)
 
-
+Add move window to adjacent space (left/right)
 
 Additional resources:
 	Tutorial:	http://www.hammerspoon.org/go/ 
 	Cycle through displays: http://bezhermoso.github.io/2016/01/20/making-perfect-ramen-lua-os-x-automation-with-hammerspoon/
 	for app binding:	hs.hotkey.bind(HyperFn, 'D', function () hs.application.launchOrFocus("Dictionary") end)
 
-https://gist.github.com/dalemanthei/dde8bccb22c3a2d3487a6e7d77be33f5
+Hammerspoon config examples for hyper key
+	https://gist.github.com/dalemanthei/dde8bccb22c3a2d3487a6e7d77be33f5
 
 
 Absolutely essential and I can hardly live without it. Tap to click is fine on
@@ -116,21 +121,9 @@ local modalKey = hs.hotkey.modal.new(hyper, 'A', 'Launch Application mode')
 modalKey:bind('', 'escape', function() modalKey:exit() end)
 
 local appShortCuts = {
-
-    G = 'GitKraken',
-    J = 'Jump Desktop',
     P = '1Password 6',
-    S = 'Slack',
-    X = 'Xcode',
-    Z = 'Franz'
-
-	-- 4 reserved for dash shortcut 
-	v = 'Google Calendar',
-	??= 'Google Hangouts'
-	cmd-l: go to URL & Send mail
-	? spotlight - useful? Just Cmd+Space instead
+    X = 'Xcode'
 }
-
 for key, app in pairs(appShortCuts) do
     modalKey:bind('', key, 'Launching '..app, function() hs.application.launchOrFocus(app) end, function() modalKey:exit() end)
 end
@@ -164,6 +157,12 @@ Karabiner for shift --> ()
 	But it will not work with "sticky keys" turned on!
 
 ------------------------------------------------------
+OS X for shift window to next space (same monitor)
+
+-Grab and hold the window top
+-[ctrl] + [left] or [right] arrow key to move it.
+-[ctrl] + [left] or [right] arrow key w/o window grab moved to next space.
+
 ------------------------------------------------------
 https://asylum.madhouse-project.org/blog/2016/10/15/multi-purpose-keys/
 
@@ -197,10 +196,19 @@ As I push toward Keyboardio
 	
 =======
 ------------------------------------------------------
-Work toward an intermediate state between Raser and Keyboardio.
-	T1 to T7 map to Keyboardio thumb keys (up to 10)
-	Start integrating "SpaceFn" functions into Razer
-	Start integrating "Punctuation + Numeric" functions into Razer
+Work toward an intermediate state between Razer and Keyboardio.
+	Map 7 Razer Anansi T1 to T7 keys to Keyboardio thumb keys (up to 10)
+	Move Numeric Pad from Karabiner to Hammerspoon (in progress)
+	Move F1-4, F9-12 Application keys from Karabiner to Hammerspoon (HyperFn+A)
+	Move "SpaceFn" functions from from Karabiner (right-hand side) to Hammerspoon
+		(left-hand side) of Razer to more closely match expected Keyboardio.
+	Create "Punctuation + Numeric" functions in Hammerspoon (right-hand side)
+		using T1 as the "mode" key.
+	Create "Window and App" functions in Hammerspoon (Tx for mode, ?? for keys)
+	Add support for Mail "to Done" and "to Status" functions. (HyperFn?)
+	
 	etc.
 ------------------------------------------------------
 Re-flow applications in table so they go top to bottom, then left to right.
+
+Use home row "normal" keys as modifiers? Like SpaceFn does for the space bar?
