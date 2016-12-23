@@ -212,3 +212,25 @@ Work toward an intermediate state between Razer and Keyboardio.
 Re-flow applications in table so they go top to bottom, then left to right.
 
 Use home row "normal" keys as modifiers? Like SpaceFn does for the space bar?
+
+
+
+---------------------------------------------------------------------------------------
+Offline wilderjds
+Posts: 3
+
+Re: Dual-role keys
+« Reply #63 on: Thu, 17 November 2016, 20:10:33 »
+Just my 2 cents on the rollover detection criterion.  I am interested in using the spacebar as an extra ctrl, so there is a lot of problems with fast typing rollover. 
+
+ I found that adding timeouts makes things a bit unpredictable, so I don't like them as a solution. What I ended up doing, and it works quite well even in actual real world typing,  at least for me, is the following. 
+
+If spacebar is pressed, X is released,  then treat the spacebar press as a space press. 
+
+If spacebar is pressed,  X is pressed and spacebar is released,  treat the spacebar events as space events
+
+Otherwise treat the spacebar press (and the following release) as a ctrl. 
+
+I guess the key thing is the first of the checks. It makes all the difference in the world for me. 
+I am implementing it with a patched version of the ahm patched evdev driver. 
+
