@@ -190,11 +190,6 @@ function reloadWebPage()
 end
 
 function launchApplications.generateHtml()
-    --local focusedApp= hs.window.frontmostWindow():application()
-    local focusedApp = hs.application.frontmostApplication()
-    local appTitle = focusedApp:title()
-    local allMenuItems = focusedApp:getMenuItems();
-    local myMenuItems = getAllMenuItems(allMenuItems)
 
     local html = [[
         <!DOCTYPE html>
