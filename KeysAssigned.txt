@@ -239,21 +239,21 @@ from: https://geekhack.org/index.php?topic=36064
 44 key keyboard from 2 numeric pads.
 
 default:
-esc		q	w	e	r	t	||	y	u	i	o	p	bs
-tab		a	s	d	f	g	||	h	j	k	l	;	ent
-l_shft	z	x	c	v	b	||	n	m	,	.	/	r_shft
-   l_ctrl	l_alt	fn2	fn1	||	space	win		'	r_ctrl
+esc		q	w		e		r		t		||	y	u	i	o	p	bs
+tab		a	s		d		f		g		||	h	j	k	l	;	ent
+l_shft	z	x		c		v		b		||	n	m	,	.	/	r_shft
+   l_ctrl	l_alt			fn2		fn1		||	space	win		'	r_ctrl
 
 Fn1:
-`		1	2	3	4	5	||	6	7	8	9	0	bs
-tab		F1	F2	F3	F4	F5	||	(+)	4	5	6	-	ent
-l_shft	F6	F7	F8	F9	F10	||	(*)	1	2	3	/	=
-	l_ctrl	l_alt	fn2	fn1	||	  0		  .		,	esc
+`		1	2		3		4		5		||	6	7	8	9	0	bs
+tab		F1	F2		F3		F4		F5		||	(+)	4	5	6	-	ent
+l_shft	F6	F7		F8		F9		F10		||	(*)	1	2	3	/	=
+	l_ctrl		l_alt		fn2		fn1		||	  0		  .		,	esc
 
 Fn2:
-~		!	@	#	$	%	||	^		&		*		(	)		esc
-tab		F11	F13	insert	home||	p_up	left	down	up	right	"	'
-l_shft	F12	email	del	end	||	p_down	[		]		{		}	\	=
-	l_ctrl		l_alt	fn2	||	fn1		  space			  win		|	_
+~		!	@		#		$		%		||	^		&		*		(	)	esc
+tab		F11	F13		insert	home	p_up	||	left	down	up	right	"	'
+l_shft	F12	email	del		end		p_down	||	[		]		{		}	\	=
+	l_ctrl		l_alt		fn2		fn1		||	  space			  win		|	_
 ------------------------------------------------------
 
