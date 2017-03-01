@@ -80,6 +80,12 @@ function mouseHighlight()
     end)
 end
 
+
+ function manyDashes()
+	 hs.eventtap.keyStrokes('-------------------------------------------')
+end
+
+
 -- private
 local funNameToFunction = {
 	typeClipboard = typeClipboardAsText,
@@ -91,7 +97,8 @@ local funNameToFunction = {
 	moveToDone = moveToDone,
 	moveToStatus = moveToStatus,
 	lockMyScreen = lockMyScreen,
-	mouseHighlight = mouseHighlight
+	mouseHighlight = mouseHighlight,
+	manydashes = manyDashes
 }
 
 local funNameToHelpText = {
@@ -104,7 +111,8 @@ local funNameToHelpText = {
 	moveToDone =		'Mail: Move current item to "Done"',
 	moveToStatus =		'Mail: Move current item to "Status"',
 	lockMyScreen = 		'Lock screen so you can walk away',
-	mouseHighlight = 	'Surround mouse cursor with red circle for 3 seconds'
+	mouseHighlight = 	'Surround mouse cursor with red circle for 3 seconds',
+	manydashes = 		'Type 42 hyphens'
 }
 function miscFunctions.bind(modifiers, char, functName)
 	debuglog("miscFunctions binding: "..char.." to "..functName)
