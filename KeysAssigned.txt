@@ -80,8 +80,25 @@ Kbd		OSX Pref	Seil	Hammer	Karab	USB Ov*	Function
 	b) so that fewer keyboard interceptors are in use, simplifying implementation
 		and tracking.
 
----------------------------------------------------------------------
+=====================================================================
 Things to consider adding:
+
+a) Different kinds of "Caps Lock":
+	AlphaCaps (but no shift on numerics & Punctuapion) so:
+		AC_Mode + abc-123 -->> ABC-123 and you're still in caps mode until (?) <Esc>? Space(?)
+	CamelCase?
+	Snake_case_for_java	Spaces become "_" until <esc>?
+	etc.
+	
+	Also change case of selection (cut, modify, paste)
+
+b) Run Preview
+c) run oXygen
+d) Confluence: tech pubs, ASCN
+e) fo to ADN, Learning
+
+
+---------------------------------------------------------------------
 
 Unload and delete the razer kext (still present on home MacBook Pro)
 
