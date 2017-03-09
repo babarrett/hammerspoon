@@ -80,8 +80,25 @@ Kbd		OSX Pref	Seil	Hammer	Karab	USB Ov*	Function
 	b) so that fewer keyboard interceptors are in use, simplifying implementation
 		and tracking.
 
----------------------------------------------------------------------
+=====================================================================
 Things to consider adding:
+
+a) Different kinds of "Caps Lock":
+	AlphaCaps (but no shift on numerics & Punctuapion) so:
+		AC_Mode + abc-123 -->> ABC-123 and you're still in caps mode until (?) <Esc>? Space(?)
+	CamelCase?
+	Snake_case_for_java	Spaces become "_" until <esc>?
+	etc.
+	
+	Also change case of selection (cut, modify, paste)
+
+b) Run Preview
+c) run oXygen
+d) Confluence: tech pubs, ASCN
+e) Go to ADN, Learning center
+
+
+---------------------------------------------------------------------
 
 Unload and delete the razer kext (still present on home MacBook Pro)
 
@@ -256,3 +273,15 @@ tab		F11	F13		insert	home	p_up	||	left	down	up	right	"	'
 l_shft	F12	email	del		end		p_down	||	[		]		{		}	\	=
 	l_ctrl		l_alt		fn2		fn1		||	  space			  win		|	_
 ------------------------------------------------------
+=======
+
+Changes to make:
+• Move all OS mod keys to thumb. (Cmd, Opt, Ctrl, Shift) Make 1-Shot.
+• Move all layer keys to thumb. Make 1-Shot.
+• Find a new convenient place for Backspace/Del
+• Put 3 layer keys on home row (requires hold)
+• For now the "Layer"/Mode keys are duplicated. These may be scaled back after I "get my hands" on the keyboard.
+• The blank keys are unused.
+• The light (gray, lavender, blue) keys represent keys that may be "hard to reach" and that I therefore could live without.
+• The SpaceFn+1,2,3 are for New tab, Previous, and Next tab.
+
