@@ -256,4 +256,3 @@ tab		F11	F13		insert	home	p_up	||	left	down	up	right	"	'
 l_shft	F12	email	del		end		p_down	||	[		]		{		}	\	=
 	l_ctrl		l_alt		fn2		fn1		||	  space			  win		|	_
 ------------------------------------------------------
-
