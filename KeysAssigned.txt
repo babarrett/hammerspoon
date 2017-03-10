@@ -285,3 +285,19 @@ Changes to make:
 • The light (gray, lavender, blue) keys represent keys that may be "hard to reach" and that I therefore could live without.
 • The SpaceFn+1,2,3 are for New tab, Previous, and Next tab.
 
+-----
+GH-122 requests for prototypes:
+1b		ErgoMacros
+1b		(or later prod) Nathan
+1b		hebbler
+1b		cvnviloq
+1a,1b	terrymathews
+1a		donutcat
+1b,2	laughatpain
+1b		spaceman1200
+2		hak foo
+1a,2	xondat
+--------
+1a = 4
+1b = 6 or 7 Nathan
+2  = 3 or 4 Nathan
