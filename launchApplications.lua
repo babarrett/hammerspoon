@@ -1,5 +1,4 @@
 -- Launch Applications
--- (TODO: Can also be used for websites)
 -- TODO: Send up, down, left, right changes to web page as
 --	Javascript to increase speed over page load. Maybe something
 --	like: changeSelectionFromTo(fromCell, toCell) to move a covering rectangle
@@ -42,8 +41,10 @@ local appShortCuts = {
     N = {'Notetaker', 'Notetaker', nil},
     O = {'Oxygen', 'Oxygen XML Author', nil},
 
-    R = {'Remote Desktop', '/Applications/Microsoft Remote Desktop.app/', nil}, -- > hs.application.nameForBundleID("com.microsoft.rdc.mac") --> "Microsoft Remote Desktop"
+--	P = {'Pages', 'Pages', nil},
+	
     P = {'System Preferences', 'System Preferences', nil},
+    R = {'Remote Desktop', '/Applications/Microsoft Remote Desktop.app/', nil}, -- > hs.application.nameForBundleID("com.microsoft.rdc.mac") --> "Microsoft Remote Desktop"
     S = {'Safari', 'Safari', nil},
     
     T = {'Tunnelblick', 'Tunnelblick', nil},
@@ -52,13 +53,13 @@ local appShortCuts = {
 
 local webShortCuts = {
 
-    A = {"Aspera Support", nil, "Aspera Support"},
+    A = {"Aspera Support", nil, "Support.asperasoft.com"},
     B = {"Bluepages", nil, "Bluepages"},
     D = {"Google Docs", nil, "docs.google.com"},
 
     G = {"Google Drive", nil, "drive.google.com"},
     H = {"Home", nil, "http://brucebarrett.com/browserhome/brucehome.html"},
-    J = {"Jira ASCN", nil, "Jira ASCN"},
+    J = {"Jira ASCN", nil, "jira.aspera.us"},
 
     K = {"KLE", nil, "http://www.keyboard-layout-editor.com"},
     L = {"Aspera Downlads", nil, "downlads.asperasoft.com"},
@@ -66,7 +67,7 @@ local webShortCuts = {
 
     N = {"ADN", nil, "developer.asperasoft.com"},
     S = {"Google Sheets", nil, "sheets.google.com"},
-    T = {"Confluence TP", nil, "Confluence TP"}
+    T = {"Confluence TP", nil, "confluence.aspera.us"}
 
 }
 
@@ -90,12 +91,12 @@ local modalWebKey = hs.hotkey.modal.new(HyperFn, 'W')
 	modalAppKey:bind('', 'space',  
 		function() 
 		debuglog("Space")
-		launchAppBySelection()
+		launchAppOrWebBySelection("App")
 		modalAppKey:exit() end)
 	modalAppKey:bind('', 'return',  
 		function() 
 		debuglog("Return")
-		launchAppBySelection()
+		launchAppOrWebBySelection("App")
 		modalAppKey:exit() end)
 
 -- Completion keys Web
@@ -106,15 +107,15 @@ local modalWebKey = hs.hotkey.modal.new(HyperFn, 'W')
 	modalWebKey:bind('', 'space',  
 		function() 
 		debuglog("Space")
-		launchWebBySelection()
+		launchAppOrWebBySelection("Web")
 		modalWebKey:exit() end)
 	modalWebKey:bind('', 'return',  
 		function() 
 		debuglog("Return")
-		launchWebBySelection()
+		launchAppOrWebBySelection("Web")
 		modalWebKey:exit() end)
 
--- arrow keys
+-- arrow keys, app
 	-- insert jikl or wasd as arrow keys here too, if you wish.
 	-- better yet, just map them as you usually would and they'll
 	-- pass through here anyway.
@@ -122,32 +123,57 @@ local modalWebKey = hs.hotkey.modal.new(HyperFn, 'W')
 		function() 
 		debuglog("Left")
 		xsel = math.max(xmin, xsel-1)
-		reloadWebPage()
+		reloadWebPage(generateAppTable)
 		end)
 	modalAppKey:bind('', 'right', nil, 
 		function() 
 		debuglog("Right")
 		xsel = math.min(xmax, xsel+1)
-		reloadWebPage()
+		reloadWebPage(generateAppTable)
 		end)
 	modalAppKey:bind('', 'up', nil, 
 		function() 
 		debuglog("Up")
 		ysel = math.max(ymin, ysel-1)
-		reloadWebPage()
+		reloadWebPage(generateAppTable)
 		end)
 	modalAppKey:bind('', 'down', nil, 
 		function() 
 		debuglog("Down")
 		ysel = math.min(ymax, ysel+1)
-		reloadWebPage()
+		reloadWebPage(generateAppTable)
+		end)
+
+-- arrow keys, Web
+	modalWebKey:bind('', 'left', nil, 
+		function() 
+		debuglog("Left")
+		xsel = math.max(xmin, xsel-1)
+		reloadWebPage(generateWebTable)
+		end)
+	modalWebKey:bind('', 'right', nil, 
+		function() 
+		debuglog("Right")
+		xsel = math.min(xmax, xsel+1)
+		reloadWebPage(generateWebTable)
+		end)
+	modalWebKey:bind('', 'up', nil, 
+		function() 
+		debuglog("Up")
+		ysel = math.max(ymin, ysel-1)
+		reloadWebPage(generateWebTable)
+		end)
+	modalWebKey:bind('', 'down', nil, 
+		function() 
+		debuglog("Down")
+		ysel = math.min(ymax, ysel+1)
+		reloadWebPage(generateWebhTable)
 		end)
 
 
 -- App launch keys (defined in appShortCuts)
 -- Pick up Applications to offer, sorted by activation key
 for key, appInfo in hs.fnutils.sortByKeys(appShortCuts) do
-    -- TODO: Test App for nil and Web site for != nil, open website instead
     modalAppKey:bind('', key, 'Launching '..appInfo[1], 
       function() 
         if (not hs.application.launchOrFocus(appInfo[2])) then
@@ -169,7 +195,7 @@ function modalAppKey:entered()
   -- Select, approximately, the center cell of the App array
   xsel = math.floor((xmax-xmin)/2)
   ysel = math.floor((ymax-ymin)/2)
-  reloadWebPage()
+  reloadWebPage(generateAppTable)
 end
 
 function modalWebKey:entered()
@@ -184,7 +210,7 @@ function modalWebKey:entered()
   -- Select, approximately, the center cell of the App array
   xsel = math.floor((xmax-xmin)/2)
   ysel = math.floor((ymax-ymin)/2)
-  reloadWebPage()
+  reloadWebPage(generateWebTable)
 end
 
 function modalAppKey:exited() 
@@ -197,35 +223,61 @@ function modalAppKey:exited()
   debuglog("LaunchApp exited")
 end
 
-function launchAppBySelection()
+function modalWebKey:exited() 
+  -- Take down App selector
+  if webPageView ~= nil then
+    debuglog("webPageView defined")
+    webPageView:delete()
+    webPageView=nil
+  end
+  debuglog("LaunchWebpage exited")
+end
+
+function launchAppOrWebBySelection(launchType)
   app = nil
   -- which index, based  on (x, y) cell was selected
   index = ysel * (xmax+1) + xsel
-  debuglog("(x, y) -- index= (" .. xsel .. ", " .. ysel .. ") -- " .. index)
-  for key, appInfo in hs.fnutils.sortByKeys(appShortCuts) do
+  debuglog("LaunchType: ".. launchType .."; (x, y) -- index= (" .. xsel .. ", " .. ysel .. ") -- " .. index)
+  if (launchType == "App") then
+  	dataTable = appShortCuts
+  else
+    dataTable = webShortCuts
+--  dataTable =  (launchType == "App") ? appShortCuts : webShortCuts;
+  end
+  for key, appInfo in hs.fnutils.sortByKeys(dataTable) do
     if index == 0 then
-      app = appInfo[2]
-    end
+				  if (launchType == "App") then
+					app = appInfo[2]
+					debuglog("Assigning app: "..app)
+				  else
+					app = appInfo[3]
+					debuglog("Assigning webpage: "..app)
+				  end
+	end
     index = index -1
   end
-  if app ~= nil then
-    hs.alert.show('Launching... '..app)
+  if launchType == "App" then		-- app ~= nil then
+    hs.alert.show('Launching app... '..app)
     hs.application.launchOrFocus(app)
+  else
+    hs.alert.show('Launching webpage... '..app)
+    hs.execute("open " .. app)
+    -- hs.application.launchOrFocus(app)
   end
 end
 
-function reloadWebPage()
+function reloadWebPage(generateTable)
   if webPageView then
   -- if it exists, refresh it
 	debuglog("Refresh web page")
-    webPageView:html(launchApplications.generateHtml(generateAppTable))
+    webPageView:html(launchApplications.generateHtml(generateTable))
   else
   -- if it doesn't exist, make it
 	debuglog("Create new web page")
 	webPageView = hs.webview.new({x = 200, y = 200, w = 650, h = 350}, { developerExtrasEnabled = false, suppressesIncrementalRendering = false })
 	:windowStyle("utility")
 	:closeOnEscape(true)
-	:html(launchApplications.generateHtml(generateAppTable))
+	:html(launchApplications.generateHtml(generateTable))
 	:allowGestures(false)
 	:windowTitle("Launch Applicatiion Mode")
 	:show()

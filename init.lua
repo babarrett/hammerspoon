@@ -26,9 +26,7 @@ local pasteCurrentSafariUrl 	= require "pasteCurrentSafariUrl"
 local windowManagement 			= require "windowManagement"
 local miscFunctions 			= require "miscFunctions"
 local cheatsheets				= require "cheatsheets"
-local launchApplications		= require "launchApplications"
---local launchWebpages			= require "launchWebpages"
---require "launchWebPages"		-- TODO: either add into HyperFn+A (apps table) or clone that code for HyperFn+A
+local launchApplications		= require "launchApplications"	-- or Webpages
 require "KeyPressShow"
 --require "characterMapping"
 
@@ -37,7 +35,6 @@ HF.bind(HyperFn, "H", "hammerspoonHelp")
 pasteCurrentSafariUrl.bind(HyperFn, "U", "pasteSafariUrl")
 miscFunctions.bind(HyperFn, "V", "typeClipboard")
 miscFunctions.bind(HyperFn, "Q", "quitApp")
---miscFunctions.bind(HyperFn, "W", "closeWindow")	-- Using "W" for select web page instead
 miscFunctions.bind(HyperFn, "D", "dictate")
 --HyperFn+"," and HyperFn+"." get intercepted by OS X and will never call Hammerspoon
 --miscFunctions.bind({"ctrl", "shift"}, "/", "moveToDone")
