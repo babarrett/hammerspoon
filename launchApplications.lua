@@ -50,67 +50,93 @@ local appShortCuts = {
     X = {'Firefox', 'Firefox', nil},
 }
 
--- Build a 3x5 grid of app names
--- TODO: Re-do these with '1'-based indexing.
-local xmin =0
-local xmax =2
-local ymin =0
-local ymax =4
+local webShortCuts = {
 
-local xsel
-local ysel
+    A = {"Aspera Support", nil, "Aspera Support"},
+    B = {"Bluepages", nil, "Bluepages"},
+    D = {"Google Docs", nil, "docs.google.com"},
 
-local launchAppActive = nil		-- Inactive
+    G = {"Google Drive", nil, "drive.google.com"},
+    H = {"Home", nil, "http://brucebarrett.com/browserhome/brucehome.html"},
+    J = {"Jira ASCN", nil, "Jira ASCN"},
+
+    K = {"KLE", nil, "http://www.keyboard-layout-editor.com"},
+    L = {"Aspera Downlads", nil, "downlads.asperasoft.com"},
+    M = {"IBM Mail", nil, "IBM Mail"},
+
+    N = {"ADN", nil, "developer.asperasoft.com"},
+    S = {"Google Sheets", nil, "sheets.google.com"},
+    T = {"Confluence TP", nil, "Confluence TP"}
+
+}
+
 
 --	HyperFn+A starts "Launch Application mode.
 --	It terminates with selection an app, or <Esc>
-local modalKey = hs.hotkey.modal.new(HyperFn, 'A')
+local modalAppKey = hs.hotkey.modal.new(HyperFn, 'A')
+
+--	HyperFn+W starts "Launch Webpage mode.
+--	It terminates with selection a web page, or <Esc>
+local modalWebKey = hs.hotkey.modal.new(HyperFn, 'W')
 
 --	Bind keys of interest
 --	hs.hotkey.modal:bind(mods, key, message, pressedfn, releasedfn, repeatfn) -> hs.hotkey.modal object
 
--- Completion keys
-	modalKey:bind('', 'escape', 
+-- Completion keys App
+	modalAppKey:bind('', 'escape', 
 		function() 
-		launchAppActive = nil
 		debuglog("Escape")
-		modalKey:exit() end)
-	modalKey:bind('', 'space',  
+		modalAppKey:exit() end)
+	modalAppKey:bind('', 'space',  
 		function() 
-		launchAppActive = nil
 		debuglog("Space")
 		launchAppBySelection()
-		modalKey:exit() end)
-	modalKey:bind('', 'return',  
+		modalAppKey:exit() end)
+	modalAppKey:bind('', 'return',  
 		function() 
-		launchAppActive = nil
 		debuglog("Return")
 		launchAppBySelection()
-		modalKey:exit() end)
+		modalAppKey:exit() end)
+
+-- Completion keys Web
+	modalWebKey:bind('', 'escape', 
+		function() 
+		debuglog("Escape")
+		modalWebKey:exit() end)
+	modalWebKey:bind('', 'space',  
+		function() 
+		debuglog("Space")
+		launchWebBySelection()
+		modalWebKey:exit() end)
+	modalWebKey:bind('', 'return',  
+		function() 
+		debuglog("Return")
+		launchWebBySelection()
+		modalWebKey:exit() end)
 
 -- arrow keys
 	-- insert jikl or wasd as arrow keys here too, if you wish.
 	-- better yet, just map them as you usually would and they'll
 	-- pass through here anyway.
-	modalKey:bind('', 'left', nil, 
+	modalAppKey:bind('', 'left', nil, 
 		function() 
 		debuglog("Left")
 		xsel = math.max(xmin, xsel-1)
 		reloadWebPage()
 		end)
-	modalKey:bind('', 'right', nil, 
+	modalAppKey:bind('', 'right', nil, 
 		function() 
 		debuglog("Right")
 		xsel = math.min(xmax, xsel+1)
 		reloadWebPage()
 		end)
-	modalKey:bind('', 'up', nil, 
+	modalAppKey:bind('', 'up', nil, 
 		function() 
 		debuglog("Up")
 		ysel = math.max(ymin, ysel-1)
 		reloadWebPage()
 		end)
-	modalKey:bind('', 'down', nil, 
+	modalAppKey:bind('', 'down', nil, 
 		function() 
 		debuglog("Down")
 		ysel = math.min(ymax, ysel+1)
@@ -122,23 +148,46 @@ local modalKey = hs.hotkey.modal.new(HyperFn, 'A')
 -- Pick up Applications to offer, sorted by activation key
 for key, appInfo in hs.fnutils.sortByKeys(appShortCuts) do
     -- TODO: Test App for nil and Web site for != nil, open website instead
-    modalKey:bind('', key, 'Launching '..appInfo[1], 
+    modalAppKey:bind('', key, 'Launching '..appInfo[1], 
       function() 
         if (not hs.application.launchOrFocus(appInfo[2])) then
           hs.application.launchOrFocusByBundleID(appInfo[2])	-- use BundleID ("com.aspera.connect") if App name fails
         end
       end,	-- Key down, launch
-      function() modalKey:exit() end)							-- Key up, leave mode
+      function() modalAppKey:exit() end)							-- Key up, leave mode
 end
 
-function modalKey:entered()
+function modalAppKey:entered()
+  -- Start with proper grid size
+  -- Build a 3x5 grid of app names
+  -- TODO: Re-do these with '1'-based indexing.
+  xmin =0
+  xmax =2
+  ymin =0
+  ymax =4
+
   -- Select, approximately, the center cell of the App array
   xsel = math.floor((xmax-xmin)/2)
   ysel = math.floor((ymax-ymin)/2)
   reloadWebPage()
 end
 
-function modalKey:exited() 
+function modalWebKey:entered()
+  -- Start with proper grid size
+  -- Build a 3x4 grid of web names
+  -- TODO: Re-do these with '1'-based indexing.
+  xmin =0
+  xmax =2
+  ymin =0
+  ymax =3
+
+  -- Select, approximately, the center cell of the App array
+  xsel = math.floor((xmax-xmin)/2)
+  ysel = math.floor((ymax-ymin)/2)
+  reloadWebPage()
+end
+
+function modalAppKey:exited() 
   -- Take down App selector
   if webPageView ~= nil then
     debuglog("webPageView defined")
@@ -169,14 +218,14 @@ function reloadWebPage()
   if webPageView then
   -- if it exists, refresh it
 	debuglog("Refresh web page")
-    webPageView:html(launchApplications.generateHtml())
+    webPageView:html(launchApplications.generateHtml(generateAppTable))
   else
   -- if it doesn't exist, make it
 	debuglog("Create new web page")
 	webPageView = hs.webview.new({x = 200, y = 200, w = 650, h = 350}, { developerExtrasEnabled = false, suppressesIncrementalRendering = false })
 	:windowStyle("utility")
 	:closeOnEscape(true)
-	:html(launchApplications.generateHtml())
+	:html(launchApplications.generateHtml(generateAppTable))
 	:allowGestures(false)
 	:windowTitle("Launch Applicatiion Mode")
 	:show()
@@ -189,7 +238,7 @@ function reloadWebPage()
   
 end
 
-function launchApplications.generateHtml()
+function launchApplications.generateHtml(whichTable)
 
     local html = [[
         <!DOCTYPE html>
@@ -255,7 +304,7 @@ function launchApplications.generateHtml()
         </html><br>
 		<div id="container">
 		<table id="selTable" width="90%"  border="1">
-		]]..generateTable()..[[
+		]]..whichTable()..[[
 		</table>
 	</div>
 	<div>
@@ -268,9 +317,7 @@ function launchApplications.generateHtml()
     return html
 end
 
-function generateTable()
-	jumpChars = {"M", "S", "C", "X", "I", "F", "P", "B", "N"}
-	appNmaes  = {"Mail", "Safari", "Chrome", "Firefox", "iTerm", "Finder", "System Prefs", "BBedit", "Notetaker" }
+function generateAppTable()
     local tableText =  "<tr>"
 
 	local x = 0;
@@ -300,5 +347,38 @@ function generateTable()
 
     return tableText
 end
+
+function generateWebTable()
+    local tableText =  "<tr>"
+
+	local x = 0;
+	local y = 0;
+	local i = 0;
+	
+	for key, appInfo in hs.fnutils.sortByKeys(webShortCuts) do
+		tableText = tableText .. "<td class = 'jumpchar' width='5%' align='right'>" .. key ..":";
+		tableText = tableText .. "<td class="
+		
+		if (x==xsel and y==ysel) then 
+			tableText = tableText .. "'sel'"
+		else
+			tableText = tableText ..  "'unsel'"
+		end
+		tableText = tableText .. " width='22%'>" .. appInfo[1] .. "</td>";
+		
+		x = x + 1
+		if x > xmax then
+			-- end tr
+			tableText = tableText .. "</tr>\n<tr>"
+			x = xmin
+			y = y + 1
+		end
+
+	end
+
+    return tableText
+end
+
+
 
 return launchApplications

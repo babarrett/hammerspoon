@@ -27,7 +27,7 @@ local windowManagement 			= require "windowManagement"
 local miscFunctions 			= require "miscFunctions"
 local cheatsheets				= require "cheatsheets"
 local launchApplications		= require "launchApplications"
-local launchWebpages			= require "launchWebpages"
+--local launchWebpages			= require "launchWebpages"
 --require "launchWebPages"		-- TODO: either add into HyperFn+A (apps table) or clone that code for HyperFn+A
 require "KeyPressShow"
 --require "characterMapping"
