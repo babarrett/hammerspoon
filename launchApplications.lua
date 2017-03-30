@@ -16,11 +16,17 @@ launchApplications = {}
 --	TODO: Send up, down, left, right changes to Hammerspoon web page as
 --		Javascript to increase speed over page load. Maybe something
 --		like: changeSelectionFromTo(fromCell, toCell) to move a covering rectangle
---	TODO: (somehow) support entries that don't have single character hotkeys. Can only reach w/Arrows
+--	TODO: (somehow) support entries that don't have single character hotkeys. Can only reach w/Arrows. Put at start of table?
 --	TODO: <Tab> to move to part of table that doesn't have single-character hotkey launch.
---	TODO: Support NW, NE, SW, SE "arrow keys" for navigating App/Webpage grids
---	TODO: Set launch type (App, Web) in a global on entered() and simplify the rest of the code (remove much of the duplicate code)
+--	TODO: Support NW, NE, SW, SE "arrow keys" for navigating App/Webpage grids. Makes for fewer keystrokes required.
 --	TODO: Go totally wild and support a 3rd dimension. Could access 3x3x3=27 entries w/ 2 arrow keys, or 5x5x5=125 entries with 4 arrow keys
+--	TODO: Set launch type (App, Web) in a global on entered() and simplify the rest of the code (remove much of the duplicate code)
+--	TODO: "Merge" hot key behavior
+--			1. still have 2 tables, appShortCuts and webShortCuts
+--			2. reduce modalAppKey & modalWebKey bindings to 1 table. When both tables use the same keys stroke (or always?)
+--				callout to Handle(key) which will pick the right behavior based upon the global, including "do nothing"
+--				if the current "mode" does not have that key defined.
+--			3. Need to handle "Space" and "Return" in a similar way.
 
 local DEFAULTBROWSER = 'Safari'
 local webPageView = nil
