@@ -1,7 +1,4 @@
--- Launch Applications
--- TODO: Send up, down, left, right changes to web page as
---	Javascript to increase speed over page load. Maybe something
---	like: changeSelectionFromTo(fromCell, toCell) to move a covering rectangle
+-- Launch Applications (or web pages)
 -- Displays a NxM grid of App names and short-cut letters
 -- User can use arrow keys to select an app to switch to, 
 -- Enter or Space to switch. Or may use short-cut letters
@@ -14,10 +11,16 @@ launchApplications = {}
 --	arrow keys to select an app to switch to.
 --	Enter or Space to switch.
 --	<single key> to launch an application
---	TODO: <Tab> to move to part of table that doesn't have single-character launch.
 --	To leave "Application mode" without launching an application press Escape.
 
--- BUG: keys not recognized in webapp side.
+--	TODO: Send up, down, left, right changes to Hammerspoon web page as
+--		Javascript to increase speed over page load. Maybe something
+--		like: changeSelectionFromTo(fromCell, toCell) to move a covering rectangle
+--	TODO: (somehow) support entries that don't have single character hotkeys. Can only reach w/Arrows
+--	TODO: <Tab> to move to part of table that doesn't have single-character hotkey launch.
+--	TODO: Support NW, NE, SW, SE "arrow keys" for navigating App/Webpage grids
+--	TODO: Set launch type (App, Web) in a global on entered() and simplify the rest of the code (remove much of the duplicate code)
+--	TODO: Go totally wild and support a 3rd dimension. Could access 3x3x3=27 entries w/ 2 arrow keys, or 5x5x5=125 entries with 4 arrow keys
 
 local DEFAULTBROWSER = 'Safari'
 local webPageView = nil
@@ -31,6 +34,7 @@ local webPageView = nil
 local appShortCuts = {
 	-- "/Users/bbarrett/" works, but "~/" does not. :-(
 	-- hs.application.launchOrFocusByBundleID("com.aspera.connect") works.
+	-- TODO: Would be nice to be able to add slots in the table that didn't require 1-character (hot key) shortcuts.
     A = {'Connect', 'com.aspera.connect', nil}, -- > hs.application.bundleID(hs.application.applicationForPID(58463)) --> com.aspera.connect
     B = {'BBEdit', 'BBEdit', nil},
     C = {'Chrome', 'Google Chrome', nil},
@@ -51,6 +55,8 @@ local appShortCuts = {
     
     T = {'Tunnelblick', 'Tunnelblick', nil},
     X = {'Firefox', 'Firefox', nil},
+    Z = {'Numbers', 'Numbers', nil},
+    
 }
 
 local webShortCuts = {
