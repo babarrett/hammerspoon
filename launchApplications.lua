@@ -125,25 +125,25 @@ local modalWebKey = hs.hotkey.modal.new(HyperFn, 'W')
 		function() 
 		debuglog("Left")
 		xsel = math.max(xmin, xsel-1)
-		reloadWebPage(generateAppTable)
+		reloadWebPage(generateAppTable, "App")
 		end)
 	modalAppKey:bind('', 'right', nil, 
 		function() 
 		debuglog("Right")
 		xsel = math.min(xmax, xsel+1)
-		reloadWebPage(generateAppTable)
+		reloadWebPage(generateAppTable, "App")
 		end)
 	modalAppKey:bind('', 'up', nil, 
 		function() 
 		debuglog("Up")
 		ysel = math.max(ymin, ysel-1)
-		reloadWebPage(generateAppTable)
+		reloadWebPage(generateAppTable, "App")
 		end)
 	modalAppKey:bind('', 'down', nil, 
 		function() 
 		debuglog("Down, a")
 		ysel = math.min(ymax, ysel+1)
-		reloadWebPage(generateAppTable)
+		reloadWebPage(generateAppTable, "App")
 		end)
 
 -- arrow keys, Web
@@ -151,25 +151,25 @@ local modalWebKey = hs.hotkey.modal.new(HyperFn, 'W')
 		function() 
 		debuglog("Left")
 		xsel = math.max(xmin, xsel-1)
-		reloadWebPage(generateWebTable)
+		reloadWebPage(generateWebTable, "Webpage")
 		end)
 	modalWebKey:bind('', 'right', nil, 
 		function() 
 		debuglog("Right")
 		xsel = math.min(xmax, xsel+1)
-		reloadWebPage(generateWebTable)
+		reloadWebPage(generateWebTable, "Webpage")
 		end)
 	modalWebKey:bind('', 'up', nil, 
 		function() 
 		debuglog("Up")
 		ysel = math.max(ymin, ysel-1)
-		reloadWebPage(generateWebTable)
+		reloadWebPage(generateWebTable, "Webpage")
 		end)
 	modalWebKey:bind('', 'down', nil, 
 		function() 
 		debuglog("Down, w")
 		ysel = math.min(ymax, ysel+1)
-		reloadWebPage(generateWebTable)
+		reloadWebPage(generateWebTable, "Webpage")
 		end)
 
 
@@ -207,7 +207,7 @@ function modalAppKey:entered()
   -- Select, approximately, the center cell of the App array
   xsel = math.floor((xmax-xmin)/2)
   ysel = math.floor((ymax-ymin)/2)
-  reloadWebPage(generateAppTable)
+  reloadWebPage(generateAppTable, "App")
 end
 
 function modalWebKey:entered()
@@ -222,7 +222,7 @@ function modalWebKey:entered()
   -- Select, approximately, the center cell of the App array
   xsel = math.floor((xmax-xmin)/2)
   ysel = math.floor((ymax-ymin)/2)
-  reloadWebPage(generateWebTable)
+  reloadWebPage(generateWebTable, "Webpage")
 end
 
 function modalAppKey:exited() 
