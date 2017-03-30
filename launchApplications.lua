@@ -61,21 +61,21 @@ local appShortCuts = {
 
 local webShortCuts = {
 
-    A = {"Aspera Support", nil, "Support.asperasoft.com"},
+    A = {"Aspera Support", nil, "https://aspera.zendesk.com/agent/dashboard"},
     B = {"Bluepages", nil, "Bluepages"},
-    D = {"Google Docs", nil, "docs.google.com"},
+    D = {"Google Docs", nil, "https://docs.google.com/document/u/0/?tgif=c"},
 
-    G = {"Google Drive", nil, "drive.google.com"},
+    G = {"Google Drive", nil, "https://drive.google.com/drive/my-drive"},
     H = {"Home", nil, "http://brucebarrett.com/browserhome/brucehome.html"},
-    J = {"Jira ASCN", nil, "jira.aspera.us"},
+    J = {"Jira ASCN", nil, "https://jira.aspera.us/projects/ASCN?selectedItem=com.atlassian.jira.jira-projects-plugin%3Arelease-page&status=no-filter"},
 
     K = {"KLE", nil, "http://www.keyboard-layout-editor.com"},
-    L = {"Aspera Downlads", nil, "downlads.asperasoft.com"},
+    L = {"Aspera Downlads", nil, "http://downloads.asperasoft.com"},
     M = {"IBM Mail", nil, "IBM Mail"},
 
-    N = {"ADN", nil, "developer.asperasoft.com"},
-    S = {"Google Sheets", nil, "sheets.google.com"},
-    T = {"Confluence TP", nil, "confluence.aspera.us"}
+    N = {"ADN", nil, "https://developer.asperasoft.com"},
+    S = {"Google Sheets", nil, "https://sheets.google.com"},
+    T = {"Confluence TP", nil, "https://confluence.aspera.us/display/TP/Technical+Publications"}
 
 }
 
