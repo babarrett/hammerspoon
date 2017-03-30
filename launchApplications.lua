@@ -17,6 +17,8 @@ launchApplications = {}
 --	TODO: <Tab> to move to part of table that doesn't have single-character launch.
 --	To leave "Application mode" without launching an application press Escape.
 
+-- BUG: keys not recognized in webapp side.
+
 local DEFAULTBROWSER = 'Safari'
 local webPageView = nil
 
@@ -139,7 +141,7 @@ local modalWebKey = hs.hotkey.modal.new(HyperFn, 'W')
 		end)
 	modalAppKey:bind('', 'down', nil, 
 		function() 
-		debuglog("Down")
+		debuglog("Down, a")
 		ysel = math.min(ymax, ysel+1)
 		reloadWebPage(generateAppTable)
 		end)
@@ -165,9 +167,9 @@ local modalWebKey = hs.hotkey.modal.new(HyperFn, 'W')
 		end)
 	modalWebKey:bind('', 'down', nil, 
 		function() 
-		debuglog("Down")
+		debuglog("Down, w")
 		ysel = math.min(ymax, ysel+1)
-		reloadWebPage(generateWebhTable)
+		reloadWebPage(generateWebTable)
 		end)
 
 
@@ -181,6 +183,16 @@ for key, appInfo in hs.fnutils.sortByKeys(appShortCuts) do
         end
       end,	-- Key down, launch
       function() modalAppKey:exit() end)							-- Key up, leave mode
+end
+
+-- App launch keys (defined in appShortCuts)
+-- Pick up Applications to offer, sorted by activation key
+for key, webInfo in hs.fnutils.sortByKeys(webShortCuts) do
+    modalWebKey:bind('', key, 'Launching '..webInfo[1], 
+      function()
+      	hs.execute("open " .. webInfo[3])
+      end,	-- Key down, launch
+      function() modalWebKey:exit() end)							-- Key up, leave mode
 end
 
 function modalAppKey:entered()
@@ -266,18 +278,18 @@ function launchAppOrWebBySelection(launchType)
   end
 end
 
-function reloadWebPage(generateTable)
+function reloadWebPage(generateTable, appwebtype)
   if webPageView then
   -- if it exists, refresh it
 	debuglog("Refresh web page")
-    webPageView:html(launchApplications.generateHtml(generateTable))
+    webPageView:html(launchApplications.generateHtml(generateTable, appwebtype))
   else
   -- if it doesn't exist, make it
 	debuglog("Create new web page")
 	webPageView = hs.webview.new({x = 200, y = 200, w = 650, h = 350}, { developerExtrasEnabled = false, suppressesIncrementalRendering = false })
 	:windowStyle("utility")
 	:closeOnEscape(true)
-	:html(launchApplications.generateHtml(generateTable))
+	:html(launchApplications.generateHtml(generateTable, appwebtype))
 	:allowGestures(false)
 	:windowTitle("Launch Applicatiion Mode")
 	:show()
@@ -290,8 +302,13 @@ function reloadWebPage(generateTable)
   
 end
 
-function launchApplications.generateHtml(whichTable)
-
+function launchApplications.generateHtml(whichTable, appwebtype)
+	local instructions
+	if (appwebtype == "App") then
+		instructions = {"App", "Application"}
+	else
+		instructions = {"Webpage", "Webpage"}
+	end
     local html = [[
         <!DOCTYPE html>
         <html>
@@ -345,8 +362,8 @@ function launchApplications.generateHtml(whichTable)
         </head>
           <body>
             <header>
-              <div class="title"><strong>Launch Application Mode</strong><br>
-				Use arrow keys to select App to launch.<br>
+              <div class="title"><strong>Launch ]]..instructions[2]..[[ Mode</strong><br>
+				Use arrow keys to select ]]..instructions[1]..[[ to launch.<br>
 				Space or return to launch.<br>
 				Esc to Cancel.
               </div>
@@ -360,7 +377,7 @@ function launchApplications.generateHtml(whichTable)
 		</table>
 	</div>
 	<div>
-		Selected cell = <span id="selCell">selected cell goes here</span>.
+		<!-- Selected cell = <span id="selCell">selected cell goes here</span>. -->
 	</div>
 
         ]]
@@ -401,6 +418,7 @@ function generateAppTable()
 end
 
 function generateWebTable()
+	debuglog("generateWebTable")
     local tableText =  "<tr>"
 
 	local x = 0;
