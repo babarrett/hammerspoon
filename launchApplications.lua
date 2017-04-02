@@ -20,7 +20,6 @@ launchApplications = {}
 --	TODO: <Tab> to move to part of table that doesn't have single-character hotkey launch.
 --	TODO: Support NW, NE, SW, SE "arrow keys" for navigating App/Webpage grids. Makes for fewer keystrokes required.
 --	TODO: Go totally wild and support a 3rd dimension. Could access 3x3x3=27 entries w/ 2 arrow keys, or 5x5x5=125 entries with 4 arrow keys
---	TODO: Set launch type (App, Web) in a global on entered() and simplify the rest of the code (remove much of the duplicate code)
 --	TODO: "Merge" hot key behavior
 --			1. still have 2 tables, appShortCuts and webShortCuts
 --			2. reduce modalAppKey & modalWebKey bindings to 1 table. When both tables use the same keys stroke (or always?)
@@ -29,7 +28,8 @@ launchApplications = {}
 --			3. Need to handle "Space" and "Return" in a similar way.
 
 local DEFAULTBROWSER = 'Safari'
-local webPageView = nil
+local pickerView = nil
+inMode = nil					-- I'm not crazy about globals, but this really simplified the code
 
 -- Format is:
 --   Key_to_press. A single key
@@ -85,104 +85,75 @@ local webShortCuts = {
 
 }
 
+-- TODO: support case changes too
+local changeCaseShortCuts = {
+	L = {"To lowercase", nil, nil},
+	T = {"To Title Case", nil, nil},
+	U = {"To UPPERCASE", nil, nil}
 
---	HyperFn+A starts "Launch Application mode.
+}
+
+
+--	HyperFn+A starts "Launch Application mode."
 --	It terminates with selection an app, or <Esc>
 local modalAppKey = hs.hotkey.modal.new(HyperFn, 'A')
 
---	HyperFn+W starts "Launch Webpage mode.
+--	HyperFn+W starts "Launch Webpage mode."
 --	It terminates with selection a web page, or <Esc>
 local modalWebKey = hs.hotkey.modal.new(HyperFn, 'W')
 
 --	Bind keys of interest
 --	hs.hotkey.modal:bind(mods, key, message, pressedfn, releasedfn, repeatfn) -> hs.hotkey.modal object
 
--- Completion keys App
-	modalAppKey:bind('', 'escape', 
+for index, modalKey in pairs({modalAppKey, modalWebKey}) do
+	debuglog("-=-; ")		-- gets called twice
+	modalKey:bind('', 'escape', 
 		function() 
 		debuglog("Escape")
-		modalAppKey:exit() end)
-	modalAppKey:bind('', 'space',  
+		modalKey:exit() end)
+	modalKey:bind('', 'space',  
 		function() 
 		debuglog("Space")
 		launchAppOrWebBySelection("App")
-		modalAppKey:exit() end)
-	modalAppKey:bind('', 'return',  
+		modalKey:exit() end)
+	modalKey:bind('', 'return',  
 		function() 
 		debuglog("Return")
 		launchAppOrWebBySelection("App")
-		modalAppKey:exit() end)
+		modalKey:exit() end)
 
--- Completion keys Web
-	modalWebKey:bind('', 'escape', 
-		function() 
-		debuglog("Escape")
-		modalWebKey:exit() end)
-	modalWebKey:bind('', 'space',  
-		function() 
-		debuglog("Space")
-		launchAppOrWebBySelection("Web")
-		modalWebKey:exit() end)
-	modalWebKey:bind('', 'return',  
-		function() 
-		debuglog("Return")
-		launchAppOrWebBySelection("Web")
-		modalWebKey:exit() end)
 
--- arrow keys, app
+-- arrow keys, app & web
 	-- insert jikl or wasd as arrow keys here too, if you wish.
 	-- better yet, just map them as you usually would and they'll
 	-- pass through here anyway.
-	modalAppKey:bind('', 'left', nil, 
+	modalKey:bind('', 'left', nil, 
 		function() 
 		debuglog("Left")
 		xsel = math.max(xmin, xsel-1)
-		reloadWebPage(generateAppTable, "App")
+		reloadPicker()
 		end)
-	modalAppKey:bind('', 'right', nil, 
+	modalKey:bind('', 'right', nil, 
 		function() 
 		debuglog("Right")
 		xsel = math.min(xmax, xsel+1)
-		reloadWebPage(generateAppTable, "App")
+		reloadPicker()
 		end)
-	modalAppKey:bind('', 'up', nil, 
+	modalKey:bind('', 'up', nil, 
 		function() 
 		debuglog("Up")
 		ysel = math.max(ymin, ysel-1)
-		reloadWebPage(generateAppTable, "App")
+		reloadPicker()
 		end)
-	modalAppKey:bind('', 'down', nil, 
+	modalKey:bind('', 'down', nil, 
 		function() 
 		debuglog("Down, a")
 		ysel = math.min(ymax, ysel+1)
-		reloadWebPage(generateAppTable, "App")
+		reloadPicker()
 		end)
 
--- arrow keys, Web
-	modalWebKey:bind('', 'left', nil, 
-		function() 
-		debuglog("Left")
-		xsel = math.max(xmin, xsel-1)
-		reloadWebPage(generateWebTable, "Webpage")
-		end)
-	modalWebKey:bind('', 'right', nil, 
-		function() 
-		debuglog("Right")
-		xsel = math.min(xmax, xsel+1)
-		reloadWebPage(generateWebTable, "Webpage")
-		end)
-	modalWebKey:bind('', 'up', nil, 
-		function() 
-		debuglog("Up")
-		ysel = math.max(ymin, ysel-1)
-		reloadWebPage(generateWebTable, "Webpage")
-		end)
-	modalWebKey:bind('', 'down', nil, 
-		function() 
-		debuglog("Down, w")
-		ysel = math.min(ymax, ysel+1)
-		reloadWebPage(generateWebTable, "Webpage")
-		end)
+end
+
 
 
 -- App launch keys (defined in appShortCuts)
@@ -197,7 +168,7 @@ for key, appInfo in hs.fnutils.sortByKeys(appShortCuts) do
       function() modalAppKey:exit() end)							-- Key up, leave mode
 end
 
--- App launch keys (defined in appShortCuts)
+-- Web launch keys (defined in webShortCuts)
 -- Pick up Applications to offer, sorted by activation key
 for key, webInfo in hs.fnutils.sortByKeys(webShortCuts) do
     modalWebKey:bind('', key, 'Launching '..webInfo[1], 
@@ -211,66 +182,75 @@ function modalAppKey:entered()
   -- Start with proper grid size
   -- Build a 3x5 grid of app names
   -- TODO: Re-do these with '1'-based indexing.
+  inMode = "App"
   xmin =0
   xmax =2
   ymin =0
   ymax =4
 
-  -- Select, approximately, the center cell of the App array
-  xsel = math.floor((xmax-xmin)/2)
-  ysel = math.floor((ymax-ymin)/2)
-  reloadWebPage(generateAppTable, "App")
+  -- Move cursor to "center" and load "web page picker:
+  centerAndShowPicker()
 end
 
 function modalWebKey:entered()
   -- Start with proper grid size
   -- Build a 3x4 grid of web names
   -- TODO: Re-do these with '1'-based indexing.
+  inMode = "Web"
   xmin =0
   xmax =2
   ymin =0
   ymax =3
 
+  -- Select, approximately, the center cell of the Web array
+  xsel = math.floor((xmax-xmin)/2)
+  ysel = math.floor((ymax-ymin)/2)
+  reloadPicker()
+end
+
+function centerAndShowPicker()
   -- Select, approximately, the center cell of the App array
   xsel = math.floor((xmax-xmin)/2)
   ysel = math.floor((ymax-ymin)/2)
-  reloadWebPage(generateWebTable, "Webpage")
+  reloadPicker()
 end
 
 function modalAppKey:exited() 
   -- Take down App selector
-  if webPageView ~= nil then
-    debuglog("webPageView defined")
-    webPageView:delete()
-    webPageView=nil
-  end
   debuglog("LaunchApp exited")
+  takeDownPicker()
 end
+
 
 function modalWebKey:exited() 
   -- Take down App selector
-  if webPageView ~= nil then
-    debuglog("webPageView defined")
-    webPageView:delete()
-    webPageView=nil
-  end
   debuglog("LaunchWebpage exited")
+  takeDownPicker()
 end
 
-function launchAppOrWebBySelection(launchType)
+function takeDownPicker()
+  if pickerView ~= nil then
+    debuglog("pickerView defined")
+    pickerView:delete()
+    pickerView=nil
+  end
+  inMode = nil
+end
+
+function launchAppOrWebBySelection()
   app = nil
   -- which index, based  on (x, y) cell was selected
   index = ysel * (xmax+1) + xsel
-  debuglog("LaunchType: ".. launchType .."; (x, y) -- index= (" .. xsel .. ", " .. ysel .. ") -- " .. index)
-  if (launchType == "App") then
+  debuglog("LaunchType: "..   inMode .."; (x, y) -- index= (" .. xsel .. ", " .. ysel .. ") -- " .. index)
+  if (inMode == "App") then
   	dataTable = appShortCuts
   else
     dataTable = webShortCuts
---  dataTable =  (launchType == "App") ? appShortCuts : webShortCuts;
+--  dataTable =  (inMode == "App") ? appShortCuts : webShortCuts;
   end
   for key, appInfo in hs.fnutils.sortByKeys(dataTable) do
     if index == 0 then
-				  if (launchType == "App") then
+				  if (inMode == "App") then
 					app = appInfo[2]
 					debuglog("Assigning app: "..app)
 				  else
@@ -280,7 +260,7 @@ function launchAppOrWebBySelection(launchType)
 	end
     index = index -1
   end
-  if launchType == "App" then		-- app ~= nil then
+  if inMode == "App" then		-- app ~= nil then
     hs.alert.show('Launching app... '..app)
     hs.application.launchOrFocus(app)
   else
@@ -290,33 +270,34 @@ function launchAppOrWebBySelection(launchType)
   end
 end
 
-function reloadWebPage(generateTable, appwebtype)
-  if webPageView then
+
+function reloadPicker()
+  if pickerView then
   -- if it exists, refresh it
 	debuglog("Refresh web page")
-    webPageView:html(launchApplications.generateHtml(generateTable, appwebtype))
+    pickerView:html(launchApplications.generateHtml())
   else
   -- if it doesn't exist, make it
 	debuglog("Create new web page")
-	webPageView = hs.webview.new({x = 200, y = 200, w = 650, h = 350}, { developerExtrasEnabled = false, suppressesIncrementalRendering = false })
+	pickerView = hs.webview.new({x = 200, y = 200, w = 650, h = 350}, { developerExtrasEnabled = false, suppressesIncrementalRendering = false })
 	:windowStyle("utility")
 	:closeOnEscape(true)
-	:html(launchApplications.generateHtml(generateTable, appwebtype))
+	:html(launchApplications.generateHtml())
 	:allowGestures(false)
 	:windowTitle("Launch Applicatiion Mode")
 	:show()
 	-- These 2 lines were commented out. Don't seem to help
-	-- webPageView:asHSWindow():focus()
-	-- webPageView:asHSDrawing():setAlpha(.98):bringToFront()
-	webPageView:bringToFront()
+	-- pickerView:asHSWindow():focus()
+	-- pickerView:asHSDrawing():setAlpha(.98):bringToFront()
+	pickerView:bringToFront()
   
   end
   
 end
 
-function launchApplications.generateHtml(whichTable, appwebtype)
+function launchApplications.generateHtml()
 	local instructions
-	if (appwebtype == "App") then
+	if (  inMode == "App") then
 		instructions = {"App", "Application"}
 	else
 		instructions = {"Webpage", "Webpage"}
@@ -385,7 +366,7 @@ function launchApplications.generateHtml(whichTable, appwebtype)
         </html><br>
 		<div id="container">
 		<table id="selTable" width="90%"  border="1">
-		]]..whichTable()..[[
+		]]..generateAppOrWebTable()..[[
 		</table>
 	</div>
 	<div>
@@ -398,14 +379,14 @@ function launchApplications.generateHtml(whichTable, appwebtype)
     return html
 end
 
-function generateAppTable()
+function generateAppOrWebTable()
     local tableText =  "<tr>"
 
 	local x = 0;
 	local y = 0;
 	local i = 0;
 	
-	for key, appInfo in hs.fnutils.sortByKeys(appShortCuts) do
+	for key, appInfo in hs.fnutils.sortByKeys((inMode == "App") and appShortCuts or webShortCuts) do
 		tableText = tableText .. "<td class = 'jumpchar' width='5%' align='right'>" .. key ..":";
 		tableText = tableText .. "<td class="
 		
@@ -428,39 +409,5 @@ function generateAppTable()
 
     return tableText
 end
-
-function generateWebTable()
-	debuglog("generateWebTable")
-    local tableText =  "<tr>"
-
-	local x = 0;
-	local y = 0;
-	local i = 0;
-	
-	for key, appInfo in hs.fnutils.sortByKeys(webShortCuts) do
-		tableText = tableText .. "<td class = 'jumpchar' width='5%' align='right'>" .. key ..":";
-		tableText = tableText .. "<td class="
-		
-		if (x==xsel and y==ysel) then 
-			tableText = tableText .. "'sel'"
-		else
-			tableText = tableText ..  "'unsel'"
-		end
-		tableText = tableText .. " width='22%'>" .. appInfo[1] .. "</td>";
-		
-		x = x + 1
-		if x > xmax then
-			-- end tr
-			tableText = tableText .. "</tr>\n<tr>"
-			x = xmin
-			y = y + 1
-		end
-
-	end
-
-    return tableText
-end
-
-
 
 return launchApplications
