@@ -26,6 +26,7 @@ launchApplications = {}
 --				callout to Handle(key) which will pick the right behavior based upon the global, including "do nothing"
 --				if the current "mode" does not have that key defined.
 --			3. Need to handle "Space" and "Return" in a similar way.
+--	TODO: Support change case of selection
 
 local DEFAULTBROWSER = 'Safari'
 local pickerView = nil
@@ -81,11 +82,12 @@ local webShortCuts = {
 
     N = {"ADN", nil, "https://developer.asperasoft.com"},
     S = {"Google Sheets", nil, "https://sheets.google.com"},
-    T = {"Confluence TP", nil, "https://confluence.aspera.us/display/TP/Technical+Publications"}
+    T = {"Confluence TP", nil, "https://confluence.aspera.us/display/TP/Technical+Publications"},
 
+	W = {"Geekhack", nil, "https://geekhack.org/index.php?action=watched"},		-- Geekhack, Watched
 }
 
--- TODO: support case changes too
+-- TODO: support case changes too, someday
 local changeCaseShortCuts = {
 	L = {"To lowercase", nil, nil},
 	T = {"To Title Case", nil, nil},
@@ -106,7 +108,6 @@ local modalWebKey = hs.hotkey.modal.new(HyperFn, 'W')
 --	hs.hotkey.modal:bind(mods, key, message, pressedfn, releasedfn, repeatfn) -> hs.hotkey.modal object
 
 for index, modalKey in pairs({modalAppKey, modalWebKey}) do
-	debuglog("-=-; ")		-- gets called twice
 	modalKey:bind('', 'escape', 
 		function() 
 		debuglog("Escape")
@@ -200,7 +201,7 @@ function modalWebKey:entered()
   xmin =0
   xmax =2
   ymin =0
-  ymax =3
+  ymax =5
 
   -- Select, approximately, the center cell of the Web array
   xsel = math.floor((xmax-xmin)/2)

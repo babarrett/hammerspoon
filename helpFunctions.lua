@@ -1,7 +1,6 @@
 local helpFunctions = {}
 -- helpFunctions.lua
 -- Hyper+H		Help, for Hammerspoon functions, or dismiss if already up
--- TODO: Keep Help up until HyperFn key is released?
 
 -- Private fields
 -- helpString - brief descriptions of mapped f()s. 
@@ -23,7 +22,7 @@ function hammerspoonHelp()
 		helpAlertUUID = hs.alert.show( 
 			helpString
 		, 
-		{textSize=14, textColor={white = 1.0, alpha = 1.00 }, 
+		{textSize=12, textColor={white = 1.0, alpha = 1.00 }, 
 		textFont = "Andale Mono",	-- works for me. If missing reverts back to system default
 		fillColor={white = 0.0, alpha = 1.00}, 
 		strokeColor={red = 1, green=0, blue=0}, strokeWidth=4 }
@@ -42,7 +41,7 @@ local funNameToHelpText = {
 }
 
 -- TODO: Make this a mode: modalKey = hs.hotkey.modal.new(HyperFn, 'H')
---		so we can ignore all but HyperFn+H
+--		so we can ignore all but HyperFn+H and escape
 function helpFunctions.bind(modifiers, char, functName)
 	hs.hotkey.bind(modifiers, char, funNameToFunction[functName] )	-- bind the key
 	-- Add to the help string

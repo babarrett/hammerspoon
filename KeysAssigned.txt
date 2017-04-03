@@ -296,7 +296,7 @@ GH-122 requests for prototypes:
 1b,2	laughatpain
 1b		spaceman1200
 2		hak foo
-1a,2	xondat
+1a,2	xondat (but 1a is for case design)
 --------
 1a = 4
 1b = 6 or 7 Nathan

@@ -5,7 +5,7 @@
 -- "?;?.lua;~/dev/git/hammerspoon/?;?.lua"
 --	TODO: Create another modual for KeyToKey mappings such as Numeric Pad to move functions.
 
-VERSION = "2016-Dec-20"
+VERSION = "2017-Apr-02"
 hs.console.clearConsole()
 LUA_PATH = os.getenv("HOME") .. "/dev/git/hammerspoon/?"
 
@@ -43,8 +43,8 @@ miscFunctions.bind(HyperFn, "=", "mouseHighlight")
 miscFunctions.bind(HyperFn, "-", "manydashes")
 miscFunctions.bind(HyperFn, "L", "lockMyScreen")
 
-HF.add("Hyper+A     - Enter Application mode, Arrows or Char launches App.")
-HF.add("Hyper+W     - Enter Webpage mode, Arrows or Char launches App.")
+HF.add("Hyper+A     - Enter Application mode, Arrows or Char launches App.\n")
+HF.add("Hyper+W     - Enter Webpage mode, Arrows or Char opens web page.")
 
 HF.add("\n\n-- Window Management Functions --\n")
 windowManagement.bind(HyperFn, "Right", "right")
