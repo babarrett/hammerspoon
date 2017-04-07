@@ -58,7 +58,8 @@ local appShortCuts = {
 	
     P = {'System Preferences', 'System Preferences', nil},
     R = {'Remote Desktop', '/Applications/Microsoft Remote Desktop.app/', nil}, -- > hs.application.nameForBundleID("com.microsoft.rdc.mac") --> "Microsoft Remote Desktop"
-    S = {'Safari', 'Safari', nil},
+	S = {"Secure DMG","/Users/bbarrett/Secure.dmg",nil},
+--  S = {'Safari', 'Safari', nil},
     
     T = {'Tunnelblick', 'Tunnelblick', nil},
     X = {'Firefox', 'Firefox', nil},
@@ -70,20 +71,22 @@ local webShortCuts = {
 
     A = {"Aspera Support", nil, "https://aspera.zendesk.com/agent/dashboard"},
     B = {"Bluepages", nil, "Bluepages"},
-    D = {"Google Docs", nil, "https://docs.google.com/document/u/0/?tgif=c"},
+    C = {"Confluence Connect", nil, "https://confluence.aspera.us/display/CON/Connect+Browser+Plug-in+Home"},
 
+    D = {"Google Docs", nil, "https://docs.google.com/document/u/0/?tgif=c"},
     G = {"Google Drive", nil, "https://drive.google.com/drive/my-drive"},
     H = {"Home", nil, "http://brucebarrett.com/browserhome/brucehome.html"},
-    J = {"Jira ASCN", nil, "https://jira.aspera.us/projects/ASCN?selectedItem=com.atlassian.jira.jira-projects-plugin%3Arelease-page&status=no-filter"},
 
+    J = {"Jira ASCN", nil, "https://jira.aspera.us/projects/ASCN?selectedItem=com.atlassian.jira.jira-projects-plugin%3Arelease-page&status=no-filter"},
     K = {"KLE", nil, "http://www.keyboard-layout-editor.com"},
     L = {"Aspera Downlads", nil, "http://downloads.asperasoft.com"},
-    M = {"IBM Mail", nil, "IBM Mail"},
 
+    M = {"IBM Mail", nil, "IBM Mail"},
     N = {"ADN", nil, "https://developer.asperasoft.com"},
+    O = {"Trac, Old bugs", nil, "https://trac.aspera.us"},
+
     S = {"Google Sheets", nil, "https://sheets.google.com"},
     T = {"Confluence TP", nil, "https://confluence.aspera.us/display/TP/Technical+Publications"},
-
 	W = {"Geekhack", nil, "https://geekhack.org/index.php?action=watched"},		-- Geekhack, Watched
 }
 
@@ -104,9 +107,8 @@ local modalAppKey = hs.hotkey.modal.new(HyperFn, 'A')
 --	It terminates with selection a web page, or <Esc>
 local modalWebKey = hs.hotkey.modal.new(HyperFn, 'W')
 
---	Bind keys of interest
+--	Bind keys of interest, both Apps and Web Pages
 --	hs.hotkey.modal:bind(mods, key, message, pressedfn, releasedfn, repeatfn) -> hs.hotkey.modal object
-
 for index, modalKey in pairs({modalAppKey, modalWebKey}) do
 	modalKey:bind('', 'escape', 
 		function() 
@@ -115,12 +117,12 @@ for index, modalKey in pairs({modalAppKey, modalWebKey}) do
 	modalKey:bind('', 'space',  
 		function() 
 		debuglog("Space")
-		launchAppOrWebBySelection("App")
+		launchAppOrWebBySelection()
 		modalKey:exit() end)
 	modalKey:bind('', 'return',  
 		function() 
 		debuglog("Return")
-		launchAppOrWebBySelection("App")
+		launchAppOrWebBySelection()
 		modalKey:exit() end)
 
 
@@ -162,8 +164,11 @@ end
 for key, appInfo in hs.fnutils.sortByKeys(appShortCuts) do
     modalAppKey:bind('', key, 'Launching '..appInfo[1], 
       function() 
-        if (not hs.application.launchOrFocus(appInfo[2])) then
-          hs.application.launchOrFocusByBundleID(appInfo[2])	-- use BundleID ("com.aspera.connect") if App name fails
+        output, status = hs.execute("open " .. appInfo[2])
+        if (status) then	-- try again
+			if (not hs.application.launchOrFocus(appInfo[2])) then
+			  hs.application.launchOrFocusByBundleID(appInfo[2])	-- use BundleID ("com.aspera.connect") if App name fails
+			end
         end
       end,	-- Key down, launch
       function() modalAppKey:exit() end)							-- Key up, leave mode
@@ -251,13 +256,13 @@ function launchAppOrWebBySelection()
   end
   for key, appInfo in hs.fnutils.sortByKeys(dataTable) do
     if index == 0 then
-				  if (inMode == "App") then
-					app = appInfo[2]
-					debuglog("Assigning app: "..app)
-				  else
-					app = appInfo[3]
-					debuglog("Assigning webpage: "..app)
-				  end
+	  if (inMode == "App") then
+		app = appInfo[2]
+		debuglog("Assigning app: "..app)
+	  else
+		app = appInfo[3]
+		debuglog("Assigning webpage: "..app)
+	  end
 	end
     index = index -1
   end
