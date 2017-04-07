@@ -165,7 +165,7 @@ for key, appInfo in hs.fnutils.sortByKeys(appShortCuts) do
     modalAppKey:bind('', key, 'Launching '..appInfo[1], 
       function() 
         output, status = hs.execute("open " .. appInfo[2])
-        if (status) then	-- try again
+        if (status) then	-- if failed, try again
 			if (not hs.application.launchOrFocus(appInfo[2])) then
 			  hs.application.launchOrFocusByBundleID(appInfo[2])	-- use BundleID ("com.aspera.connect") if App name fails
 			end
@@ -268,7 +268,13 @@ function launchAppOrWebBySelection()
   end
   if inMode == "App" then		-- app ~= nil then
     hs.alert.show('Launching app... '..app)
-    hs.application.launchOrFocus(app)
+--    hs.application.launchOrFocus(app)
+      output, status = hs.execute("open " .. app)
+	  if (status) then	-- if failed, try again
+		if (not hs.application.launchOrFocus(app)) then
+		  hs.application.launchOrFocusByBundleID(app)	-- use BundleID ("com.aspera.connect") if App name fails
+		end
+	  end
   else
     hs.alert.show('Launching webpage... '..app)
     hs.execute("open " .. app)
