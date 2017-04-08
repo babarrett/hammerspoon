@@ -62,7 +62,9 @@ local appShortCuts = {
 --  S = {'Safari', 'Safari', nil},
     
     T = {'Tunnelblick', 'Tunnelblick', nil},
+    V = {'IBM VPN', 'Cisco AnyConnect Secure Mobility Client', nil},
     X = {'Firefox', 'Firefox', nil},
+
     Z = {'Numbers', 'Numbers', nil},
     
 }
@@ -163,36 +165,33 @@ end
 -- Pick up Applications to offer, sorted by activation key
 for key, appInfo in hs.fnutils.sortByKeys(appShortCuts) do
     modalAppKey:bind('', key, 'Launching '..appInfo[1], 
-      function() 
-        output, status = hs.execute("open " .. appInfo[2])
-        if (status) then	-- if failed, try again
-			if (not hs.application.launchOrFocus(appInfo[2])) then
-			  hs.application.launchOrFocusByBundleID(appInfo[2])	-- use BundleID ("com.aspera.connect") if App name fails
-			end
-        end
-      end,	-- Key down, launch
+      function()
+    	launchAppOrWeb(appInfo[2])
+      end,
       function() modalAppKey:exit() end)							-- Key up, leave mode
 end
 
 -- Web launch keys (defined in webShortCuts)
 -- Pick up Applications to offer, sorted by activation key
 for key, webInfo in hs.fnutils.sortByKeys(webShortCuts) do
-    modalWebKey:bind('', key, 'Launching '..webInfo[1], 
+    modalWebKey:bind('', key, 'Opening page: '..webInfo[1], 
       function()
-      	hs.execute("open " .. webInfo[3])
+      	launchAppOrWeb(webInfo[3])
+      	-- hs.execute("open " .. webInfo[3])
       end,	-- Key down, launch
       function() modalWebKey:exit() end)							-- Key up, leave mode
 end
 
 function modalAppKey:entered()
   -- Start with proper grid size
-  -- Build a 3x5 grid of app names
+  -- Build a 3x6 grid of app names
   -- TODO: Re-do these with '1'-based indexing.
+  -- TODO: Dynamically size # of rows (Y) based upon # of entries in appShortCuts. Using a fixed 3 columns
   inMode = "App"
   xmin =0
   xmax =2
   ymin =0
-  ymax =4
+  ymax =5
 
   -- Move cursor to "center" and load "web page picker:
   centerAndShowPicker()
@@ -202,6 +201,7 @@ function modalWebKey:entered()
   -- Start with proper grid size
   -- Build a 3x4 grid of web names
   -- TODO: Re-do these with '1'-based indexing.
+  -- TODO: Dynamically size # of rows (Y) based upon # of entries in appShortCuts. Using a fixed 3 columns
   inMode = "Web"
   xmin =0
   xmax =2
@@ -266,19 +266,26 @@ function launchAppOrWebBySelection()
 	end
     index = index -1
   end
+  
+  launchAppOrWeb(app)
+end
+
+function launchAppOrWeb(app)
   if inMode == "App" then		-- app ~= nil then
-    hs.alert.show('Launching app... '..app)
---    hs.application.launchOrFocus(app)
-      output, status = hs.execute("open " .. app)
-	  if (status) then	-- if failed, try again
-		if (not hs.application.launchOrFocus(app)) then
-		  hs.application.launchOrFocusByBundleID(app)	-- use BundleID ("com.aspera.connect") if App name fails
+    -- hs.alert.show('Launching app... '..app)
+	  status = hs.application.launchOrFocus(app)
+	  debuglog("1. status = "..tostring(status))
+	  if (not status) then
+		  status = hs.application.launchOrFocusByBundleID(app)	-- use BundleID ("com.aspera.connect") if App name fails
+		  debuglog("2. status = "..tostring(status))
+		  if (not status) then
+		    output, status = hs.execute("open " .. app)
+		    debuglog("3. status = "..tostring(status))
+		  end
 		end
-	  end
   else
-    hs.alert.show('Launching webpage... '..app)
+    -- hs.alert.show('Opening webpage... '..app)
     hs.execute("open " .. app)
-    -- hs.application.launchOrFocus(app)
   end
 end
 
@@ -418,7 +425,13 @@ function generateAppOrWebTable()
 		end
 
 	end
-
+	-- TODO: fill the rest of the last row with &nbsp; in cells.
+	if x > xmin then
+	  for i=xmax, xmin+1, -1 do
+		tableText = tableText .. "<td class = 'jumpchar' width='5%' align='right'>&nbsp;";
+		tableText = tableText .. "<td class='unsel' width='22%'>&nbsp;</td>";
+	  end
+	end
     return tableText
 end
 
