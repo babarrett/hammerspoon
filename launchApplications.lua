@@ -16,17 +16,16 @@ launchApplications = {}
 --	TODO: Send up, down, left, right changes to Hammerspoon web page as
 --		Javascript to increase speed over page load. Maybe something
 --		like: changeSelectionFromTo(fromCell, toCell) to move a covering rectangle
---	TODO: (somehow) support entries that don't have single character hotkeys. Can only reach w/Arrows. Put at start of table?
 --	TODO: <Tab> to move to part of table that doesn't have single-character hotkey launch.
 --	TODO: Support NW, NE, SW, SE "arrow keys" for navigating App/Webpage grids. Makes for fewer keystrokes required.
---	TODO: Go totally wild and support a 3rd dimension. Could access 3x3x3=27 entries w/ 2 arrow keys, or 5x5x5=125 entries with 4 arrow keys
+--	TODO: Go totally wild and support a 3rd dimension. Could access 3x3x3=27 entries w/ 2 arrow key presses, or 5x5x5=125 entries with 4 arrow keys
 --	TODO: "Merge" hot key behavior
---			1. still have 2 tables, appShortCuts and webShortCuts
+--			1. (done) still have 2 tables, appShortCuts and webShortCuts
 --			2. reduce modalAppKey & modalWebKey bindings to 1 table. When both tables use the same keys stroke (or always?)
 --				callout to Handle(key) which will pick the right behavior based upon the global, including "do nothing"
 --				if the current "mode" does not have that key defined.
 --			3. Need to handle "Space" and "Return" in a similar way.
---	TODO: Support change case of selection
+--	TODO: Support change case of selection in a separate .lua file
 
 local DEFAULTBROWSER = 'Safari'
 local pickerView = nil
@@ -41,7 +40,8 @@ inMode = nil					-- I'm not crazy about globals, but this really simplified the 
 local appShortCuts = {
 	-- "/Users/bbarrett/" works, but "~/" does not. :-(
 	-- hs.application.launchOrFocusByBundleID("com.aspera.connect") works.
-	-- TODO: Would be nice to be able to add slots in the table that didn't require 1-character (hot key) shortcuts.
+	-- Use Z# to support entries without the 1 character (hot key) shortcuts
+	--	Multi char strings?
     A = {'Connect', 'com.aspera.connect', nil}, -- > hs.application.bundleID(hs.application.applicationForPID(58463)) --> com.aspera.connect
     B = {'BBEdit', 'BBEdit', nil},
     C = {'Chrome', 'Google Chrome', nil},
@@ -66,7 +66,8 @@ local appShortCuts = {
     X = {'Firefox', 'Firefox', nil},
 
     Z = {'Numbers', 'Numbers', nil},
-    
+    Z1 = {'You can arrow...', '', nil},
+    Z2 = {'...key to here', '', nil},
 }
 
 local webShortCuts = {
@@ -92,11 +93,26 @@ local webShortCuts = {
 	W = {"Geekhack", nil, "https://geekhack.org/index.php?action=watched"},		-- Geekhack, Watched
 }
 
--- TODO: support case changes too, someday
+function countTableElements(myTable)
+  local count = 0
+  for k,v in pairs(myTable) do
+    count = count + 1
+  end
+  return count
+end
+
+-- TODO: support case changes too, someday. Some other file.
 local changeCaseShortCuts = {
 	L = {"To lowercase", nil, nil},
 	T = {"To Title Case", nil, nil},
 	U = {"To UPPERCASE", nil, nil}
+}
+
+-- TODO: support special terminal commands for development (git, pushd, cd,...), someday
+local developmentShortCuts = {
+	A = {"cd algernon-master", nil, nil},
+	B = {"cd bruce-ergodox", nil, nil},
+	C = {"cd to keyboard build directory", nil, nil}
 
 }
 
@@ -164,15 +180,17 @@ end
 -- App launch keys (defined in appShortCuts)
 -- Pick up Applications to offer, sorted by activation key
 for key, appInfo in hs.fnutils.sortByKeys(appShortCuts) do
-    modalAppKey:bind('', key, 'Launching '..appInfo[1], 
-      function()
-    	launchAppOrWeb(appInfo[2])
-      end,
-      function() modalAppKey:exit() end)							-- Key up, leave mode
+	if string.len(key) == 1 then
+		modalAppKey:bind('', key, 'Launching '..appInfo[1], 
+		  function()
+			launchAppOrWeb(appInfo[2])
+		  end,
+		  function() modalAppKey:exit() end)							-- Key up, leave mode
+	  end
 end
 
 -- Web launch keys (defined in webShortCuts)
--- Pick up Applications to offer, sorted by activation key
+-- Pick up Web pages to offer, sorted by activation key
 for key, webInfo in hs.fnutils.sortByKeys(webShortCuts) do
     modalWebKey:bind('', key, 'Opening page: '..webInfo[1], 
       function()
@@ -183,39 +201,29 @@ for key, webInfo in hs.fnutils.sortByKeys(webShortCuts) do
 end
 
 function modalAppKey:entered()
-  -- Start with proper grid size
-  -- Build a 3x6 grid of app names
-  -- TODO: Re-do these with '1'-based indexing.
-  -- TODO: Dynamically size # of rows (Y) based upon # of entries in appShortCuts. Using a fixed 3 columns
+  -- Build a grid of app names
   inMode = "App"
-  xmin =0
-  xmax =2
-  ymin =0
-  ymax =5
-
-  -- Move cursor to "center" and load "web page picker:
-  centerAndShowPicker()
+  centerAndShowPicker(appShortCuts)
 end
 
 function modalWebKey:entered()
-  -- Start with proper grid size
-  -- Build a 3x4 grid of web names
-  -- TODO: Re-do these with '1'-based indexing.
-  -- TODO: Dynamically size # of rows (Y) based upon # of entries in appShortCuts. Using a fixed 3 columns
+  -- Build a grid of web names
   inMode = "Web"
+  centerAndShowPicker(webShortCuts)
+end
+
+-- Move cursor to "center" and load "web page picker:
+function centerAndShowPicker(pickerTable)
+  -- TODO: Re-do these with '1'-based indexing.
+  -- Select, approximately, the center cell of the App array
   xmin =0
   xmax =2
   ymin =0
-  ymax =5
-
-  -- Select, approximately, the center cell of the Web array
-  xsel = math.floor((xmax-xmin)/2)
-  ysel = math.floor((ymax-ymin)/2)
-  reloadPicker()
-end
-
-function centerAndShowPicker()
-  -- Select, approximately, the center cell of the App array
+  
+  -- Dynamically size # of rows (Y) based upon # of entries in table. Using a fixed 3 columns
+  tc = countTableElements(pickerTable)
+  ymax =math.ceil(tc / 3) -1
+  
   xsel = math.floor((xmax-xmin)/2)
   ysel = math.floor((ymax-ymin)/2)
   reloadPicker()
@@ -406,7 +414,8 @@ function generateAppOrWebTable()
 	local i = 0;
 	
 	for key, appInfo in hs.fnutils.sortByKeys((inMode == "App") and appShortCuts or webShortCuts) do
-		tableText = tableText .. "<td class = 'jumpchar' width='5%' align='right'>" .. key ..":";
+		tableText = tableText .. "<td class = 'jumpchar' width='5%' align='right'>" .. 
+			((string.len(key) == 1) and key..":" or "&nbsp;");	-- skip entries we don't want to use with 1 character (hot key) shortcuts
 		tableText = tableText .. "<td class="
 		
 		if (x==xsel and y==ysel) then 
@@ -425,7 +434,7 @@ function generateAppOrWebTable()
 		end
 
 	end
-	-- TODO: fill the rest of the last row with &nbsp; in cells.
+	-- Fill the rest of the last row with &nbsp; in cells for cleaner display.
 	if x > xmin then
 	  for i=xmax, xmin+1, -1 do
 		tableText = tableText .. "<td class = 'jumpchar' width='5%' align='right'>&nbsp;";
