@@ -1,0 +1,44 @@
+Character Groupings
+ 
+-- Alphabetic (52) --
+A - Z
+a - z
+
+-- "Normal" Punctuation (6) --
+" ' , : ; ?
+
+-- Math (19), and Logic (6) --
+0 1 2 3 4 5 6 7 8 9
+.
++ - 
+* /
+( )
+%
+$
+
+< = >
+! & |
+
+ -- Programming languages -- (10)
+@
+^
+{ }
+[ ]
+_
+#
+\
+~
+
+-- Function Keys (12) --
+F1-F12
+
+-- White Space (3) --
+Space
+Tab
+Return
+
+-- 96 to here --
+
+
+-- Modifiers -- (5 or 6)
+Cmd Option Control Shift HyperFn Fn

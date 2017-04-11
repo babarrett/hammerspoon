@@ -1,0 +1,35 @@
+		   in hex
+Hyperspoon	Char	KeyCd	Unicode	Mac?
+==========	====	=====	=======	==========
+
+pad0		0	52	30	#0
+pad1		1	53	31	#1
+pad2		2	54	32	#2
+pad3		3	55	33	#3
+pad4		4	56	34	#4
+pad5		5	57	35	#5
+pad6		6	58	36	#6
+pad7		7	59	37	#7
+pad8		8	5b	38	#8
+pad9		9	5c	39	#9
+pad+		+	45	2b	+
+pad-		-	4e	2d	-
+pad.		.	41	2e	"." Period
+pad/		/	4b	2f	
+pad*		*	43	2a
+padenter	Ent	4c	03	
+padclear	NumLk   47	f739	
+
+tab		tab	48??		same as Mac
+delete		<--	33	7f	same as Mac
+000 n/a		000	1d*3	30*3	"000"
+
+Mac Values
+		4	15	34	4
+		5	17	35	5
+		-	1b	2d	-
+*		Shift-8	1c	2a	
+
+-------------------------------------------------
+Tab and Delete cannot be remapped (w/o remapping the same keys on the Mac)
+I've left the Enter key as Enter because I didn't have a better need yet.

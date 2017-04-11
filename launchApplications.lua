@@ -112,7 +112,7 @@ local changeCaseShortCuts = {
 local developmentShortCuts = {
 	A = {"cd algernon-master", nil, nil},
 	B = {"cd bruce-ergodox", nil, nil},
-	C = {"cd to keyboard build directory", nil, nil}
+	C = {"cd ~/dev/git/qmk_firmware & make keyboard=ergodox keymap=bbarrett", nil, nil}
 
 }
 
