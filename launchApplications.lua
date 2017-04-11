@@ -258,12 +258,12 @@ function launchAppOrWebBySelection()
   -- which index, based  on (x, y) cell was selected
   index = ysel * (xmax+1) + xsel
   debuglog("LaunchType: "..   inMode .."; (x, y) -- index= (" .. xsel .. ", " .. ysel .. ") -- " .. index)
-  if (inMode == "App") then
-  	dataTable = appShortCuts
-  else
-    dataTable = webShortCuts
---  dataTable =  (inMode == "App") ? appShortCuts : webShortCuts;
-  end
+ dataTable =  (inMode == "App") and appShortCuts or webShortCuts;
+--  if (inMode == "App") then
+--  	dataTable = appShortCuts
+--  else
+--    dataTable = webShortCuts
+--  end
   for key, appInfo in hs.fnutils.sortByKeys(dataTable) do
     if index == 0 then
 	  if (inMode == "App") then
