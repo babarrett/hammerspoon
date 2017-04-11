@@ -77,19 +77,21 @@ local webShortCuts = {
     C = {"Confluence Connect", nil, "https://confluence.aspera.us/display/CON/Connect+Browser+Plug-in+Home"},
 
     D = {"Google Docs", nil, "https://docs.google.com/document/u/0/?tgif=c"},
+    F = {"Google Hangouts", nil, "https://hangouts.google.com/"},
     G = {"Google Drive", nil, "https://drive.google.com/drive/my-drive"},
-    H = {"Home", nil, "http://brucebarrett.com/browserhome/brucehome.html"},
 
+    H = {"Home", nil, "http://brucebarrett.com/browserhome/brucehome.html"},
     J = {"Jira ASCN", nil, "https://jira.aspera.us/projects/ASCN?selectedItem=com.atlassian.jira.jira-projects-plugin%3Arelease-page&status=no-filter"},
     K = {"KLE", nil, "http://www.keyboard-layout-editor.com"},
-    L = {"Aspera Downlads", nil, "http://downloads.asperasoft.com"},
 
+    L = {"Aspera Downlads", nil, "http://downloads.asperasoft.com"},
     M = {"IBM Mail", nil, "IBM Mail"},
     N = {"ADN", nil, "https://developer.asperasoft.com"},
-    O = {"Trac, Old bugs", nil, "https://trac.aspera.us"},
 
+    O = {"Trac, Old bugs", nil, "https://trac.aspera.us"},
     S = {"Google Sheets", nil, "https://sheets.google.com"},
     T = {"Confluence TP", nil, "https://confluence.aspera.us/display/TP/Technical+Publications"},
+
 	W = {"Geekhack", nil, "https://geekhack.org/index.php?action=watched"},		-- Geekhack, Watched
 }
 

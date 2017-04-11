@@ -27,6 +27,7 @@ local windowManagement 			= require "windowManagement"
 local miscFunctions 			= require "miscFunctions"
 local cheatsheets				= require "cheatsheets"
 local launchApplications		= require "launchApplications"	-- or Webpages
+local reportLayerModifierChange	= require "reportLayerModifierChange"
 require "KeyPressShow"
 --require "characterMapping"
 
