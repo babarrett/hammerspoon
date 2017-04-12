@@ -23,11 +23,6 @@ function baseMove(x, y, w, h, direction)
 		local wfnew = win:frame()
 		local sf = screen:frame()
 		
---		These were all messed up for other than the primary screen. Fixed
---		f.x = max.w * x
---		f.y = max.h * y
---		f.w = max.w * w
---		f.h = max.h * h
 		wfnew.x = math.floor(sf.x + sf.w * x)
 		wfnew.y = math.floor(sf.y + sf.h * y)
 		wfnew.w = math.floor(sf.w * w)
