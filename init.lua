@@ -5,9 +5,9 @@
 -- "?;?.lua;~/dev/git/hammerspoon/?;?.lua"
 --	TODO: Create another modual for KeyToKey mappings such as Numeric Pad to move functions.
 
-VERSION = "2017-Apr-02"
+VERSION = "2017-Apr-14"
 hs.console.clearConsole()
-LUA_PATH = os.getenv("HOME") .. "/dev/git/hammerspoon/?"
+LUA_PATH = os.getenv("HOME") .. "/deg/git/hammerspoon/?"
 
 HyperFn = {"cmd", "alt", "ctrl", "shift"}	-- Mash the 4 modifier keys for some new function
 HyperFnString = "⌘⌥⌃⇧"					-- Visual representation

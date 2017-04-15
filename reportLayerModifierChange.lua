@@ -68,7 +68,7 @@ for key, val in hs.fnutils.sortByKeys(keyList) do
 	  end)							-- Key up, leave mode
 end
 
-debuglog("plus as shift+'=' for plus.")
+-- plus as shift+'=' for is a plus (+).
 LayerModifierKey:bind('{shift}', "=", nil, 
   function()
 		processChar("+")
@@ -138,6 +138,8 @@ function updateHUD()
 	:allowGestures(false)
 	:windowTitle("Launch Applicatiion Mode")
 	:show()
+	:alpha(.50)
+	--	:transparent(true) 
 	-- These 2 lines were commented out. Don't seem to help
 	-- pickerView:asHSWindow():focus()
 	-- pickerView:asHSDrawing():setAlpha(.98):bringToFront()
@@ -154,7 +156,6 @@ function reportLayerModifierChange.generateHtml()
         <html>
         <head>
         <style type="text/css">
-            *{margin:5; padding:5;}
             html, body{ 
               background-color:#404040;
               font-family: arial;
@@ -162,14 +163,15 @@ function reportLayerModifierChange.generateHtml()
             }
 
 			body {
-			   margin: 5px; padding: 5px;
+			   margin: 5px;
 			   background-color: #404040;
 			   color: #c0c0c0;
 			   width: 250px;
-			   margin: auto;
 			   font-family: "HelveticaNeue-Light", "Helvetica Neue Light",
 				  "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
-			   font-weight: normal;
+			   font-weight: bold;
+			   font-size: 200%;
+			   
 			}
 
 			.jumpchar {
@@ -189,10 +191,10 @@ function reportLayerModifierChange.generateHtml()
           <body>
             <header>
               <div>]]..layerName..[[<br>]]..
-				((modShift  ) and "⇧" or "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;") ..
-				((modControl) and "⋏" or "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;") ..
-				((modOption ) and "⌥" or "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;") ..
-				((modCommand) and "⌘" or "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;") ..
+				((modShift  ) and "⇧" or "&nbsp;&nbsp;") ..
+				((modControl) and "⋏" or  "&nbsp;") ..
+				((modOption ) and "⌥" or "&nbsp;&nbsp;&nbsp;") ..
+				((modCommand) and "⌘" or "&nbsp;&nbsp;&nbsp;&nbsp;") ..
 				[[<br>
               </div>
             </header>

@@ -13,8 +13,34 @@ local miscFunctions = {}
 --	HyperFn+,		moveToStatus		Move current mail item to "Status"
 
 -- private functions to be referenced & executed later.
+
+function sleep(s)
+  local ntime = os.clock() + s
+  repeat until os.clock() > ntime
+end
+
+function dumpTable(myTable)
+  local count = 0
+  for k,v in pairs(myTable) do
+    debuglog("dumpTable: "..k..", "..v)
+  end
+end
+
 function typeClipboardAsText()
-	hs.eventtap.keyStrokes(hs.pasteboard.getContents()) 
+-- Pause for 0.2 seconds every 20 characters to let app catch up.
+-- Without this I was occasionally getting swapped characters: teh 
+--	rs = tostring(hs.pasteboard.readStyledText())
+	tx = hs.pasteboard.readString(true)	-- table
+--	debuglog(type(tx))
+--	dumpTable(tx)
+	for ky,vl in pairs(tx) do
+--		debuglog("value of vl ("..ky..") is "..tostring(vl))
+		for i = 1, string.len(tostring(vl)), 20 do
+		  st = string.sub(vl, i, i+19)
+		  hs.eventtap.keyStrokes(st) 
+		  sleep(.20)
+		end
+	end
 end
 
 function quitApp()
