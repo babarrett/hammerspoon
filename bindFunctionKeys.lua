@@ -1,30 +1,35 @@
+-- Bind Function Keys (F1-F24) to one of 3 functions:
+-- 	* Launch (or select) App
+--	* Open web page
+--	* Type a key (and optional modifier)
+-- Bindings are to the short-cuts I care most about.
+-- by: Bruce Barrett
 
 bindFunctionKeys = {}
 
-
 -- This will "run" any of 3 types of bond keys:
---	Run an Application
+--	Launch an Application
 --	Open a web page
 --	Type a (modifier)+Key
+--  We'll only try one, the first non-nil parameter
 function launchAppOrWeb(app,web, key)
+  debuglog("launchAppOrWeb")
   if app ~= nil then
-    -- hs.alert.show('Launching app... '..app)
+      -- Try it up to 3 ways.
 	  status = hs.application.launchOrFocus(app)
-	  debuglog("1. status = "..tostring(status))
+      debuglog("1. status = "..tostring(status))
 	  if (not status) then
 		  status = hs.application.launchOrFocusByBundleID(app)	-- use BundleID ("com.aspera.connect") if App name fails
-		  debuglog("2. status = "..tostring(status))
+--		  debuglog("2. status = "..tostring(status))
 		  if (not status) then
 		    output, status = hs.execute("open " .. app)
-		    debuglog("3. status = "..tostring(status))
+--		    debuglog("3. status = "..tostring(status))
 		  end
 		end
   elseif web ~= nil then
-    -- hs.alert.show('Opening webpage... '..web)
     hs.execute("open " .. web)
   elseif key ~= nil then
     -- assign to another key
-    debuglog( "mods, then key: "..key["mods"].."    "..key["char"] )
     hs.eventtap.keyStroke(key["mods"], key["char"])
 
   end
@@ -32,9 +37,8 @@ end
 
 -- Format of these bindings is:
 --   Key modifier if any, Key to bind, Display message  (nil, not used),
---   App to launch or bundleID, Web site to open, Keypress to simulate (cmd+shift+".")
+--   App to launch or bundleID, Web site to open, Keypress to simulate (Example: Cmd+shift+".")
 
---            mods, key, msg, pressedfn
 hs.hotkey.bind("", "f1", nil, function() launchAppOrWeb( 'BBEdit', nil, nil) end )
 hs.hotkey.bind("", "f2", nil, function() launchAppOrWeb( 'iTerm', nil, nil) end )
 hs.hotkey.bind("", "f3", nil, function() launchAppOrWeb( 'Safari', nil) end )
@@ -44,9 +48,10 @@ hs.hotkey.bind("", "f6", nil, function() launchAppOrWeb( nil, nil, {mods='CMD', 
 hs.hotkey.bind("", "f7", nil, function() launchAppOrWeb( nil, nil, {mods='CMD Shift', char="."}) end )	-- Cmd+Shift+"." = for move email to Done folder
 hs.hotkey.bind("", "f8", nil, function() launchAppOrWeb( nil, nil, {mods='CMD Shift', char=","}) end )	-- Cmd+Shift+"," = for move email to Status folder
 
---hs.hotkey.bind("Alt", "f9", nil, function() launchAppOrWeb( 'Preview', nil, nil) end )
---hs.hotkey.bind("Cmd", "f10", nil, function() launchAppOrWeb( "/Users/bbarrett/Secure.dmg & open /Users/bruce/Secure.dmg", nil, nil) end )	-- open Secure.dmg either at work or at home.
---hs.hotkey.bind("Ctrl", "f11", nil, function() launchAppOrWeb( 'System Preferences', nil) end )
+-- No idea why, but these 3 F## fail. 
+--hs.hotkey.bind("", "f9", nil, function() launchAppOrWeb( 'Preview', nil, nil) end )
+--hs.hotkey.bind("", "f10", nil, function() launchAppOrWeb( "/Users/bbarrett/Secure.dmg & open /Users/bruce/Secure.dmg", nil, nil) end )	-- open Secure.dmg either at work or at home.
+--hs.hotkey.bind("", "f11", nil, function() launchAppOrWeb( 'System Preferences', nil) end )
 
 hs.hotkey.bind("", "f12", nil, function() launchAppOrWeb( 'Oxygen XML Author', nil) end )
     

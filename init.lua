@@ -5,7 +5,7 @@
 -- "?;?.lua;~/dev/git/hammerspoon/?;?.lua"
 --	TODO: Create another modual for KeyToKey mappings such as Numeric Pad to move functions.
 
-VERSION = "2017-Apr-14"
+VERSION = "2017-Apr-16"
 hs.console.clearConsole()
 LUA_PATH = os.getenv("HOME") .. "/deg/git/hammerspoon/?"
 
