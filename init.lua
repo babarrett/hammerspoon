@@ -18,9 +18,26 @@ function debuglog(text)
   hs.console.printStyledtext("DEBUG: "..text) 
 end
 
+--hs.hotkey.bind("", "f8", nil, function() hs.alert("f8") end ) -- works
+--hs.hotkey.bind("", "f9", nil, function() hs.alert("f9") end ) -- fail
+--hs.hotkey.bind("", "f10", nil, function() hs.alert("f10") end ) -- fail
+--hs.hotkey.bind("", "f11", nil, function() hs.alert("f11") end ) -- fail
+--
+--hs.hotkey.bind("Cmd", "f9", nil, function() hs.alert("cmd f9") end ) -- works
+--hs.hotkey.bind("Cmd", "f10", nil, function() hs.alert("cmd f10") end ) -- works
+--hs.hotkey.bind("Cmd", "f11", nil, function() hs.alert("cmd f11") end ) -- works
+--
+--hs.hotkey.bind("Shift", "f9", nil, function() hs.alert("shift f9") end ) -- fail
+--hs.hotkey.bind("Shift", "f10", nil, function() hs.alert("shift f10") end ) -- fail
+--hs.hotkey.bind("Shift", "f11", nil, function() hs.alert("shift f11") end ) -- fail
+--
+--hs.hotkey.bind("Ctrl", "f9", nil, function() hs.alert("ctrl f9") end ) -- works
+--hs.hotkey.bind("Ctrl", "f10", nil, function() hs.alert("ctrl f10") end ) -- works
+--hs.hotkey.bind("Ctrl", "f11", nil, function() hs.alert("ctrl f11") end ) -- works
+
 
 --[[	First we require all modules we'll later use
-		Note, as we bind to each function they add to the help string	--]]
+	Note, as we bind to each function they add to the help string	--]]
 HF 								= require "helpFunctions"	-- global. Other modules call this too.
 local pasteCurrentSafariUrl 	= require "pasteCurrentSafariUrl"
 local windowManagement 			= require "windowManagement"
@@ -61,22 +78,22 @@ windowManagement.bind(HyperFn, "7", "percent70")
 -- Add list of screens to bottom of Help
 local myScreens = "\n\nActive screens:  {"
 for i = 1, # hs.screen.allScreens() do
-	myScreens = myScreens .. " " .. hs.screen.allScreens()[i]:name() .. ","
+myScreens = myScreens .. " " .. hs.screen.allScreens()[i]:name() .. ","
 end
 myScreens = myScreens:sub(1, myScreens:len()-1) .. " }"
 HF.add(myScreens)
 
 --	Auto-reload config file. Called whenever a *.lua in the directory changes
 function reloadConfig(files)
-    doReload = false
-    for _,file in pairs(files) do
-        if file:sub(-4) == ".lua" then
-            doReload = true
-        end
-    end
-    if doReload then
-        hs.reload() 
-    end
+   doReload = false
+   for _,file in pairs(files) do
+       if file:sub(-4) == ".lua" then
+           doReload = true
+       end
+   end
+   if doReload then
+       hs.reload() 
+   end
 end
 -- Alert "Config loaded" here, happens not as we call reload, but as we load. Default alert durration=2 sec.
 hs.alert.show("Config loaded")
