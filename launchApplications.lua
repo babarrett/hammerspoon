@@ -65,9 +65,8 @@ local appShortCuts = {
     V = {'IBM VPN', 'Cisco AnyConnect Secure Mobility Client', nil},
     X = {'Firefox', 'Firefox', nil},
 
-    Z = {'Numbers', 'Numbers', nil},
-    Z1 = {'You can arrow...', '', nil},
-    Z2 = {'...key to here', '', nil},
+    Z1 = {'Numbers', 'Numbers', nil},
+    Z2 = {'Pages', 'Pages', nil},
 }
 
 local webShortCuts = {
@@ -420,11 +419,8 @@ function generateAppOrWebTable()
 			((string.len(key) == 1) and key..":" or "&nbsp;");	-- skip entries we don't want to use with 1 character (hot key) shortcuts
 		tableText = tableText .. "<td class="
 		
-		if (x==xsel and y==ysel) then 
-			tableText = tableText .. "'sel'"
-		else
-			tableText = tableText ..  "'unsel'"
-		end
+		tableText = tableText .. ((x==xsel and y==ysel) and "'sel'" or "'unsel'")
+
 		tableText = tableText .. " width='22%'>" .. appInfo[1] .. "</td>";
 		
 		x = x + 1
@@ -438,7 +434,7 @@ function generateAppOrWebTable()
 	end
 	-- Fill the rest of the last row with &nbsp; in cells for cleaner display.
 	if x > xmin then
-	  for i=xmax, xmin+1, -1 do
+	  for i=xmax, x, -1 do
 		tableText = tableText .. "<td class = 'jumpchar' width='5%' align='right'>&nbsp;";
 		tableText = tableText .. "<td class='unsel' width='22%'>&nbsp;</td>";
 	  end

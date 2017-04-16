@@ -29,6 +29,7 @@ local cheatsheets				= require "cheatsheets"
 local launchApplications		= require "launchApplications"	-- or Webpages
 local reportLayerModifierChange	= require "reportLayerModifierChange"
 require "KeyPressShow"
+require "bindFunctionKeys"
 --require "characterMapping"
 
 HF.add("-- Miscellaneous Functions -- "..VERSION.." --\n")

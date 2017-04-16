@@ -135,7 +135,7 @@ local funNameToHelpText = {
 	manydashes = 		'Type 42 hyphens'
 }
 function miscFunctions.bind(modifiers, char, functName)
-	debuglog("miscFunctions binding: "..char.." to "..functName)
+	-- debuglog("miscFunctions binding: "..char.." to "..functName)
 	hs.hotkey.bind(modifiers, char, nil, funNameToFunction[functName] )	-- bind the key
 	-- Add to the help string
 	HF.add("Hyper+" .. char .. "     - " .. funNameToHelpText[functName] .. "\n")
