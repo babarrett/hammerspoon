@@ -1,9 +1,38 @@
 -- Report Layer Modifier Change
--- Bruce's Ergodox keyboard will generate a sequence starting with F14 
+-- Bruce's Ergodox keyboard will generate an HID sequence starting with "mod: "
 -- and ending with <return> when a layer or modifier change is noted.
--- This Hammmerspoon code will detect and interpret those "keys" and
+-- This Hammerspoon code will detect and interpret that sequence and
 -- display the current state in a "heads up display"
 -- by: Bruce Barrett
+
+-- Because I don't know how to feen HID events into Hammerspoon directly I'll
+-- do it through the file system, as follows:
+-- On Hammerspoon start-up or "Reload config" run the shell command: ps | grep hid-listen | grep -v grep
+--		if any non-empty lines are returned they start with a process ID. Kill the process
+--		(re)Start the hid-listen process, redirecting output, through grep, to /tmp/hid-for-hammerspoon
+--			hid-listen | grep 'mod: ' > /tmp/hid-for-hammerspoon
+--		Set "last seen file size" to zero
+--		Set the last seen status to "mod: ------"
+--		Set a recurring timer probably: "hs.timer.doEvery(interval, fn)" for every 1/4 second. [but can this do sub-second scans?]
+-- 
+-- On every timer expire/call:
+--		Check to see if file size has grown, if so grab last line: tail -1 /tmp/hid-for-hammerspoon 
+--		Process the newest status (validate format & length, evaluate & display)
+--		Set "last seen file size" to current
+--		Set "last seen status" to current
+--		wait for next timer to expire
+
+
+--hs.timer.doEvery(periodic, 10)
+
+-- See: http://www.hammerspoon.org/docs/hs.task.html#setStreamCallback
+--function periodic()
+--	status = hs.task.new("/usr/bin/tail -1", )
+--	hs.task = status:setStreamCallback(fn)
+--	alert("something")
+--	
+--	
+--end
 
 reportLayerModifierChange = {}
 -- Operation:
@@ -75,15 +104,27 @@ LayerModifierKey:bind('{shift}', "=", nil,
   end)							-- Key up, leave mode
 
 -- OK, this is the real work
---		when "+" is received set addDelete global to "add"
---		when "-" is received set addDelete global to "delete"
---		Handle Mod changes
---		when "A" is received set modShift to "true" (or "false" if addDelete == "delete")
---		when "B" is received set modControl
---		when "C" is received set modOption
---		when "D" is received set modCommand
---		Handle Layer changes
---		when "0" to "9" is received set layer to:
+--		The format of the input is:
+--			mod: #abcde
+--		Where:
+--			"mod: " is a litteral for this record, that we care about here
+--			"#" A layer number, 0.. 9
+--			a A value for the Layer
+--			b A value for the Shift modifier
+--			c A value for the Control modifier
+--			d A value for the Option modifier
+--			e A value for the Command modifier
+--		The values available for the layer and each modifier are: 0, 3, 6, 9 and represent the
+--		intensity of the layer or modifier where:
+--		0 - Not active
+--		3 - Active, one-shot. Will deactivate on next key press
+--		6 - Active, being held by the user. Will deactivate upon release
+--		9 - Locked (like caps lock). Will remain active until the modifier is pressed and 
+--			released again, or in the case of layer until another layer is selected.
+--		We'll use these values to inform the "brightness" of the display of the modifier (symbol)
+
+--		Layer and laer intensity is always set. Layer intensity of 0 is meaningless (not allowed)
+--		When layer "0" to "9" is received set layer text to:
 --		0 = Base
 --		1 = Numeric
 --		2 = Nav/Pnct
