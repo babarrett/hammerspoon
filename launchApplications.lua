@@ -47,18 +47,17 @@ local appShortCuts = {
     C = {'Chrome', 'Google Chrome', nil},
 
     F = {'Finder', 'Finder', nil},
+    G = {'OmniGraffle', 'OmniGraffle', nil},
     I = {'iTerm', 'iTerm', nil},
-    J = {'Notes', 'Notes', nil},
 
+    J = {'Notes', 'Notes', nil},
     M = {'Mail', 'Mail', nil},
     N = {'Notetaker', 'Notetaker', nil},
-    O = {'Oxygen', 'Oxygen XML Author', nil},
-	
+
     P = {'System Preferences', 'System Preferences', nil},
     R = {'Remote Desktop', '/Applications/Microsoft Remote Desktop.app/', nil}, -- > hs.application.nameForBundleID("com.microsoft.rdc.mac") --> "Microsoft Remote Desktop"
 	S = {"Secure DMG","/Users/bbarrett/Secure.dmg & open /Users/bruce/Secure.dmg",nil},	-- open Secure.dmg either at work or at home.
---  S = {'Safari', 'Safari', nil},
-    
+
     T = {'Tunnelblick', 'Tunnelblick', nil},
     V = {'IBM VPN', 'Cisco AnyConnect Secure Mobility Client', nil},
     X = {'Firefox', 'Firefox', nil},
