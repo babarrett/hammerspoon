@@ -38,7 +38,7 @@ function typeClipboardAsText()
 		for i = 1, string.len(tostring(vl)), 20 do
 		  st = string.sub(vl, i, i+19)
 		  hs.eventtap.keyStrokes(st) 
-		  sleep(.20)
+		  sleep(.30)
 		end
 	end
 end

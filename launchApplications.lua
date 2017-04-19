@@ -53,8 +53,6 @@ local appShortCuts = {
     M = {'Mail', 'Mail', nil},
     N = {'Notetaker', 'Notetaker', nil},
     O = {'Oxygen', 'Oxygen XML Author', nil},
-
---	P = {'Pages', 'Pages', nil},
 	
     P = {'System Preferences', 'System Preferences', nil},
     R = {'Remote Desktop', '/Applications/Microsoft Remote Desktop.app/', nil}, -- > hs.application.nameForBundleID("com.microsoft.rdc.mac") --> "Microsoft Remote Desktop"
@@ -65,8 +63,12 @@ local appShortCuts = {
     V = {'IBM VPN', 'Cisco AnyConnect Secure Mobility Client', nil},
     X = {'Firefox', 'Firefox', nil},
 
-    Z1 = {'Numbers', 'Numbers', nil},
-    Z2 = {'Pages', 'Pages', nil},
+	-- Using Zaa so it sorts after the 1-character shortcuts. 
+	-- Nothing "sacred" about # of characters in name
+	-- Zaa sorts before Zbb so we can keep these in order as we like
+    Zad = {'Adobe Reader', 'Adobe Reader', nil},
+    Znu = {'Numbers', 'Numbers', nil},
+    Zpa = {'Pages', 'Pages', nil},
 }
 
 local webShortCuts = {
