@@ -9,10 +9,10 @@ reportLayerModifierChange = {}
 
 -- Because I don't know how to feed HID events into Hammerspoon directly I'll
 -- do it through the file system, as follows:
--- On Hammerspoon start-up or "Reload config" run the shell command: ps | grep hid-listen | grep -v grep
+-- On Hammerspoon start-up or "Reload config" run the shell command: ps | grep hid_listen | grep -v grep
 --		if any non-empty lines are returned they start with a process ID. Kill those processes
---		(re)Start the hid-listen process, redirecting output, through grep, to /tmp/hid-for-hammerspoon
---			hid-listen | grep 'mod: ' > /tmp/hid-for-hammerspoon
+--		(re)Start the hid_listen process, redirecting output, through grep, to /tmp/hid-for-hammerspoon
+--			hid_listen | grep 'mod: ' > /tmp/hid-for-hammerspoon
 --		Set "last seen file size" to zero
 --		Set the lastSeenStatus to "mod: ------"
 --	XX	Create a recurring timer probably: "streamTimer = hs.timer.new(interval, fn [, continueOnError]) -> timer" (this does not start the timer, yet)
@@ -27,6 +27,55 @@ reportLayerModifierChange = {}
 --		wait for stream event to occure
 --
 -- Maybe someday, when file gets "too big" a. close down the stream task. b. halt the process. c. start all over.
+
+shellTask = nil
+
+function startStopHUD()
+	if shellTask then 
+		-- terminate it
+		shellTask:terminate()
+		shellTask = nil
+		debuglog("Terminated shellTask")
+	else
+		-- start it up.
+		-- TODO: kill any existing hid_listner.mac processes
+		debuglog("test new task (OK)")
+		--	TODO:	/Applications/hid_listen/binaries/hid_listen.mac
+		shellTask = hs.task.new("/Applications/hid_listen/binaries/hid_listen.mac", nil, shellTaskStreaming)		--  shellTaskDone
+		debuglog("shellTask: "..tostring(shellTask))
+		shellTask:setWorkingDirectory("/Users/bruce/dev/git/hammerspoon")
+		debuglog("workingDirectory (OK): "..shellTask:workingDirectory())
+		--shellTask:setInput("inputData")
+		shellTask:start()
+		debuglog("shellTask started")
+	end
+end
+
+hs.hotkey.bind("Cmd Shift", "f12", nil, function() startStopHUD() end )
+
+
+--	-------------------------------------------
+--		TEST
+--	-------------------------------------------
+--	The callback functions MUST be defined first or nils get passed.
+function shellTaskDone(exitcode, stdout, stderr)
+	debuglog("Called shellTaskDone")
+	debuglog(exitcode)
+	debuglog("STDOUT: \n"..stdout)
+	debuglog("STDERR: \n"..stderr)
+end
+
+function shellTaskStreaming(mtaskid, mstdout, mstderr)
+--	debuglog("\n    shellTaskStreaming -------------------------------------------")
+	--debuglog(mtaskid)
+	debuglog("STDOUT: "..mstdout)
+--	debuglog("STDERR: \n"..mstderr)
+--	debuglog("END shellTaskStreaming -------------------------------------------\n")
+	return true		-- KEEP STREAMING
+end
+
+
+--shellTask:terminate()
 
 -- See: http://www.hammerspoon.org/docs/hs.task.html#setStreamCallback
 function modStatusReceived(newStatus)
