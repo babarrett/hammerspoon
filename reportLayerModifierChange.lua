@@ -3,61 +3,59 @@
 -- and ending with <return> when a layer or modifier change is noted.
 -- This Hammerspoon code will detect and interpret that sequence and
 -- display the current state in a "heads up display"
+-- Cmd+Shift+F12 to start/stop the monitoring and display.
 -- by: Bruce Barrett
 
 reportLayerModifierChange = {}
 
--- Because I don't know how to feed HID events into Hammerspoon directly I'll
--- do it through the file system, as follows:
--- On Hammerspoon start-up or "Reload config" run the shell command: ps | grep hid_listen | grep -v grep
---		if any non-empty lines are returned they start with a process ID. Kill those processes
---		(re)Start the hid_listen process, redirecting output, through grep, to /tmp/hid-for-hammerspoon
---			hid_listen | grep 'mod: ' > /tmp/hid-for-hammerspoon
---		Set "last seen file size" to zero
+-- On (Report Layer Modifier Change) activate (Cmd+Shift+F12) run the shell command: 
+--		if shellTask ~= nil then terminate() else 
+--			if neverStarted then 
+--				execute /bin/ps And search the results for hid_listen.mac.
+--				kill any active IDs (the lines start with a process ID)
+--			end
+--		end
+--
+--		(re)Start the hid_listen.mac process, catching output stream
 --		Set the lastSeenStatus to "mod: ------"
---	XX	Create a recurring timer probably: "streamTimer = hs.timer.new(interval, fn [, continueOnError]) -> timer" (this does not start the timer, yet)
---	XX		or less likely: "hs.timer.doEvery(interval, fn)" for every 1/4 second. [but can this do sub-second scans?]
 --		Create a new task that watches the stream with hs.task.new(launchPath, callbackFn[, streamCallbackFn, arguments]) -> hs.task object
---			newModStatus = hs.task.new("/usr/bin/tail", nil, modStatusReceived, {"-1"})		-- return most recent status == last line in file
+--			shellTask = hs.task.new("/Applications/hid_listen/binaries/hid_listen.mac", nil, shellTaskStreaming)
 -- 
 -- On every modStatusReceived:
 --		Validate that we received 12 bytes. "mod... <return>"
---		Process the newest status (validate format, evaluate & display)
+--		Process the status (validate format, ignore if no change, evaluate & display)
 --		Set "last seen status" to current
---		wait for stream event to occure
+--		wait for next stream event to occur
 --
--- Maybe someday, when file gets "too big" a. close down the stream task. b. halt the process. c. start all over.
 
 shellTask = nil
+neverStarted = true
 
+-- Cmd+Shift+F12 to start/stop manually.
 function startStopHUD()
 	if shellTask then 
 		-- terminate it
 		shellTask:terminate()
 		shellTask = nil
-		debuglog("Terminated shellTask")
+		-- TODO: scan and kill processes
+		hs.alert.show("Modifier display: Off")
 	else
 		-- start it up.
 		-- TODO: kill any existing hid_listner.mac processes
-		debuglog("test new task (OK)")
+		debuglog("Starting Modifier display")
 		--	TODO:	/Applications/hid_listen/binaries/hid_listen.mac
-		shellTask = hs.task.new("/Applications/hid_listen/binaries/hid_listen.mac", nil, shellTaskStreaming)		--  shellTaskDone
-		debuglog("shellTask: "..tostring(shellTask))
-		shellTask:setWorkingDirectory("/Users/bruce/dev/git/hammerspoon")
-		debuglog("workingDirectory (OK): "..shellTask:workingDirectory())
-		--shellTask:setInput("inputData")
+		shellTask = hs.task.new("/Applications/hid_listen/binaries/hid_listen.mac", nil, shellTaskStreaming)
 		shellTask:start()
-		debuglog("shellTask started")
+		-- debuglog("shellTask: "..tostring(shellTask))
+		hs.alert.show("Modifier display: On")
 	end
 end
 
 hs.hotkey.bind("Cmd Shift", "f12", nil, function() startStopHUD() end )
 
 
---	-------------------------------------------
---		TEST
---	-------------------------------------------
 --	The callback functions MUST be defined first or nils get passed.
+--	This function not used.
 function shellTaskDone(exitcode, stdout, stderr)
 	debuglog("Called shellTaskDone")
 	debuglog(exitcode)
@@ -75,8 +73,6 @@ function shellTaskStreaming(mtaskid, mstdout, mstderr)
 end
 
 
---shellTask:terminate()
-
 -- See: http://www.hammerspoon.org/docs/hs.task.html#setStreamCallback
 function modStatusReceived(newStatus)
 	-- len("mod: ------<cr>") == 12
@@ -93,7 +89,6 @@ end
 
 local HUD = nil
 local HUDView
-local addDelete = "add"					-- I'm not crazy about globals, but this simplifies the code
 local modShift		= false
 local modControl	= false
 local modOption		= false
@@ -164,7 +159,7 @@ function tearDown()
     HUDView:delete()
     HUDView=nil
   end
-  LayerModifierKey:exit()
+  -- LayerModifierKey:exit()
 end
 
 function updateHUD()
@@ -198,7 +193,7 @@ function updateHUD()
 	HUDView:bringToFront()
   
   end
-  LayerModifierKey:exit()
+  -- LayerModifierKey:exit()
   
 end
 
