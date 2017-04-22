@@ -105,6 +105,10 @@ end
 	 hs.eventtap.keyStrokes('-------------------------------------------')
 end
 
+ function todo()
+	 hs.eventtap.keyStrokes('TODO: ')
+end
+
 
 -- private
 local funNameToFunction = {
@@ -118,7 +122,8 @@ local funNameToFunction = {
 	moveToStatus = moveToStatus,
 	lockMyScreen = lockMyScreen,
 	mouseHighlight = mouseHighlight,
-	manydashes = manyDashes
+	manydashes = manyDashes,
+	todo = todo
 }
 
 local funNameToHelpText = {
@@ -132,7 +137,8 @@ local funNameToHelpText = {
 	moveToStatus =		'Mail: Move current item to "Status"',
 	lockMyScreen = 		'Lock screen so you can walk away',
 	mouseHighlight = 	'Surround mouse cursor with red circle for 3 seconds',
-	manydashes = 		'Type 42 hyphens'
+	manydashes = 		'Type 42 hyphens',
+	todo = 				'Type "TODO: " for codding'
 }
 function miscFunctions.bind(modifiers, char, functName)
 	-- debuglog("miscFunctions binding: "..char.." to "..functName)

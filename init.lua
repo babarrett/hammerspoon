@@ -61,6 +61,7 @@ miscFunctions.bind(HyperFn, "D", "dictate")
 miscFunctions.bind(HyperFn, "=", "mouseHighlight")
 miscFunctions.bind(HyperFn, "-", "manydashes")
 miscFunctions.bind(HyperFn, "L", "lockMyScreen")
+miscFunctions.bind(HyperFn, "T", "todo")	-- Type "TODO: " for code
 
 HF.add("Hyper+A     - Enter Application mode, Arrows or Char launches App.\n")
 HF.add("Hyper+W     - Enter Webpage mode, Arrows or Char opens web page.")
