@@ -31,37 +31,6 @@ reportLayerModifierChange = {}
 shellTask = nil
 neverStarted = true
 
--- Cmd+Shift+F12 to start/stop manually.
-function startStopHUD()
-	if shellTask then 
-		-- terminate it
-		shellTask:terminate()
-		shellTask = nil
-		-- TODO: scan and kill processes
-		hs.alert.show("Modifier display: Off")
-	else
-		-- start it up.
-		-- TODO: kill any existing hid_listner.mac processes
-		debuglog("Starting Modifier display")
-		--	TODO:	/Applications/hid_listen/binaries/hid_listen.mac
-		shellTask = hs.task.new("/Applications/hid_listen/binaries/hid_listen.mac", nil, shellTaskStreaming)
-		shellTask:start()
-		-- debuglog("shellTask: "..tostring(shellTask))
-		hs.alert.show("Modifier display: On")
-	end
-end
-
-hs.hotkey.bind("Cmd Shift", "f12", nil, function() startStopHUD() end )
-
-
---	The callback functions MUST be defined first or nils get passed.
---	This function not used.
-function shellTaskDone(exitcode, stdout, stderr)
-	debuglog("Called shellTaskDone")
-	debuglog(exitcode)
-	debuglog("STDOUT: \n"..stdout)
-	debuglog("STDERR: \n"..stderr)
-end
 
 function shellTaskStreaming(mtaskid, mstdout, mstderr)
 --	debuglog("\n    shellTaskStreaming -------------------------------------------")
@@ -70,6 +39,58 @@ function shellTaskStreaming(mtaskid, mstdout, mstderr)
 --	debuglog("STDERR: \n"..mstderr)
 --	debuglog("END shellTaskStreaming -------------------------------------------\n")
 	return true		-- KEEP STREAMING
+end
+
+-- Stop the current HUD daa collection and display.
+-- Exit with true if we stopped it.
+function stopHUD()
+	weStoppedIt = false
+	if shellTask then 
+		-- terminate it
+		shellTask:terminate()
+		shellTask = nil
+		weStoppedIt = true
+	else
+	-- TODO: scan and kill processes
+		-- weStoppedIt = true
+	end
+	
+	if weStoppedIt then
+		hs.alert.show("Modifier display: Off")
+	end
+	return weStoppedIt
+end
+
+--	The callback functions MUST be defined first or nils get passed.
+function startHUD()
+	-- start it up.
+	-- TODO: kill any existing hid_listner.mac processes
+	debuglog("Starting Modifier display")
+	-- TODO: Collect (display) all active processes, watch stream for hid_listen.mac, kill any PIDs found
+	-- Start listener, point the stream to the receiving function.
+	shellTask = hs.task.new("/Applications/hid_listen/binaries/hid_listen.mac", nil, shellTaskStreaming)
+	shellTask:start()
+	-- debuglog("shellTask: "..tostring(shellTask))
+	hs.alert.show("Modifier display: On")
+end
+
+-- Cmd+Shift+F12 to start/stop manually.
+function startStopHUD()
+	stopped = stopHUD()
+	if not stopped then
+		startHUD()
+	end
+end
+
+hs.hotkey.bind("Cmd Shift", "f12", nil, function() startStopHUD() end )
+
+
+--	This function not used.
+function shellTaskDone(exitcode, stdout, stderr)
+	debuglog("Called shellTaskDone")
+	debuglog(exitcode)
+	debuglog("STDOUT: \n"..stdout)
+	debuglog("STDERR: \n"..stderr)
 end
 
 
