@@ -48,6 +48,7 @@ local reportLayerModifierChange	= require "reportLayerModifierChange"
 require "KeyPressShow"
 require "bindFunctionKeys"
 --require "characterMapping"
+require "editSelection"
 
 HF.add("-- Miscellaneous Functions -- "..VERSION.." --\n")
 HF.bind(HyperFn, "H", "hammerspoonHelp")
