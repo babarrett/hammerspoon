@@ -75,6 +75,8 @@ function startHUD()
 end
 
 -- Cmd+Shift+F12 to start/stop manually.
+-- If it's running, stop it.
+-- If not running, start it.
 function startStopHUD()
 	stopped = stopHUD()
 	if not stopped then
@@ -124,7 +126,7 @@ layerNames = {
 	"Layer 6",
 	"Layer 7",
 	"Layer 8",
-	"Layer 9",
+	"Layer 9, or above",
 }
 layerNames[0] = "Base"
 layerName = layerNames[0]	-- default start
@@ -135,23 +137,24 @@ layerName = layerNames[0]	-- default start
 --			mod: #abcde
 --		Where:
 --			"mod: " is a litteral for this record, that we care about here
---			"#" A layer number, 0.. 9
+--			"#" A layer number, 0.. 9. Any layer >9 is reported as 9
 --			a A value for the Layer
 --			b A value for the Shift modifier
 --			c A value for the Control modifier
 --			d A value for the Option modifier
 --			e A value for the Command modifier
 --		The values available for the layer and each modifier are: 0, 3, 6, 9 and represent the
---		intensity of the layer or modifier where:
+--		"intensity" of the layer or modifier where:
 --		0 - Not active
 --		3 - Active, one-shot. Will deactivate on next key press
 --		6 - Active, being held by the user. Will deactivate upon release
 --		9 - Locked (like caps lock). Will remain active until the modifier is pressed and 
 --			released again, or in the case of layer until another layer is selected.
 --		We'll use these values to inform the "brightness" of the display of the modifier (symbol)
+--		0 = off, 9 = brightest
 
---		Layer and laer intensity is always set. Layer intensity of 0 is meaningless (not allowed)
---		When layer "0" to "9" is received set layer text to:
+--		Layer and layer intensity is always set. Layer intensity of 0 is meaningless (not allowed)
+--		When layer "0" to "9" is received set layer text to layerNames[tonumber(layer)]:
 --		0 = Base
 --		1 = Numeric
 --		2 = Nav/Pnct
@@ -163,6 +166,10 @@ function displayStatus(newStat)
 	layerName = layerNames[tonumber(sub(newStat,6,1))]
 	layerVal = 		tonumber(sub(newStat,7,1))
 
+	--	modShift   "⇧"
+	--	modControl "⋏" 
+	--	modOption  "⌥"
+	--	modCommand "⌘"
 	modShiftVal = 	tonumber(sub(newStat,8,1))
 	modControlVal = tonumber(sub(newStat,9,1))
 	modOptionVal = 	tonumber(sub(newStat,10,1))
@@ -174,13 +181,12 @@ function displayStatus(newStat)
 end
 
 function tearDown()
-  -- todo: replace w/ graphics
+  -- todo: replace w/ graphics, if needed
   if HUDView then
     debuglog("Tear down HUD view.")
     HUDView:delete()
     HUDView=nil
   end
-  -- LayerModifierKey:exit()
 end
 
 function updateHUD()
@@ -199,6 +205,7 @@ function updateHUD()
 	wide = 200
 	high = 90
 
+	-- TODO: Replace with screen graphics instead
 	HUDView = hs.webview.new({x = xLoc, y = yLoc, w = wide, h = high}, 
 		{ developerExtrasEnabled = false, suppressesIncrementalRendering = false })
 	:windowStyle("utility")
@@ -218,10 +225,6 @@ function updateHUD()
   
 end
 
---				((modShift  ) and "⇧" or "&nbsp;&nbsp;") ..
---				((modControl) and "⋏" or  "&nbsp;") ..
---				((modOption ) and "⌥" or "&nbsp;&nbsp;&nbsp;") ..
---				((modCommand) and "⌘" or "&nbsp;&nbsp;&nbsp;&nbsp;") ..
 
 
 return reportLayerModifierChange
