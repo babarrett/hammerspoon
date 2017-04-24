@@ -79,6 +79,8 @@ hs.hotkey.bind("Shift", "f8", nil, function() launchAppOrWeb( nil, "https://conf
 --    F21, nil, "https://developer.asperasoft.com"},
 --    F22, nil, "https://aspera.zendesk.com/agent/dashboard"},
 --    F23, nil, "http://downloads.asperasoft.com"},
+
+hs.hotkey.bind("Cmd Shift", "f10", nil, function() 	hs.eventtap.keyStroke({""}, "f10") end )
 	
 --    W = {"Geekhack", nil, "https://geekhack.org/index.php?action=watched"},		-- Geekhack, Watched
 --    K = {"KLE", nil, "http://www.keyboard-layout-editor.com"},
