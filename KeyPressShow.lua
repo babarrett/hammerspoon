@@ -27,7 +27,11 @@ function showKeyPress(tap_event)
     ["tab"] = true, ["space"] = true, ["delete"] = true, ["escape"] = true,
     ["help"] = true, ["home"] = true, ["pageup"] = true,
     ["forwarddelete"] = true, ["end"] = true, ["pagedown"] = true,
-    ["left"] = true, ["right"] = true, ["down"] = true, ["up"] = true
+    ["left"] = true, ["right"] = true, ["down"] = true, ["up"] = true,
+    -- These added 4/24/2017 when modifiers added to Hammerspoon. v0.9.53
+	["shift,"] = true, ["rightshift,"] = true, ["cmd,"] = true, 
+	["rightcmd,"] = true, ["alt,"] = true, ["rightalt,"] = true, 
+	["ctrl,"] = true, ["rightctrl,"] = true, ["capslock,"] = true, ["fn,"] = true
   }
 
   -- if we have a simple character (no modifiers), we want a shorter

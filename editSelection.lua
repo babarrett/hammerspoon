@@ -1,14 +1,14 @@
 -- Edit Selection functions:
+--	* Surround selection with <x_pasteboard> and <y_pasteboard>
+--	* Load <x_pasteboard> with selection
+--	* Load <y_pasteboard> with selection
+--	* Find next (Cmd+G)
+
 -- 	* Select All
 --	* Convert to UPPER case
 --	* Convert to Title case
 --	* Convert to lower case
 --	* Open up camel case (ThisIsATest --> This Is A Test, or this is a test)
-
---	* Surround selection with <x_pasteboard> and <y_pasteboard>
---	* Load <x_pasteboard> with selection
---	* Load <y_pasteboard> with selection
---	* Find next (Cmd+G)
 
 -- by: Bruce Barrett
 
@@ -20,6 +20,12 @@ local	sel = nil
 
 -------------------------------------------
 --	Utility Function
+
+-- getTextSelection
+-- 	Gets currently selected text using Cmd+C
+--	Saves and restores the current pasteboard
+--	Imperfect, perhaps.
+--	Taken from: https://github.com/Hammerspoon/hammerspoon/issues/634
 function getTextSelection()	-- returns text or nil
 	local oldText = hs.pasteboard.getContents()
 	hs.eventtap.keyStroke({"cmd"}, "c")
@@ -29,6 +35,7 @@ function getTextSelection()	-- returns text or nil
 	return text
 end
 
+-------------------------------------------
 --	Functions to bind to:
 
 function typePreSelectionPost() 
