@@ -3,7 +3,11 @@
 --	* Load <x_pasteboard> with selection
 --	* Load <y_pasteboard> with selection
 --	* Find next (Cmd+G)
-
+--
+--	Delete Word functions:
+--	* Delete left 1 word. (Shift+Backspace)
+--
+--	TODO: 
 -- 	* Select All
 --	* Convert to UPPER case
 --	* Convert to Title case
@@ -21,7 +25,7 @@ local	sel = nil
 -------------------------------------------
 --	Utility Function
 
--- getTextSelection
+-- getTextSelection()
 -- 	Gets currently selected text using Cmd+C
 --	Saves and restores the current pasteboard
 --	Imperfect, perhaps.
@@ -65,6 +69,26 @@ function loadSelectionIntoPost()
 	hs.alert("Post = "..post)
 end
 
+function deletePreviousWord()
+	-- Get current selection, exit if not empty
+	currSel = getTextSelection()
+	if string.len(currSel) < 1 then return end
+	
+	-- Select to start of line, copy. Exit if empty
+	hs.eventtap.keyStroke("Cmd Shift", "Left")
+	currSel = getTextSelection()
+	if string.len(currSel) < 1 then return end
+
+	-- Replace with all but prior word by searching back from end looking for word break
+	-- iTerm defines these as part of a word: /-+\~_.
+	-- BBEdit Uses: defiles word characters as a-z, A-Z, 0-9, _, and some 8-bit characters
+	-- New string = oldstring w/o the last word. Lua uses %w for alpha-numeric characrers. %W for non-
+	newS = string.sub(currSel, 1, string.len(currSel)-string.len(string.gsub(currSel, ".*%W", "")))
+	hs.eventtap.keyStrokes(newS)
+	-- Drop selection
+	hs.eventtap.keyStroke({""}, "right")
+end
+
 
 
 
@@ -76,7 +100,7 @@ hs.hotkey.bind("alt",  "f1", nil, function()  loadSelectionIntoPre()	end )
 hs.hotkey.bind("alt",  "f2", nil, function()  loadSelectionIntoPost()	end )
 
 
-
+hs.hotkey.bind("ctrl",  "delete", nil, function()  deletePreviousWord()	end )
 
 
 return editSelection
