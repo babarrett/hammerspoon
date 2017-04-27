@@ -78,15 +78,30 @@ function deletePreviousWord()
 	hs.eventtap.keyStroke("Cmd Shift", "Left")
 	currSel = getTextSelection()
 	if string.len(currSel) < 1 then return end
+--	debuglog("currSel: "..currSel.."<<<")
 
 	-- Replace with all but prior word by searching back from end looking for word break
 	-- iTerm defines these as part of a word: /-+\~_.
 	-- BBEdit Uses: defiles word characters as a-z, A-Z, 0-9, _, and some 8-bit characters
 	-- New string = oldstring w/o the last word. Lua uses %w for alpha-numeric characrers. %W for non-
-	newS = string.sub(currSel, 1, string.len(currSel)-string.len(string.gsub(currSel, ".*%W", "")))
+	
+	-- Drop any trailing non-words
+	newS = string.match(currSel, "(.*%w)(%W*)$")
+--	debuglog("newS___: "..newS.."<<<")
+	-- Drop last trailing word
+	newS = string.match(newS, "(.*%W)(%w+)$")
+	--debuglog("newS__.: "..newS.."<<<")
+
+--	debuglog("lastWord: "..newS.."<<<")
+--	debuglog("lastSpace: "..newS.."<<<")
+	-- If the insertion point is past the end of the word to the left, for example at the end of
+	-- "last word  " instead of at the end of "last word" then we would have copied the next character too.
+	-- Check for, and drop any non-word characters at the end of the selection.
+	trim = string.gsub(newS, ".*(%w*$)", "")
+	--debuglog("trim___: "..trim.."<<<")
 	hs.eventtap.keyStrokes(newS)
 	-- Drop selection
-	hs.eventtap.keyStroke({""}, "right")
+--	hs.eventtap.keyStroke({""}, "right")
 end
 
 
