@@ -74,7 +74,11 @@ end
 function toTitleCase()
 	-- TODO: scan for non-alphas, replace next w/ Caps
 	sel = getTextSelection()
-	if sel then hs.eventtap.keyStrokes(string.lower(sel)) end
+	if sel == nil then return end
+	newSel = ""
+	for i=1, 1, len(sel) do
+		newSel = newSel..string.sub(sel, i, i)
+	end
 end
 
 function loadSelectionIntoPre()
@@ -88,6 +92,7 @@ function loadSelectionIntoPost()
 	post = getTextSelection()
 	hs.alert("Post = "..post)
 end
+
 
 function deletePreviousWord()
 	-- Get current selection, exit if not empty
@@ -139,7 +144,7 @@ hs.hotkey.bind("ctrl",  "delete", nil, function()  deletePreviousWord()	end )
 hs.hotkey.bind("ctrl",  "f4", nil, function()  selectAll()		end )
 hs.hotkey.bind("ctrl",  "f5", nil, function()  toUppercase()	end )
 hs.hotkey.bind("ctrl",  "f6", nil, function()  toLowercase()	end )
---hs.hotkey.bind("ctrl",  "f7", nil, function()  toTitleCase()	end )
+hs.hotkey.bind("ctrl",  "f7", nil, function()  toTitleCase()	end )
 --hs.hotkey.bind("ctrl",  "f8", nil, function()  toUncamelCase()	end )
 
 
