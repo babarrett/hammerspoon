@@ -78,14 +78,16 @@ function toTitleCase()
 	newSel = ""
 	debuglog("Pre: "..sel)
 	lastWasWhiteSpace = true
-	for i=1, 1, i <= string.len(sel) do
+	for i=1, string.len(sel), 1 do
 		thisChar = string.sub(sel, i, i)
-		if string.match(thisChar, " \t") then
+		if string.find(thisChar, "[ \t]") then
 			lastWasWhiteSpace = true
 		elseif lastWasWhiteSpace then
 			thisChar = string.upper(thisChar)
+			lastWasWhiteSpace = false
 		end
 		newSel = newSel..thisChar
+		debuglog(tostring(lastWasWhiteSpace))
 	end
 	debuglog("Post: "..newSel)
 	hs.eventtap.keyStrokes(newSel)
