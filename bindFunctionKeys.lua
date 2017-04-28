@@ -13,17 +13,13 @@ bindFunctionKeys = {}
 --	Type a (modifier)+Key
 --  We'll only try one, the first non-nil parameter
 function launchAppOrWeb(app,web, key)
-  debuglog("launchAppOrWeb")
   if app ~= nil then
       -- Try it up to 3 ways.
 	  status = hs.application.launchOrFocus(app)
-      debuglog("1. status = "..tostring(status))
 	  if (not status) then
 		  status = hs.application.launchOrFocusByBundleID(app)	-- use BundleID ("com.aspera.connect") if App name fails
---		  debuglog("2. status = "..tostring(status))
 		  if (not status) then
 		    output, status = hs.execute("open " .. app)
---		    debuglog("3. status = "..tostring(status))
 		  end
 		end
   elseif web ~= nil then
@@ -48,7 +44,7 @@ hs.hotkey.bind("", "f6", nil, function() launchAppOrWeb( nil, nil, {mods='CMD', 
 hs.hotkey.bind("", "f7", nil, function() launchAppOrWeb( nil, nil, {mods='CMD Shift', char="."}) end )	-- Cmd+Shift+"." = for move email to Done folder
 hs.hotkey.bind("", "f8", nil, function() launchAppOrWeb( nil, nil, {mods='CMD Shift', char=","}) end )	-- Cmd+Shift+"," = for move email to Status folder
 
--- No idea why, but these 3 F## fail. 
+-- No idea why, but these 3 F## fail. Replaced with Karabiner.
 --hs.hotkey.bind("", "f9", nil, function() launchAppOrWeb( 'Preview', nil, nil) end )
 --hs.hotkey.bind("", "f10", nil, function() launchAppOrWeb( "/Users/bbarrett/Secure.dmg & open /Users/bruce/Secure.dmg", nil, nil) end )	-- open Secure.dmg either at work or at home.
 --hs.hotkey.bind("", "f11", nil, function() launchAppOrWeb( 'System Preferences', nil) end )

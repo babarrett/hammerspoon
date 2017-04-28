@@ -4,16 +4,15 @@
 --	* Load <y_pasteboard> with selection
 --	* Find next (Cmd+G)
 --
---	Delete Word functions:
---	* Delete left 1 word. (Shift+Backspace)
---
---	TODO: 
 -- 	* Select All
 --	* Convert to UPPER case
 --	* Convert to Title case
 --	* Convert to lower case
---	* Open up camel case (ThisIsATest --> This Is A Test, or this is a test)
-
+--	* Open up camel case (ThisIsATest --> this is a test)
+--
+--	Delete Word functions:
+--	* Delete left 1 word. (Shift+Backspace)
+--
 -- by: Bruce Barrett
 
 editSelection = {}
@@ -72,11 +71,10 @@ function toLowercase()
 end
 
 function toTitleCase()
-	-- TODO: scan for non-alphas, replace next w/ Caps
+	-- Scan for white space, replace next character w/ Caps
 	sel = getTextSelection()
 	if sel == nil then return end
 	newSel = ""
-	debuglog("Pre: "..sel)
 	lastWasWhiteSpace = true
 	for i=1, string.len(sel), 1 do
 		thisChar = string.sub(sel, i, i)
@@ -87,11 +85,29 @@ function toTitleCase()
 			lastWasWhiteSpace = false
 		end
 		newSel = newSel..thisChar
-		debuglog(tostring(lastWasWhiteSpace))
 	end
-	debuglog("Post: "..newSel)
 	hs.eventtap.keyStrokes(newSel)
 end
+
+-- TODO: FIX: If "lower Caps MoreCaps" is selected/translated additional spaces are inserted.
+-- Must keep track of prior white space too.
+function toUncamelCase()
+	-- Scan for uppercase char, replace with a space and the lowercase of it
+	sel = getTextSelection()
+	if sel == nil then return end
+	newSel = ""
+--	lastWasWhiteSpace = true
+	for i=1, string.len(sel), 1 do
+		thisChar = string.sub(sel, i, i)
+		if thisChar == string.upper(thisChar) then
+			newSel = newSel.." "..string.lower(thisChar)
+		else 
+			newSel = newSel..thisChar
+		end
+	end
+	hs.eventtap.keyStrokes(newSel)
+end
+
 
 function loadSelectionIntoPre()
 	debuglog("Pre")
@@ -157,7 +173,7 @@ hs.hotkey.bind("ctrl",  "f4", nil, function()  selectAll()		end )
 hs.hotkey.bind("ctrl",  "f5", nil, function()  toUppercase()	end )
 hs.hotkey.bind("ctrl",  "f6", nil, function()  toLowercase()	end )
 hs.hotkey.bind("ctrl",  "f7", nil, function()  toTitleCase()	end )
---hs.hotkey.bind("ctrl",  "f8", nil, function()  toUncamelCase()	end )
+hs.hotkey.bind("ctrl",  "f8", nil, function()  toUncamelCase()	end )
 
 
 return editSelection

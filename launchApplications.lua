@@ -25,7 +25,6 @@ launchApplications = {}
 --				callout to Handle(key) which will pick the right behavior based upon the global, including "do nothing"
 --				if the current "mode" does not have that key defined.
 --			3. Need to handle "Space" and "Return" in a similar way.
---	TODO: Support change case of selection in a separate .lua file
 
 local DEFAULTBROWSER = 'Safari'
 local pickerView = nil
@@ -103,13 +102,6 @@ function countTableElements(myTable)
   return count
 end
 
--- TODO: support case changes too, someday. Some other file.
-local changeCaseShortCuts = {
-	L = {"To lowercase", nil, nil},
-	T = {"To Title Case", nil, nil},
-	U = {"To UPPERCASE", nil, nil}
-}
-
 -- TODO: support special terminal commands for development (git, pushd, cd,...), someday
 local developmentShortCuts = {
 	A = {"cd algernon-master", nil, nil},
@@ -132,16 +124,13 @@ local modalWebKey = hs.hotkey.modal.new(HyperFn, 'W')
 for index, modalKey in pairs({modalAppKey, modalWebKey}) do
 	modalKey:bind('', 'escape', 
 		function() 
-		debuglog("Escape")
 		modalKey:exit() end)
 	modalKey:bind('', 'space',  
 		function() 
-		debuglog("Space")
 		launchAppOrWebBySelection()
 		modalKey:exit() end)
 	modalKey:bind('', 'return',  
 		function() 
-		debuglog("Return")
 		launchAppOrWebBySelection()
 		modalKey:exit() end)
 
@@ -152,25 +141,21 @@ for index, modalKey in pairs({modalAppKey, modalWebKey}) do
 	-- pass through here anyway.
 	modalKey:bind('', 'left', nil, 
 		function() 
-		debuglog("Left")
 		xsel = math.max(xmin, xsel-1)
 		reloadPicker()
 		end)
 	modalKey:bind('', 'right', nil, 
 		function() 
-		debuglog("Right")
 		xsel = math.min(xmax, xsel+1)
 		reloadPicker()
 		end)
 	modalKey:bind('', 'up', nil, 
 		function() 
-		debuglog("Up")
 		ysel = math.max(ymin, ysel-1)
 		reloadPicker()
 		end)
 	modalKey:bind('', 'down', nil, 
 		function() 
-		debuglog("Down, a")
 		ysel = math.min(ymax, ysel+1)
 		reloadPicker()
 		end)
@@ -233,20 +218,17 @@ end
 
 function modalAppKey:exited() 
   -- Take down App selector
-  debuglog("LaunchApp exited")
   takeDownPicker()
 end
 
 
 function modalWebKey:exited() 
   -- Take down App selector
-  debuglog("LaunchWebpage exited")
   takeDownPicker()
 end
 
 function takeDownPicker()
   if pickerView ~= nil then
-    debuglog("pickerView defined")
     pickerView:delete()
     pickerView=nil
   end
@@ -257,21 +239,14 @@ function launchAppOrWebBySelection()
   app = nil
   -- which index, based  on (x, y) cell was selected
   index = ysel * (xmax+1) + xsel
-  debuglog("LaunchType: "..   inMode .."; (x, y) -- index= (" .. xsel .. ", " .. ysel .. ") -- " .. index)
- dataTable =  (inMode == "App") and appShortCuts or webShortCuts;
---  if (inMode == "App") then
---  	dataTable = appShortCuts
---  else
---    dataTable = webShortCuts
---  end
+--  debuglog("LaunchType: "..   inMode .."; (x, y) -- index= (" .. xsel .. ", " .. ysel .. ") -- " .. index)
+  dataTable =  (inMode == "App") and appShortCuts or webShortCuts;
   for key, appInfo in hs.fnutils.sortByKeys(dataTable) do
     if index == 0 then
 	  if (inMode == "App") then
 		app = appInfo[2]
-		debuglog("Assigning app: "..app)
 	  else
 		app = appInfo[3]
-		debuglog("Assigning webpage: "..app)
 	  end
 	end
     index = index -1
@@ -280,21 +255,19 @@ function launchAppOrWebBySelection()
   launchAppOrWeb(app)
 end
 
+-- TODO: Merge/replace with f() of the same name in file: bindFunctionKeys.lua
 function launchAppOrWeb(app)
-  if inMode == "App" then		-- app ~= nil then
+  if inMode == "App" then
     -- hs.alert.show('Launching app... '..app)
 	  status = hs.application.launchOrFocus(app)
-	  debuglog("1. status = "..tostring(status))
 	  if (not status) then
 		  status = hs.application.launchOrFocusByBundleID(app)	-- use BundleID ("com.aspera.connect") if App name fails
-		  debuglog("2. status = "..tostring(status))
 		  if (not status) then
 		    output, status = hs.execute("open " .. app)
-		    debuglog("3. status = "..tostring(status))
 		  end
 		end
   else
-    -- hs.alert.show('Opening webpage... '..app)
+    -- Opening webpage, instead of app
     hs.execute("open " .. app)
   end
 end
@@ -303,11 +276,9 @@ end
 function reloadPicker()
   if pickerView then
   -- if it exists, refresh it
-	debuglog("Refresh web page")
     pickerView:html(launchApplications.generateHtml())
   else
   -- if it doesn't exist, make it
-	debuglog("Create new web page")
 	pickerView = hs.webview.new({x = 200, y = 200, w = 650, h = 350}, { developerExtrasEnabled = false, suppressesIncrementalRendering = false })
 	:windowStyle("utility")
 	:closeOnEscape(true)
