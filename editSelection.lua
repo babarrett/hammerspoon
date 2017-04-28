@@ -57,6 +57,26 @@ function findNext()
 	hs.eventtap.keyStroke("Cmd", "G")
 end
 
+function selectAll()
+	hs.eventtap.keyStroke("Cmd", "A")
+end
+
+function toUppercase()
+	sel = getTextSelection()
+	if sel then hs.eventtap.keyStrokes(string.upper(sel)) end
+end
+
+function toLowercase()
+	sel = getTextSelection()
+	if sel then hs.eventtap.keyStrokes(string.lower(sel)) end
+end
+
+function toTitleCase()
+	-- TODO: scan for non-alphas, replace next w/ Caps
+	sel = getTextSelection()
+	if sel then hs.eventtap.keyStrokes(string.lower(sel)) end
+end
+
 function loadSelectionIntoPre()
 	debuglog("Pre")
 	pre = getTextSelection()
@@ -116,6 +136,11 @@ hs.hotkey.bind("alt",  "f2", nil, function()  loadSelectionIntoPost()	end )
 
 
 hs.hotkey.bind("ctrl",  "delete", nil, function()  deletePreviousWord()	end )
+hs.hotkey.bind("ctrl",  "f4", nil, function()  selectAll()		end )
+hs.hotkey.bind("ctrl",  "f5", nil, function()  toUppercase()	end )
+hs.hotkey.bind("ctrl",  "f6", nil, function()  toLowercase()	end )
+--hs.hotkey.bind("ctrl",  "f7", nil, function()  toTitleCase()	end )
+--hs.hotkey.bind("ctrl",  "f8", nil, function()  toUncamelCase()	end )
 
 
 return editSelection
