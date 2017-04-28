@@ -4,6 +4,7 @@
 --	TODO: Support better path (there is none yet)
 -- "?;?.lua;~/dev/git/hammerspoon/?;?.lua"
 --	TODO: Create another modual for KeyToKey mappings such as Numeric Pad to move functions.
+--	TODO: Find some way wo handle NumLock, What's blocking it? No Karibiner == always numeric.
 
 VERSION = "2017-Apr-16"
 hs.console.clearConsole()
