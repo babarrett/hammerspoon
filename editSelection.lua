@@ -76,9 +76,19 @@ function toTitleCase()
 	sel = getTextSelection()
 	if sel == nil then return end
 	newSel = ""
-	for i=1, 1, len(sel) do
-		newSel = newSel..string.sub(sel, i, i)
+	debuglog("Pre: "..sel)
+	lastWasWhiteSpace = true
+	for i=1, 1, i <= string.len(sel) do
+		thisChar = string.sub(sel, i, i)
+		if string.match(thisChar, " \t") then
+			lastWasWhiteSpace = true
+		elseif lastWasWhiteSpace then
+			thisChar = string.upper(thisChar)
+		end
+		newSel = newSel..thisChar
 	end
+	debuglog("Post: "..newSel)
+	hs.eventtap.keyStrokes(newSel)
 end
 
 function loadSelectionIntoPre()
