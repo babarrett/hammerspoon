@@ -89,21 +89,21 @@ function toTitleCase()
 	hs.eventtap.keyStrokes(newSel)
 end
 
--- TODO: FIX: If "lower Caps MoreCaps" is selected/translated additional spaces are inserted.
--- Must keep track of prior white space too.
+-- Turn CamelCaseTextRuns into: Camel case text runs
 function toUncamelCase()
 	-- Scan for uppercase char, replace with a space and the lowercase of it
 	sel = getTextSelection()
 	if sel == nil then return end
 	newSel = ""
---	lastWasWhiteSpace = true
+	lastWasWhiteSpace = true
 	for i=1, string.len(sel), 1 do
 		thisChar = string.sub(sel, i, i)
-		if thisChar == string.upper(thisChar) then
+		if (string.find(thisChar, "[A-Z]") ) and  (not lastWasWhiteSpace) then
 			newSel = newSel.." "..string.lower(thisChar)
 		else 
 			newSel = newSel..thisChar
 		end
+		lastWasWhiteSpace = string.find(thisChar, "[ \t]") and true or false
 	end
 	hs.eventtap.keyStrokes(newSel)
 end
