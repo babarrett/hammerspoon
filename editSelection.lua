@@ -1,17 +1,20 @@
 -- Edit Selection functions:
+-- Operations that are performed on the current selection. 
+-- OS X oriented.
 --	* Surround selection with <x_pasteboard> and <y_pasteboard>
 --	* Load <x_pasteboard> with selection
 --	* Load <y_pasteboard> with selection
 --	* Find next (Cmd+G)
 --
 -- 	* Select All
---	* Convert to UPPER case
---	* Convert to Title case
---	* Convert to lower case
---	* Open up camel case (ThisIsATest --> this is a test)
+--	* Convert selection to UPPER case
+--	* Convert selection to Title case
+--	* Convert selection to lower case
+--	* Open up camel case selection (ThisIsATest --> this is a test)
 --
 --	Delete Word functions:
---	* Delete left 1 word. (Shift+Backspace)
+--	* Delete left 1 word. (Ctrl+Backspace) 
+--		Works by copying from insertion point to start of line, and replacing that with all but the last word selected.
 --
 -- by: Bruce Barrett
 
@@ -27,9 +30,9 @@ local	sel = nil
 -- getTextSelection()
 -- 	Gets currently selected text using Cmd+C
 --	Saves and restores the current pasteboard
---	Imperfect, perhaps.
+--	Imperfect, perhaps. May not work well on large selections.
 --	Taken from: https://github.com/Hammerspoon/hammerspoon/issues/634
-function getTextSelection()	-- returns text or nil
+function getTextSelection()	-- returns text or nil while leaving pasteboard undisturbed.
 	local oldText = hs.pasteboard.getContents()
 	hs.eventtap.keyStroke({"cmd"}, "c")
 	hs.timer.usleep(100000)
@@ -40,7 +43,10 @@ end
 
 -------------------------------------------
 --	Functions to bind to:
-
+-- Pre was already loaded before this call
+-- Post was already loaded before this call
+-- Selection is current selection.
+-- Copy Selection, then type Pre+Selection+Post
 function typePreSelectionPost() 
 	debuglog("typePreSelectionPost")
 	sel = getTextSelection()
@@ -52,6 +58,7 @@ function typePreSelectionPost()
 	
 end
 
+-- Used in conjunction with typePreSelectionPost() to repeat the current find and prepare for the next replace.
 function findNext()
 	hs.eventtap.keyStroke("Cmd", "G")
 end
@@ -70,42 +77,54 @@ function toLowercase()
 	if sel then hs.eventtap.keyStrokes(string.lower(sel)) end
 end
 
+-- Do not capitalize:
+--	The first and last word, or these...
+	noCapTitleWords = 
+	{ "A", "An", "And", "As", "At", "But", "Buy", "By", "Down", "Even", "For",
+	"From", "If", "In", "Into", "Like", "Long", "Near", "Nor", "Now", "Of", "Off",
+	"On", "Once", "Only", "Onto", "Or", "Out", "Over", "Past", "So", "Than", "That",
+	"The", "Till", "To", "Top", "Up", "Upon", "When", "With", "Yet" }
+
 function toTitleCase()
-	-- Scan for white space, replace next character w/ Caps
-	-- TODO: don't capitalize these: a, an, the, at, by, for, in, of, on, to, up, and, 
-	--	as, but, or, and nor.
+	-- Scan for white space, quote, or other non-alphanumerics that could precede a word, 
+	-- replace next character w/ Caps
+	sel = getTextSelection()
+	if sel == nil then return end
+	newSel = ""
+	capitalizeNext = true
+	for i=1, string.len(sel), 1 do
+		thisChar = string.sub(sel, i, i)
+		if string.find(thisChar, "[ \t'\"“‘(]") then
+			capitalizeNext = true
+		elseif capitalizeNext then
+			thisChar = string.upper(thisChar)
+			capitalizeNext = false
+		end
+		newSel = newSel..thisChar
+	end
+	-- Now, uncapitalize any words to avoid (includes skipping 1st and last word.)
+	for _, word in pairs(noCapTitleWords) do
+		-- If any of the uppercased (by mistake) words of intrest are found, make them lowercase.
+		newSel, _ = string.gsub( newSel, "[ \t'\"“‘(]"..word.."[ ,:'’”]", string.lower )
+	end
+	hs.eventtap.keyStrokes(newSel)
+end
+
+-- Turn CamelCaseTextRuns into: Camel case text runs
+function toUncamelCase()
+	-- Scan for uppercase char, replace with a space and the lowercase of it
 	sel = getTextSelection()
 	if sel == nil then return end
 	newSel = ""
 	lastWasWhiteSpace = true
 	for i=1, string.len(sel), 1 do
 		thisChar = string.sub(sel, i, i)
-		if string.find(thisChar, "[ \t]") then
-			lastWasWhiteSpace = true
-		elseif lastWasWhiteSpace then
-			thisChar = string.upper(thisChar)
-			lastWasWhiteSpace = false
-		end
-		newSel = newSel..thisChar
-	end
-	hs.eventtap.keyStrokes(newSel)
-end
-
--- TODO: FIX: If "lower Caps MoreCaps" is selected/translated additional spaces are inserted.
--- Must keep track of prior white space too.
-function toUncamelCase()
-	-- Scan for uppercase char, replace with a space and the lowercase of it
-	sel = getTextSelection()
-	if sel == nil then return end
-	newSel = ""
---	lastWasWhiteSpace = true
-	for i=1, string.len(sel), 1 do
-		thisChar = string.sub(sel, i, i)
-		if thisChar == string.upper(thisChar) then
+		if (string.find(thisChar, "[A-Z]") ) and  (not lastWasWhiteSpace) then
 			newSel = newSel.." "..string.lower(thisChar)
 		else 
 			newSel = newSel..thisChar
 		end
+		lastWasWhiteSpace = string.find(thisChar, "[ \t]") and true or false
 	end
 	hs.eventtap.keyStrokes(newSel)
 end
@@ -179,3 +198,5 @@ hs.hotkey.bind("ctrl",  "f8", nil, function()  toUncamelCase()	end )
 
 
 return editSelection
+
+
