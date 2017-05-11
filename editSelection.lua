@@ -72,6 +72,8 @@ end
 
 function toTitleCase()
 	-- Scan for white space, replace next character w/ Caps
+	-- TODO: don't capitalize these: a, an, the, at, by, for, in, of, on, to, up, and, 
+	--	as, but, or, and nor.
 	sel = getTextSelection()
 	if sel == nil then return end
 	newSel = ""
