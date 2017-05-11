@@ -67,6 +67,7 @@ local appShortCuts = {
     Zad = {'Adobe Reader', 'Adobe Reader', nil},
     Znu = {'Numbers', 'Numbers', nil},
     Zpa = {'Pages', 'Pages', nil},
+    Zpr = {'Preview', 'Preview', nil},
 }
 
 local webShortCuts = {
