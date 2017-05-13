@@ -1,6 +1,6 @@
 -- Report Layer Modifier Change
 -- Bruce's Ergodox keyboard will generate an HID sequence starting with "mod: "
--- and ending with <return> when a layer or modifier change is noted.
+-- and ending with <return> when a layer or modifier change is noticed.
 -- This Hammerspoon code will detect and interpret that sequence and
 -- display the current state in a "heads up display"
 -- Cmd+Shift+F12 to start/stop the monitoring and display.
@@ -41,7 +41,15 @@ function shellTaskStreaming(mtaskid, mstdout, mstderr)
 	return true		-- KEEP STREAMING
 end
 
--- Stop the current HUD daa collection and display.
+local hid_listenKilled = false
+function psResults(exitCode, stdOut, stdErr)
+	if not stdOut then return end
+	debuglog(stdOut)
+	-- TODO: scan and kill processes
+
+end
+
+-- Stop the current HUD data collection and display.
 -- Exit with true if we stopped it.
 function stopHUD()
 	weStoppedIt = false
@@ -52,6 +60,9 @@ function stopHUD()
 		weStoppedIt = true
 	else
 	-- TODO: scan and kill processes
+	local hid_listenKilled = false
+	psScanTask = hs.task.new("/bin/ps", psResults, {"-A"} )
+	psScanTask:start()
 		-- weStoppedIt = true
 	end
 	
