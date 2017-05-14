@@ -27,42 +27,74 @@ reportLayerModifierChange = {}
 --		Set "last seen status" to current
 --		wait for next stream event to occur
 --
+-- TODO: add CONSTANTS for shell commands such as /bin/ps, /bin/kill, /Applications/hid_listen/binaries/hid_listen.mac
+-- TODO: add CONSTANTS for command options like -A
+local HIDLEADIN = "KL: "	-- TODO: must change to "mod: " once keyboard is updated
+debuglog(HIDLEADIN)
 
 shellTask = nil
 neverStarted = true
+local	weStoppedIt = false
 
 
+-- This function collects the modifier events as they come in from the keyboard
+-- Updates if found.
+-- This function remains active until the next Cmd+Shift+F12 is received.
 function shellTaskStreaming(mtaskid, mstdout, mstderr)
---	debuglog("\n    shellTaskStreaming -------------------------------------------")
-	--debuglog(mtaskid)
-	debuglog("STDOUT: "..mstdout)
---	debuglog("STDERR: \n"..mstderr)
---	debuglog("END shellTaskStreaming -------------------------------------------\n")
+	-- debuglog(mtaskid)
+	-- Look at each line, one at a time. \n to separate
+	for line in string.gmatch(mstdout, "[^\n]+") do
+		-- Look for "mod: " event
+		if string.sub(line, 1, string.len(HIDLEADIN)) == HIDLEADIN then
+			debuglog("Modifier found: " .. line)
+			-- TODO: if, update HUD bases upon "line"
+			-- modStatusReceived(string.sub(string.len(HIDLEADIN)+1))
+		end
+	end
 	return true		-- KEEP STREAMING
 end
 
 local hid_listenKilled = false
+
+
+-- Function to process the results of the 'ps -A' command
+-- Search for '/Applications/hid_listen/binaries/hid_listen.mac' and kill it's pid
+-- stdOut: results of command (list of processes)
+-- If stdout contains ...hid_listen_mac then 
+--		set the global 
+--		kill the process
+--		
 function psResults(exitCode, stdOut, stdErr)
 	if not stdOut then return end
-	debuglog(stdOut)
+	-- debuglog("psResults: "..stdOut)
 	-- TODO: scan and kill processes
-
+	for line in string.gmatch(stdOut, "[^\n]+") do
+		-- Look for "hid_listen.mac" process
+		if string.find(line, '/Applications/hid_listen/binaries/hid_listen.mac') then
+		  debuglog("ps found: " .. line) 
+		  -- TODO: Kill pid @ start of line
+		  pid, _ = string.gsub(line, ' .*', '')
+		  killTask = hs.task.new("/bin/kill", nil, {pid} )
+		  killTask:start()
+		end
+		-- TODO: if, update HUD
+	end
 end
 
 -- Stop the current HUD data collection and display.
--- Exit with true if we stopped it.
+-- Set weStoppedIt to true if we stopped it.
+-- Note: Also spawns "ps" command looking for an already running listener that we don't know about.
 function stopHUD()
-	weStoppedIt = false
 	if shellTask then 
-		-- terminate it
+		-- terminate it if it's a task we know about and started
 		shellTask:terminate()
 		shellTask = nil
 		weStoppedIt = true
 	else
-	-- TODO: scan and kill processes
-	local hid_listenKilled = false
-	psScanTask = hs.task.new("/bin/ps", psResults, {"-A"} )
-	psScanTask:start()
+		-- TODO: scan and kill processes
+		local hid_listenKilled = false
+		psScanTask = hs.task.new("/bin/ps", psResults, {"-A"} )
+		psScanTask:start()
 		-- weStoppedIt = true
 	end
 	
@@ -73,26 +105,27 @@ function stopHUD()
 end
 
 --	The callback functions MUST be defined first or nils get passed.
+--	weStoppedIt: Global. If true then we DO NOT start up the HUD
 function startHUD()
-	-- start it up.
-	-- TODO: kill any existing hid_listner.mac processes
-	debuglog("Starting Modifier display")
-	-- TODO: Collect (display) all active processes, watch stream for hid_listen.mac, kill any PIDs found
-	-- Start listener, point the stream to the receiving function.
-	shellTask = hs.task.new("/Applications/hid_listen/binaries/hid_listen.mac", nil, shellTaskStreaming)
-	shellTask:start()
-	-- debuglog("shellTask: "..tostring(shellTask))
-	hs.alert.show("Modifier display: On")
+	if not weStoppedIt then
+		-- There was no process to stop... Start it up.
+		debuglog("Starting Modifier display")
+		-- Start listener, point the stream to the receiving function.
+		shellTask = hs.task.new("/Applications/hid_listen/binaries/hid_listen.mac", nil, shellTaskStreaming)
+		shellTask:start()
+		hs.alert.show("Modifier display: On")
+	end
+	weStoppedIt = 'Running'		-- BUG: Probably not needed.
 end
 
 -- Cmd+Shift+F12 to start/stop manually.
 -- If it's running, stop it.
 -- If not running, start it.
 function startStopHUD()
-	stopped = stopHUD()
-	if not stopped then
-		startHUD()
-	end
+	weStoppedIt = false
+	stopHUD()
+	-- Give it all 2 seconds to work, then see if we need to start up the HUD
+	hs.timer.doAfter(2, startHUD)
 end
 
 hs.hotkey.bind("Cmd Shift", "f12", nil, function() startStopHUD() end )
@@ -109,8 +142,8 @@ end
 
 -- See: http://www.hammerspoon.org/docs/hs.task.html#setStreamCallback
 function modStatusReceived(newStatus)
-	-- len("mod: ------<cr>") == 12
-	if len(newStatus ~= 12) then
+	-- string.len("mod: ------<cr>") == 12
+	if string.len(newStatus ~= 12) then
 		return
 	end
 	if newStatus == lastSeenStatus then
