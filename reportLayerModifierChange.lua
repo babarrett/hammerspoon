@@ -260,54 +260,75 @@ end
 --------------------------------------------------------------------------------------
 -- Testing graphics
 --------------------------------------------------------------------------------------
-local box = nil
-local boxtext = nil
+box = nil
+boxtext1 = nil
+boxtext2 = nil
+boxtext3 = nil
+boxtext4 = nil
+boxtext5 = nil
 
 function funcReleased()
     -- hs.alert.show("released ")
     box:delete()
-    boxtext:delete()
-end
-
-function funcClicked()
-    hs.alert.show("clicked ")
+    boxtext1:delete()
+    boxtext2:delete()
+    boxtext3:delete()
+    boxtext4:delete()
+    boxtext5:delete()
 end
 
 function drawRectangularBox()
     --local activeWindow = hs.window.frontmostWindow()
     --local frame = activeWindow:screen():frame()
     local frame = hs.screen.primaryScreen():frame()
-    boxrect  = hs.geometry.rect(frame.x+frame.w-290, frame.y+frame.h-150, 275, 100)
-    textrect = hs.geometry.rect(frame.x+frame.w-270, frame.y+frame.h-140, 235,  60)
+    boxrect   = hs.geometry.rect(frame.x+frame.w-290, frame.y+frame.h-150, 275, 100)
+    textrect1 = hs.geometry.rect(frame.x+frame.w-260, frame.y+frame.h-140, 235, 160)
+    textrect2 = hs.geometry.rect(frame.x+frame.w-200, frame.y+frame.h-140, 235, 160)
+    textrect3 = hs.geometry.rect(frame.x+frame.w-140, frame.y+frame.h-140, 235, 160)
+    textrect4 = hs.geometry.rect(frame.x+frame.w- 80, frame.y+frame.h-140,  90, 160)
+    textrect5 = hs.geometry.rect(frame.x+frame.w-260, frame.y+frame.h-100, 300, 160)
     box = hs.drawing.rectangle(boxrect)
     -- Show text: ⌘⌥⌃⇧
-    stext = hs.styledtext.new("\t⌘\t⌥\t⌃\t⇧\n.\t.\t.\t.", {
-    	["tabStops"] = {
-    		{["location"] = 100, ["tabStopType"] = "left"},
-    		{["location"] = 180, ["tabStopType"] = "left"},
-    		{["location"] = 260, ["tabStopType"] = "left"},
-    		{["location"] = 340, ["tabStopType"] = "left"}
-    		},
-    	["ligature"] = 0,
-    	["shadow"] = {
-    		["offset"] = {["h"]=-2,["w"]=2}, 
-    		["color"]  = {["red"]=0.2,["blue"]=0.2,["green"]=0.2,["alpha"]=0.8}
-    		}
-    	}
-    )
-    boxtext = hs.drawing.text(textrect, stext)
+    shadow = {
+		["offset"] = {["h"]=-2,["w"]=2}, 
+		["color"]  = {["red"]=0.2,["blue"]=0.2,["green"]=0.2,["alpha"]=0.8}
+		}
+	textColor = hs.drawing.color.asRGB({["red"] = 1.0,["green"] = 1.0, ["blue"] = 1.0})
+    stextCmd = hs.styledtext.new("⌘",		{ ["color"] = textColor, ["ligature"] = 0, ["shadow"] = shadow } )
+    stextOpt = hs.styledtext.new("⌥", 		{ ["color"] = textColor, ["ligature"] = 0, ["shadow"] = shadow } )
+    stextCtrl = hs.styledtext.new("⌃", 		{ ["color"] = textColor, ["ligature"] = 0, ["shadow"] = shadow } )
+    stextShift = hs.styledtext.new("⇧", 	{ ["color"] = textColor, ["ligature"] = 0, ["shadow"] = shadow } )
+    stextLayer = hs.styledtext.new("Qwerty",{ ["color"] = textColor, ["ligature"] = 0, ["shadow"] = shadow } )
+
+    boxtext1 = hs.drawing.text(textrect1, stextCmd)
+    boxtext2 = hs.drawing.text(textrect2, stextOpt)
+    boxtext3 = hs.drawing.text(textrect3, stextCtrl)
+    boxtext4 = hs.drawing.text(textrect4, stextShift)
+    boxtext5 = hs.drawing.text(textrect5, stextLayer)
     box:setFillColor({["red"]=0.1,["blue"]=0.1,["green"]=0.1,["alpha"]=0.3}):setFill(true)
     box:setRoundedRectRadii(10, 10)
-    box:setClickCallback(funcReleased, funcClicked)
+    box:setClickCallback(funcReleased)
     box:setLevel(hs.drawing.windowLevels["floating"])
     box:show()
-    boxtext:show()
+    boxtext1:show()
+    boxtext2:show()
+    boxtext3:show()
+    boxtext4:show()
+    boxtext5:show()
 end
 
 
---debuglog("Draw a box")
---drawRectangularBox()
---debuglog("Box done")
+debuglog("Draw a box")
+drawRectangularBox()
+debuglog("Box done")
+
+-- Maybe later:
+--   	["tabStops"] = {
+--   		{["location"] =  24, ["tabStopType"] = "left"},
+--   		{["location"] =  48, ["tabStopType"] = "left"},
+--   		{["location"] =  96, ["tabStopType"] = "left"},
+--   		{["location"] = 120, ["tabStopType"] = "left"}
+--   		},
 
 
 return reportLayerModifierChange
