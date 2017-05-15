@@ -291,9 +291,9 @@ function drawRectangularBox()
     -- Show text: ⌘⌥⌃⇧
     shadow = {
 		["offset"] = {["h"]=-2,["w"]=2}, 
-		["color"]  = {["red"]=0.2,["blue"]=0.2,["green"]=0.2,["alpha"]=0.8}
+		["color"]  = {["red"]=0.2,["blue"]=0.2,["green"]=0.2,["alpha"]=0.5}
 		}
-	textColor = hs.drawing.color.asRGB({["red"] = 1.0,["green"] = 1.0, ["blue"] = 1.0})
+	textColor = hs.drawing.color.asRGB({["red"] = 1.0,["green"] = 1.0, ["blue"] = 1.0,["alpha"]=0.75})
     stextCmd = hs.styledtext.new("⌘",		{ ["color"] = textColor, ["ligature"] = 0, ["shadow"] = shadow } )
     stextOpt = hs.styledtext.new("⌥", 		{ ["color"] = textColor, ["ligature"] = 0, ["shadow"] = shadow } )
     stextCtrl = hs.styledtext.new("⌃", 		{ ["color"] = textColor, ["ligature"] = 0, ["shadow"] = shadow } )
@@ -305,7 +305,7 @@ function drawRectangularBox()
     boxtext3 = hs.drawing.text(textrect3, stextCtrl)
     boxtext4 = hs.drawing.text(textrect4, stextShift)
     boxtext5 = hs.drawing.text(textrect5, stextLayer)
-    box:setFillColor({["red"]=0.1,["blue"]=0.1,["green"]=0.1,["alpha"]=0.3}):setFill(true)
+    box:setFillColor({["red"]=0.5,["blue"]=0.5,["green"]=0.5,["alpha"]=0.5}):setFill(true)
     box:setRoundedRectRadii(10, 10)
     box:setClickCallback(funcReleased)
     box:setLevel(hs.drawing.windowLevels["floating"])
