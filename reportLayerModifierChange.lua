@@ -195,7 +195,7 @@ layerName = layerNames[0]	-- default start
 --		3 = SpaceFn
 --		4 = Layer 4, etc.
 function displayStatus(newStat)
-
+	-- TODO: update with real changes to modifier and layer text
 	debuglog("Display newStat: "..newStat)
 	layerName = layerNames[tonumber(sub(newStat,6,1))]
 	layerVal = 		tonumber(sub(newStat,7,1))
@@ -209,54 +209,21 @@ function displayStatus(newStat)
 	modOptionVal = 	tonumber(sub(newStat,10,1))
 	modCommandVal = tonumber(sub(newStat,11,1))
 
-	tearDownHUD()
+	-- tearDownHUD()
 	updateHUD()
 	debuglog("Layer: ".. layerName.. "  Add/Delete: ".. addDelete..  "   Shift: ".. tostring(modShift))
 end
 
---function tearDownHUD()
---  -- TODO: replace w/ graphics, if needed
---  if HUDView then
---    debuglog("Tear down HUD view.")
---    HUDView:delete()
---    HUDView=nil
---  end
---end
-
 function updateHUD()
   -- TODO: replace w/ graphics
-  if HUDView then
-  -- if it exists, refresh it
-	debuglog("Refresh HUD display")
-  else
-  -- if it doesn't exist, make it
+  if not HUDView then
+    -- if it doesn't exist, make it
 	debuglog("Create new HUD display")
 	local screen = hs.screen.primaryScreen()
-	local sf = screen:frame()
-	
-	xLoc = sf.w - 300
-	yLoc = sf.h - 100
-	wide = 200
-	high = 90
-
-	-- TODO: Replace with screen graphics instead
-	HUDView = hs.webview.new({x = xLoc, y = yLoc, w = wide, h = high}, 
-		{ developerExtrasEnabled = false, suppressesIncrementalRendering = false })
-	:windowStyle("utility")
-	:closeOnEscape(false)
-	:allowGestures(false)
-	:windowTitle("Launch Applicatiion Mode")
-	:show()
-	:alpha(.50)
-	--	:transparent(true) 
-	-- These 2 lines were commented out. Don't seem to help
-	-- pickerView:asHSWindow():focus()
-	-- pickerView:asHSDrawing():setAlpha(.98):bringToFront()
-	HUDView:bringToFront()
-  
+  else
+    -- if it exists, refresh it
+	debuglog("Refresh HUD display")
   end
-  -- LayerModifierKey:exit()
-  
 end
 
 --------------------------------------------------------------------------------------
@@ -318,7 +285,8 @@ function createHUD()
     box = hs.drawing.rectangle(boxrect)
     box:setFillColor({["red"]=0.5,["blue"]=0.5,["green"]=0.5,["alpha"]=0.5}):setFill(true)
     box:setRoundedRectRadii(10, 10)
-    box:setClickCallback(tearDownHUD)
+    -- no longer needed:
+    -- box:setClickCallback(tearDownHUD)
     box:setLevel(hs.drawing.windowLevels["floating"])
     box:show()
     
@@ -335,10 +303,6 @@ function createHUD()
     boxtext[5]:show()
 end
 
-
-debuglog("Draw a box")
-createHUD()
-debuglog("Box done")
 
 -- Maybe later:
 --   	["tabStops"] = {
