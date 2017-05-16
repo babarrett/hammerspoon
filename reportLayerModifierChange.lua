@@ -311,14 +311,23 @@ function tearDownHUD()
 end
 
 function createHUD()
+	debuglog("createHUD() being called.")
     --local activeWindow = hs.window.frontmostWindow()
     --local frame = activeWindow:screen():frame()
     -- Show text: ⌘⌥⌃⇧
+    box = hs.drawing.rectangle(boxrect)
     box:setFillColor({["red"]=0.5,["blue"]=0.5,["green"]=0.5,["alpha"]=0.5}):setFill(true)
     box:setRoundedRectRadii(10, 10)
     box:setClickCallback(tearDownHUD)
     box:setLevel(hs.drawing.windowLevels["floating"])
     box:show()
+    
+	boxtext[1] = hs.drawing.text(textrect[1], stextCmd)
+	boxtext[2] = hs.drawing.text(textrect[2], stextOpt)
+	boxtext[3] = hs.drawing.text(textrect[3], stextCtrl)
+	boxtext[4] = hs.drawing.text(textrect[4], stextShift)
+	boxtext[5] = hs.drawing.text(textrect[5], stextLayer)
+
     boxtext[1]:show()
     boxtext[2]:show()
     boxtext[3]:show()
