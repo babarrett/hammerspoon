@@ -88,6 +88,7 @@ function startHUD()
 		hs.alert.show("Modifier display: Off")
 		debuglog("Modifier display: Off")
 		-- TODO: tear down any HUD graphics here.
+		tearDownHUD()
 	else
 		-- There was no process to stop... Start it up.
 		debuglog("Modifier display: On")
@@ -96,6 +97,7 @@ function startHUD()
 		shellTask:start()
 		hs.alert.show("Modifier display: On")
 		-- TODO: Start up an empty HUD here.
+		createHUD()
 	end
 end
 
@@ -212,14 +214,14 @@ function displayStatus(newStat)
 	debuglog("Layer: ".. layerName.. "  Add/Delete: ".. addDelete..  "   Shift: ".. tostring(modShift))
 end
 
-function tearDownHUD()
-  -- TODO: replace w/ graphics, if needed
-  if HUDView then
-    debuglog("Tear down HUD view.")
-    HUDView:delete()
-    HUDView=nil
-  end
-end
+--function tearDownHUD()
+--  -- TODO: replace w/ graphics, if needed
+--  if HUDView then
+--    debuglog("Tear down HUD view.")
+--    HUDView:delete()
+--    HUDView=nil
+--  end
+--end
 
 function updateHUD()
   -- TODO: replace w/ graphics
@@ -260,66 +262,73 @@ end
 --------------------------------------------------------------------------------------
 -- Testing graphics
 --------------------------------------------------------------------------------------
-box = nil
-boxtext1 = nil
-boxtext2 = nil
-boxtext3 = nil
-boxtext4 = nil
-boxtext5 = nil
+--	Objects created once, then used as needed.
+local frame = hs.screen.primaryScreen():frame()
+local boxrect   = hs.geometry.rect(frame.x+frame.w-290, frame.y+frame.h-150, 275, 100)
+local box = hs.drawing.rectangle(boxrect)
 
-function funcReleased()
-    -- hs.alert.show("released ")
+local textrect={}
+textrect[1] = hs.geometry.rect(frame.x+frame.w-260, frame.y+frame.h-140, 235, 160)	-- modifiers
+textrect[2] = hs.geometry.rect(frame.x+frame.w-200, frame.y+frame.h-140, 235, 160)
+textrect[3] = hs.geometry.rect(frame.x+frame.w-140, frame.y+frame.h-140, 235, 160)
+textrect[4] = hs.geometry.rect(frame.x+frame.w- 80, frame.y+frame.h-140,  90, 160)
+textrect[5] = hs.geometry.rect(frame.x+frame.w-260, frame.y+frame.h-100, 300, 160)	-- Layer name text
+
+local textColor={}
+textColor[3]  = hs.drawing.color.asRGB({["red"] = 1.0,["green"] = 1.0, ["blue"] = 1.0,["alpha"]=0.75})
+textColor[6]  = hs.drawing.color.asRGB({["red"] = 1.0,["green"] = 1.0, ["blue"] = 1.0,["alpha"]=0.75})
+textColor[9]  = hs.drawing.color.asRGB({["red"] = 1.0,["green"] = 1.0, ["blue"] = 1.0,["alpha"]=0.75})
+
+local shadow = {
+	["offset"] = {["h"]=-2,["w"]=2}, 
+	["color"]  = {["red"]=0.2,["blue"]=0.2,["green"]=0.2,["alpha"]=0.5}
+	}
+
+-- We'll use these when we see a modifier down, and delete them when the modifier is released.
+-- We may need to change the "color" to textColor[3], [6], or [9] to reflect the mature of the modifier
+-- stextLayer can always remain the same.
+local stextCmd   = hs.styledtext.new("⌘", { ["color"] = textColor[9], ["ligature"] = 0, ["shadow"] = shadow } )
+local stextOpt   = hs.styledtext.new("⌥", { ["color"] = textColor[9], ["ligature"] = 0, ["shadow"] = shadow } )
+local stextCtrl  = hs.styledtext.new("⌃", { ["color"] = textColor[9], ["ligature"] = 0, ["shadow"] = shadow } )
+local stextShift = hs.styledtext.new("⇧", { ["color"] = textColor[9], ["ligature"] = 0, ["shadow"] = shadow } )
+local stextLayer = hs.styledtext.new("Qwerty",{ ["color"] = textColor[9], ["ligature"] = 0, ["shadow"] = shadow } )
+
+local boxtext={}
+boxtext[1] = hs.drawing.text(textrect[1], stextCmd)
+boxtext[2] = hs.drawing.text(textrect[2], stextOpt)
+boxtext[3] = hs.drawing.text(textrect[3], stextCtrl)
+boxtext[4] = hs.drawing.text(textrect[4], stextShift)
+boxtext[5] = hs.drawing.text(textrect[5], stextLayer)
+
+-- Destroy HUD by deleting any graphics objects still on screen
+function tearDownHUD()
+    if boxtext[1] then boxtext[1]:delete() boxtext[1] = nil end
+    if boxtext[2] then boxtext[2]:delete() boxtext[2] = nil end
+    if boxtext[3] then boxtext[3]:delete() boxtext[3] = nil end
+    if boxtext[4] then boxtext[4]:delete() boxtext[4] = nil end
+    if boxtext[5] then boxtext[5]:delete() boxtext[5] = nil end
     box:delete()
-    boxtext1:delete()
-    boxtext2:delete()
-    boxtext3:delete()
-    boxtext4:delete()
-    boxtext5:delete()
 end
 
-function drawRectangularBox()
+function createHUD()
     --local activeWindow = hs.window.frontmostWindow()
     --local frame = activeWindow:screen():frame()
-    local frame = hs.screen.primaryScreen():frame()
-    boxrect   = hs.geometry.rect(frame.x+frame.w-290, frame.y+frame.h-150, 275, 100)
-    textrect1 = hs.geometry.rect(frame.x+frame.w-260, frame.y+frame.h-140, 235, 160)
-    textrect2 = hs.geometry.rect(frame.x+frame.w-200, frame.y+frame.h-140, 235, 160)
-    textrect3 = hs.geometry.rect(frame.x+frame.w-140, frame.y+frame.h-140, 235, 160)
-    textrect4 = hs.geometry.rect(frame.x+frame.w- 80, frame.y+frame.h-140,  90, 160)
-    textrect5 = hs.geometry.rect(frame.x+frame.w-260, frame.y+frame.h-100, 300, 160)
-    box = hs.drawing.rectangle(boxrect)
     -- Show text: ⌘⌥⌃⇧
-    shadow = {
-		["offset"] = {["h"]=-2,["w"]=2}, 
-		["color"]  = {["red"]=0.2,["blue"]=0.2,["green"]=0.2,["alpha"]=0.5}
-		}
-	textColor = hs.drawing.color.asRGB({["red"] = 1.0,["green"] = 1.0, ["blue"] = 1.0,["alpha"]=0.75})
-    stextCmd = hs.styledtext.new("⌘",		{ ["color"] = textColor, ["ligature"] = 0, ["shadow"] = shadow } )
-    stextOpt = hs.styledtext.new("⌥", 		{ ["color"] = textColor, ["ligature"] = 0, ["shadow"] = shadow } )
-    stextCtrl = hs.styledtext.new("⌃", 		{ ["color"] = textColor, ["ligature"] = 0, ["shadow"] = shadow } )
-    stextShift = hs.styledtext.new("⇧", 	{ ["color"] = textColor, ["ligature"] = 0, ["shadow"] = shadow } )
-    stextLayer = hs.styledtext.new("Qwerty",{ ["color"] = textColor, ["ligature"] = 0, ["shadow"] = shadow } )
-
-    boxtext1 = hs.drawing.text(textrect1, stextCmd)
-    boxtext2 = hs.drawing.text(textrect2, stextOpt)
-    boxtext3 = hs.drawing.text(textrect3, stextCtrl)
-    boxtext4 = hs.drawing.text(textrect4, stextShift)
-    boxtext5 = hs.drawing.text(textrect5, stextLayer)
     box:setFillColor({["red"]=0.5,["blue"]=0.5,["green"]=0.5,["alpha"]=0.5}):setFill(true)
     box:setRoundedRectRadii(10, 10)
-    box:setClickCallback(funcReleased)
+    box:setClickCallback(tearDownHUD)
     box:setLevel(hs.drawing.windowLevels["floating"])
     box:show()
-    boxtext1:show()
-    boxtext2:show()
-    boxtext3:show()
-    boxtext4:show()
-    boxtext5:show()
+    boxtext[1]:show()
+    boxtext[2]:show()
+    boxtext[3]:show()
+    boxtext[4]:show()
+    boxtext[5]:show()
 end
 
 
 debuglog("Draw a box")
-drawRectangularBox()
+createHUD()
 debuglog("Box done")
 
 -- Maybe later:
