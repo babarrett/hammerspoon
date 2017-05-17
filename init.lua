@@ -16,7 +16,7 @@ HyperFnString = "⌘⌥⌃⇧"					-- Visual representation
 -- log debug info to Hyperspoon Console
 -- We can disable all logging in one place
 function debuglog(text) 
-  hs.console.printStyledtext("DEBUG: "..text) 
+  hs.console.printStyledtext("DEBUG: "..tostring(text)) 
 end
 
 --hs.hotkey.bind("", "f8", nil, function() hs.alert("f8") end ) -- works

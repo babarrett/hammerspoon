@@ -32,6 +32,7 @@ local HIDLISTENER = '/Applications/hid_listen/binaries/hid_listen.mac'
 local PSCOMMAND   = '/bin/ps'
 local KILLCOMMAND = '/bin/kill'
 local PSOPTION    = '-A'
+local MODIFIERS   = {"⌘", "⌥", "⌃", "⇧", "-"}
 
 local HIDLEADIN = "KL: "	-- BUG: must change to "mod: " once keyboard is updated
 
@@ -242,10 +243,10 @@ textrect[4] = hs.geometry.rect(frame.x+frame.w- 80, frame.y+frame.h-140,  90, 16
 textrect[5] = hs.geometry.rect(frame.x+frame.w-260, frame.y+frame.h-100, 300, 160)	-- Layer name text
 
 local textColor={}
-textColor[0]  = hs.drawing.color.asRGB({["red"] = 0.0,["green"] = 0.0, ["blue"] = 0.0,["alpha"]=0.75})
-textColor[3]  = hs.drawing.color.asRGB({["red"] = 0.33,["green"] = 0.33, ["blue"] = 0.33,["alpha"]=0.75})
-textColor[6]  = hs.drawing.color.asRGB({["red"] = 0.66,["green"] = 0.66, ["blue"] = 0.66,["alpha"]=0.75})
-textColor[9]  = hs.drawing.color.asRGB({["red"] = 0.99,["green"] = 0.99, ["blue"] = 0.99,["alpha"]=0.75})
+textColor[0]  = hs.drawing.color.asRGB({["red"] = 1.00,["green"] = 1.00, ["blue"] = 1.00,["alpha"]=0.00})
+textColor[3]  = hs.drawing.color.asRGB({["red"] = 1.00,["green"] = 1.00, ["blue"] = 1.00,["alpha"]=0.33})
+textColor[6]  = hs.drawing.color.asRGB({["red"] = 1.00,["green"] = 1.00, ["blue"] = 1.00,["alpha"]=0.66})
+textColor[9]  = hs.drawing.color.asRGB({["red"] = 1.00,["green"] = 1.00, ["blue"] = 1.00,["alpha"]=0.99})
 
 local shadow = {
 	["offset"] = {["h"]=-2,["w"]=2}, 
@@ -253,7 +254,7 @@ local shadow = {
 	}
 
 -- We'll use these when we see a modifier down, and delete them when the modifier is released.
--- We may need to change the "color" to textColor[3], [6], or [9] to reflect the mature of the modifier
+-- We may need to change the "color" to textColor[0], [3], [6], or [9] to reflect the mature of the modifier
 -- stextLayer can always remain the same.
 local stextCmd   = hs.styledtext.new("⌘", { ["color"] = textColor[9], ["ligature"] = 0, ["shadow"] = shadow } )
 local stextOpt   = hs.styledtext.new("⌥", { ["color"] = textColor[9], ["ligature"] = 0, ["shadow"] = shadow } )
@@ -282,10 +283,11 @@ end
 --	whichText: The number of the text to create, 1 to 5. The first 4 are modifiers, #5 = layout name
 --	tansparencyLevel: 0 for invisible, 1 for 1/3, 2 for 2/3, 3 for 3/3 (opaque)
 function makeBoxText(whichText, tansparencyLevel, layerNumber)
-	textToShow = string.sub("⌘⌥⌃⇧-", whichText, 1)
+	--debuglog("--- makeBoxText: "..whichText..", "..tansparencyLevel..", "..layerNumber.."; ")
+	textToShow = MODIFIERS[whichText]
 	if whichText == 5 then textToShow = layerNames[layerNumber] end
 	-- local stextCmd   = hs.styledtext.new("⌘", { ["color"] = textColor[9], ["ligature"] = 0, ["shadow"] = shadow } )
-	styleTextext = hs.styledtext.new(textToShow, { ["color"] = textColor[tansparencyLevel*.33], ["ligature"] = 0, ["shadow"] = shadow } )
+	styleTextext = hs.styledtext.new(textToShow, { ["color"] = textColor[tansparencyLevel*3], ["ligature"] = 0, ["shadow"] = shadow } )
 	return(hs.drawing.text(textrect[whichText], styleTextext))
 end
 
@@ -301,22 +303,11 @@ function createHUD()
     box:setRoundedRectRadii(10, 10)
     box:setLevel(hs.drawing.windowLevels["floating"])	-- above the rest
     box:show()
-    
+    -- Create modifier indicators:
     for i =1, 5 do
-    	boxtext[i] = makeBoxText(i, 3, 1)
+    	boxtext[i] = makeBoxText(i, 3, 0)
     	boxtext[i]:show()
     end
---	boxtext[1] = hs.drawing.text(textrect[1], stextCmd)
---	boxtext[2] = hs.drawing.text(textrect[2], stextOpt)
---	boxtext[3] = hs.drawing.text(textrect[3], stextCtrl)
---	boxtext[4] = hs.drawing.text(textrect[4], stextShift)
---	boxtext[5] = hs.drawing.text(textrect[5], stextLayer)
---
---    boxtext[1]:show()
---    boxtext[2]:show()
---    boxtext[3]:show()
---    boxtext[4]:show()
---    boxtext[5]:show()
 end
 
 return reportLayerModifierChange
