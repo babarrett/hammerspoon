@@ -242,9 +242,10 @@ textrect[4] = hs.geometry.rect(frame.x+frame.w- 80, frame.y+frame.h-140,  90, 16
 textrect[5] = hs.geometry.rect(frame.x+frame.w-260, frame.y+frame.h-100, 300, 160)	-- Layer name text
 
 local textColor={}
-textColor[3]  = hs.drawing.color.asRGB({["red"] = 1.0,["green"] = 1.0, ["blue"] = 1.0,["alpha"]=0.75})
-textColor[6]  = hs.drawing.color.asRGB({["red"] = 1.0,["green"] = 1.0, ["blue"] = 1.0,["alpha"]=0.75})
-textColor[9]  = hs.drawing.color.asRGB({["red"] = 1.0,["green"] = 1.0, ["blue"] = 1.0,["alpha"]=0.75})
+textColor[0]  = hs.drawing.color.asRGB({["red"] = 0.0,["green"] = 0.0, ["blue"] = 0.0,["alpha"]=0.75})
+textColor[3]  = hs.drawing.color.asRGB({["red"] = 0.33,["green"] = 0.33, ["blue"] = 0.33,["alpha"]=0.75})
+textColor[6]  = hs.drawing.color.asRGB({["red"] = 0.66,["green"] = 0.66, ["blue"] = 0.66,["alpha"]=0.75})
+textColor[9]  = hs.drawing.color.asRGB({["red"] = 0.99,["green"] = 0.99, ["blue"] = 0.99,["alpha"]=0.75})
 
 local shadow = {
 	["offset"] = {["h"]=-2,["w"]=2}, 
@@ -277,40 +278,45 @@ function tearDownHUD()
     box:delete()
 end
 
+-- Function: makeBoxText(whichText, tansparencyLevel)
+--	whichText: The number of the text to create, 1 to 5. The first 4 are modifiers, #5 = layout name
+--	tansparencyLevel: 0 for invisible, 1 for 1/3, 2 for 2/3, 3 for 3/3 (opaque)
+function makeBoxText(whichText, tansparencyLevel, layerNumber)
+	textToShow = string.sub("⌘⌥⌃⇧-", whichText, 1)
+	if whichText == 5 then textToShow = layerNames[layerNumber] end
+	-- local stextCmd   = hs.styledtext.new("⌘", { ["color"] = textColor[9], ["ligature"] = 0, ["shadow"] = shadow } )
+	styleTextext = hs.styledtext.new(textToShow, { ["color"] = textColor[tansparencyLevel*.33], ["ligature"] = 0, ["shadow"] = shadow } )
+	return(hs.drawing.text(textrect[whichText], styleTextext))
+end
+
+-- Function: createHUD()
+-- Creates the on-screen graphics for:
+--		The background, translucent rectangle with rounded corners
+-- Later, show text of modifiers: ⌘⌥⌃⇧, and layer name
+-- Store created objects in known variables
 function createHUD()
-	debuglog("createHUD() being called.")
-    --local activeWindow = hs.window.frontmostWindow()
-    --local frame = activeWindow:screen():frame()
-    -- Show text: ⌘⌥⌃⇧
+	-- Create on-screen rectangle
     box = hs.drawing.rectangle(boxrect)
     box:setFillColor({["red"]=0.5,["blue"]=0.5,["green"]=0.5,["alpha"]=0.5}):setFill(true)
     box:setRoundedRectRadii(10, 10)
-    -- no longer needed:
-    -- box:setClickCallback(tearDownHUD)
-    box:setLevel(hs.drawing.windowLevels["floating"])
+    box:setLevel(hs.drawing.windowLevels["floating"])	-- above the rest
     box:show()
     
-	boxtext[1] = hs.drawing.text(textrect[1], stextCmd)
-	boxtext[2] = hs.drawing.text(textrect[2], stextOpt)
-	boxtext[3] = hs.drawing.text(textrect[3], stextCtrl)
-	boxtext[4] = hs.drawing.text(textrect[4], stextShift)
-	boxtext[5] = hs.drawing.text(textrect[5], stextLayer)
-
-    boxtext[1]:show()
-    boxtext[2]:show()
-    boxtext[3]:show()
-    boxtext[4]:show()
-    boxtext[5]:show()
+    for i =1, 5 do
+    	boxtext[i] = makeBoxText(i, 3, 1)
+    	boxtext[i]:show()
+    end
+--	boxtext[1] = hs.drawing.text(textrect[1], stextCmd)
+--	boxtext[2] = hs.drawing.text(textrect[2], stextOpt)
+--	boxtext[3] = hs.drawing.text(textrect[3], stextCtrl)
+--	boxtext[4] = hs.drawing.text(textrect[4], stextShift)
+--	boxtext[5] = hs.drawing.text(textrect[5], stextLayer)
+--
+--    boxtext[1]:show()
+--    boxtext[2]:show()
+--    boxtext[3]:show()
+--    boxtext[4]:show()
+--    boxtext[5]:show()
 end
-
-
--- Maybe later:
---   	["tabStops"] = {
---   		{["location"] =  24, ["tabStopType"] = "left"},
---   		{["location"] =  48, ["tabStopType"] = "left"},
---   		{["location"] =  96, ["tabStopType"] = "left"},
---   		{["location"] = 120, ["tabStopType"] = "left"}
---   		},
-
 
 return reportLayerModifierChange
