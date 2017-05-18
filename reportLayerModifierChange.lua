@@ -39,8 +39,8 @@ local HIDLISTENER = '/Applications/hid_listen/binaries/hid_listen.mac'
 local PSCOMMAND   = '/bin/ps'
 local KILLCOMMAND = '/bin/kill'
 local PSOPTION    = '-A'
---local MODIFIERS   = {"⌘", "⌥", "⌃", "⇧", "-"}
-local MODIFIERS   = {"Ba", "Ba", "Ba", "Ba"}
+local MODIFIERS   = {"⌘", "⌥", "⌃", "⇧", "-"}
+--local MODIFIERS   = {"Ba", "Ba", "Ba", "Ba"}
 
 local WAITFORPS   = 1 -- Seconds to wait.
 
@@ -60,8 +60,7 @@ function shellTaskStreaming(mtaskid, mstdout, mstderr)
 		-- Look for "mod: " at start of line, ignore all others.
 		if string.sub(line, 1, string.len(HIDLEADIN)) == HIDLEADIN then
 			debuglog("Modifier found: " .. line)
-			-- TODO: Update HUD based upon new status "line"
-			-- modStatusReceived(string.sub(line string.len(HIDLEADIN)+1))
+			displayStatus(string.sub(line, string.len(HIDLEADIN)+1))
 		end
 	end
 	return true		-- keep streaming
@@ -148,12 +147,6 @@ local boxtext={}
 -- See displayStatus() for format definition.
 function modStatusReceived(newStatus)
 	-- string.len("------") == 6
-	if string.len(newStatus ~= 6) then
-		return		-- error, give up
-	end
-	if newStatus == lastSeenStatus then
-		return		-- shouldn't happen, but just in case
-	end
 	-- TODO: Replace this alert with displayStatus(newStatus)
 	alert("New Status: "..newStatus)
 end
@@ -187,6 +180,12 @@ end
 function displayStatus(newStat)
 	-- TODO: update with real changes to modifier and layer text
 	debuglog("displayStatus(): "..newStat)
+	if string.len(newStat) ~= 6 then
+		return		-- error, give up
+	end
+--	if newStat == lastSeenStatus then
+--		return		-- shouldn't happen, but just in case
+--	end
 	layerName = layerNames[tonumber(string.sub(newStat,6,1))]
 	layerVal = 		tonumber(string.sub(newStat,7,1))
 
