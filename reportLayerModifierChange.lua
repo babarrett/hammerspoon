@@ -39,7 +39,8 @@ local HIDLISTENER = '/Applications/hid_listen/binaries/hid_listen.mac'
 local PSCOMMAND   = '/bin/ps'
 local KILLCOMMAND = '/bin/kill'
 local PSOPTION    = '-A'
-local MODIFIERS   = {"⌘", "⌥", "⌃", "⇧", "-"}
+--local MODIFIERS   = {"⌘", "⌥", "⌃", "⇧", "-"}
+local MODIFIERS   = {"Ba", "Ba", "Ba", "Ba"}
 
 local WAITFORPS   = 1 -- Seconds to wait.
 
@@ -85,29 +86,10 @@ function psResults(exitCode, stdOut, stdErr)
 		  pid, _ = string.gsub(line, ' .*', '')
 		  -- We're just trusting that this works. (Testing so far indicates that it does.) Not checking the return results.
 		  -- Really, what could we do anyway? Try to kill it again?
+		  debuglog("New task: ".. KILLCOMMAND.. "; pid="..pid)
 		  killTask = hs.task.new(KILLCOMMAND, nil, {pid} )
 		  killTask:start()
 		end
-	end
-end
-
---	The callback functions MUST be defined first or nils get passed.
---	weStoppedIt: Global. If true then we killed an HUD process, so we're done.
-function startHUD()
-	if weStoppedIt then
-		hs.alert.show("Modifier display: Off")
-		debuglog("Modifier display: Off")
-		-- TODO: tear down any HUD graphics here.
-		tearDownHUD()
-	else
-		-- There was no process to stop... Start it up.
-		debuglog("Modifier display: On")
-		-- Start listener, point the stream to the receiving function.
-		shellTask = hs.task.new(HIDLISTENER, nil, shellTaskStreaming)
-		shellTask:start()
-		hs.alert.show("Modifier display: On")
-		-- TODO: Start up an empty HUD here.
-		createHUD()
 	end
 end
 
@@ -128,13 +110,13 @@ function stopOrStartHUD()
 		weStoppedIt = true
 	end
 	-- Scan and kill processes, no matter what
+    debuglog("New task: ".. PSCOMMAND.. "; Option: ".. PSOPTION)
 	psScanTask = hs.task.new(PSCOMMAND, psResults, {PSOPTION} )
 	psScanTask:start()
 	
 	-- Give it all time to work, then see if we need to start up the HUD
 	hs.timer.doAfter(WAITFORPS, startHUD)
 end
-
 
 hs.hotkey.bind("Cmd Shift", "f12", nil, function() stopOrStartHUD() end )
 
@@ -159,6 +141,7 @@ layerNames = {
 }
 layerNames[0] = "Base"	-- because we want the table to be zero-based.
 layerName = layerNames[0]	-- default start
+local boxtext={}
 
 -- See: http://www.hammerspoon.org/docs/hs.task.html#setStreamCallback
 -- newStatus: The latest status values to be updated to (less the identifying lead-in, "mod: ")
@@ -204,9 +187,13 @@ end
 function displayStatus(newStat)
 	-- TODO: update with real changes to modifier and layer text
 	debuglog("displayStatus(): "..newStat)
-	layerName = layerNames[tonumber(sub(newStat,6,1))]
-	layerVal = 		tonumber(sub(newStat,7,1))
+	layerName = layerNames[tonumber(string.sub(newStat,6,1))]
+	layerVal = 		tonumber(string.sub(newStat,7,1))
 
+	--	modCommand "⌘"
+	--	modOption  "⌥"
+	--	modControl "⋏" 
+	--	modShift   "⇧"
 	-- was tearDownHUD()
 	-- TODO: Simplify: Only update those that changed
     if boxtext[1] then boxtext[1]:delete() end
@@ -215,10 +202,6 @@ function displayStatus(newStat)
     if boxtext[4] then boxtext[4]:delete() end
     if boxtext[5] then boxtext[5]:delete() end
 	
-	--	modCommand "⌘"
-	--	modOption  "⌥"
-	--	modControl "⋏" 
-	--	modShift   "⇧"
     for i =1, 4 do
     	boxtext[i] = makeBoxText(i, tonumber(string.sub(newStat,i+2,i+2)), 0)
     	boxtext[i]:show()
@@ -226,7 +209,7 @@ function displayStatus(newStat)
 	layerNumb =     tonumber(string.sub(newStat,1,1))
 	layerVal =      tonumber(string.sub(newStat,2,2))
 	boxtext[5] = makeBoxText(5, layerVal, layerNumb)
-   	boxtext[i]:show()
+   	boxtext[5]:show()
 
 	-- BUG: No longer need... updateHUD()
 	debuglog("HUD text and intensity updated.")
@@ -252,6 +235,7 @@ local frame = hs.screen.primaryScreen():frame()
 local boxrect   = hs.geometry.rect(frame.x+frame.w-290, frame.y+frame.h-150, 275, 100)
 local box = hs.drawing.rectangle(boxrect)
 
+-- Location of the text box for each position
 local textrect={}
 textrect[1] = hs.geometry.rect(frame.x+frame.w-260, frame.y+frame.h-140, 235, 160)	-- modifiers
 textrect[2] = hs.geometry.rect(frame.x+frame.w-200, frame.y+frame.h-140, 235, 160)
@@ -260,10 +244,10 @@ textrect[4] = hs.geometry.rect(frame.x+frame.w- 80, frame.y+frame.h-140,  90, 16
 textrect[5] = hs.geometry.rect(frame.x+frame.w-260, frame.y+frame.h-100, 300, 160)	-- Layer name text
 
 local textColor={}
-textColor[0]  = hs.drawing.color.asRGB({["red"] = 1.00,["green"] = 1.00, ["blue"] = 1.00,["alpha"]=0.00})
-textColor[3]  = hs.drawing.color.asRGB({["red"] = 1.00,["green"] = 1.00, ["blue"] = 1.00,["alpha"]=0.33})
-textColor[6]  = hs.drawing.color.asRGB({["red"] = 1.00,["green"] = 1.00, ["blue"] = 1.00,["alpha"]=0.66})
-textColor[9]  = hs.drawing.color.asRGB({["red"] = 1.00,["green"] = 1.00, ["blue"] = 1.00,["alpha"]=0.99})
+textColor[0]  = hs.drawing.color.asRGB({["red"] = 0.00,["green"] = 0.00, ["blue"] = 0.00,["alpha"]=0.00})
+textColor[3]  = hs.drawing.color.asRGB({["red"] = 0.77,["green"] = 0.77, ["blue"] = 0.77,["alpha"]=0.66})
+textColor[6]  = hs.drawing.color.asRGB({["red"] = 0.88,["green"] = 0.88, ["blue"] = 0.88,["alpha"]=0.77})
+textColor[9]  = hs.drawing.color.asRGB({["red"] = 0.99,["green"] = 0.99, ["blue"] = 0.99,["alpha"]=0.99})
 
 local shadow = {
 	["offset"] = {["h"]=-2,["w"]=2}, 
@@ -279,7 +263,6 @@ local stextCtrl  = hs.styledtext.new("⌃", { ["color"] = textColor[9], ["ligatu
 local stextShift = hs.styledtext.new("⇧", { ["color"] = textColor[9], ["ligature"] = 0, ["shadow"] = shadow } )
 local stextLayer = hs.styledtext.new("Qwerty",{ ["color"] = textColor[9], ["ligature"] = 0, ["shadow"] = shadow } )
 
-local boxtext={}
 boxtext[1] = hs.drawing.text(textrect[1], stextCmd)
 boxtext[2] = hs.drawing.text(textrect[2], stextOpt)
 boxtext[3] = hs.drawing.text(textrect[3], stextCtrl)
@@ -299,12 +282,13 @@ end
 -- Function: makeBoxText(whichText, tansparencyLevel)
 --	whichText: The number of the text to create, 1 to 5. The first 4 are modifiers, #5 = layout name
 --	tansparencyLevel: 0 for invisible, 1 for 1/3, 2 for 2/3, 3 for 3/3 (opaque)
+--	layerNumber: 0 to 9
 function makeBoxText(whichText, tansparencyLevel, layerNumber)
 	--debuglog("--- makeBoxText: "..whichText..", "..tansparencyLevel..", "..layerNumber.."; ")
 	if whichText <  5 then textToShow = MODIFIERS[whichText] end
 	if whichText == 5 then textToShow = layerNames[layerNumber] end
-	-- local stextCmd   = hs.styledtext.new("⌘", { ["color"] = textColor[9], ["ligature"] = 0, ["shadow"] = shadow } )
-	styleTextext = hs.styledtext.new(textToShow, { ["color"] = textColor[tansparencyLevel*3], ["ligature"] = 0, ["shadow"] = shadow } )
+	-- 			   hs.styledtext.new("⌘",       { ["color"] = textColor[9],                ["ligature"] = 0, ["shadow"] = shadow } )
+	styleTextext = hs.styledtext.new(textToShow, { ["color"] = textColor[tansparencyLevel], ["ligature"] = 0, ["shadow"] = shadow } )
 	return(hs.drawing.text(textrect[whichText], styleTextext))
 end
 
@@ -320,11 +304,30 @@ function createHUD()
     box:setRoundedRectRadii(10, 10)
     box:setLevel(hs.drawing.windowLevels["floating"])	-- above the rest
     box:show()
-    -- Create modifier indicators:
-    for i =1, 5 do
-    	boxtext[i] = makeBoxText(i, 3, 0)
-    	boxtext[i]:show()
-    end
+end
+
+--	The callback functions MUST be defined first or nils get passed.
+--	weStoppedIt: Global. If true then we killed an HUD process, so we're done.
+function startHUD()
+	if weStoppedIt then
+		hs.alert.show("Modifier display: Off")
+		debuglog("Modifier display: Off")
+		-- TODO: tear down any HUD graphics here.
+		tearDownHUD()
+	else
+		-- There was no process to stop... Start it up.
+		debuglog("Modifier display: On")
+		-- Start listener, point the stream to the receiving function.
+		
+		shellTask = hs.task.new(HIDLISTENER, nil, shellTaskStreaming)
+		shellTask:start()
+		hs.alert.show("Modifier display: On")
+		-- TODO: Start up an empty HUD here.
+		createHUD()
+		-- Create modifier indicators:
+--		displayStatus("0901369")
+		displayStatus("099369")
+	end
 end
 
 return reportLayerModifierChange
