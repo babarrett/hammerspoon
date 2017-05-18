@@ -6,6 +6,13 @@
 -- Cmd+Shift+F12 to start/stop the monitoring and display.
 -- by: Bruce Barrett
 
+-- TODO: 
+--		Handle Mod change to display update
+--		Cmd+Shift+F11 to change display & test
+--		Rename box --> HUDFrame(?)
+--		Update internal docs
+--		Update keyboard (hw) firmware
+--		BUG: Fast on/off gets out of sync? "Debounce if happen within 2 seconds of each other? 
 reportLayerModifierChange = {}
 
 -- On (Report Layer Modifier Change) activate (Cmd+Shift+F12) run the shell command: 
@@ -34,7 +41,9 @@ local KILLCOMMAND = '/bin/kill'
 local PSOPTION    = '-A'
 local MODIFIERS   = {"⌘", "⌥", "⌃", "⇧", "-"}
 
-local HIDLEADIN = "KL: "	-- BUG: must change to "mod: " once keyboard is updated
+local WAITFORPS   = 1 -- Seconds to wait.
+
+local HIDLEADIN = "KL: "	-- BUG: must change to "mod: " once keyboard firmware is updated
 
 shellTask = nil
 neverStarted = true
@@ -51,7 +60,7 @@ function shellTaskStreaming(mtaskid, mstdout, mstderr)
 		if string.sub(line, 1, string.len(HIDLEADIN)) == HIDLEADIN then
 			debuglog("Modifier found: " .. line)
 			-- TODO: Update HUD based upon new status "line"
-			-- modStatusReceived(string.sub(string.len(HIDLEADIN)+1))
+			-- modStatusReceived(string.sub(line string.len(HIDLEADIN)+1))
 		end
 	end
 	return true		-- keep streaming
@@ -122,27 +131,12 @@ function stopOrStartHUD()
 	psScanTask = hs.task.new(PSCOMMAND, psResults, {PSOPTION} )
 	psScanTask:start()
 	
-	-- Give it all 1 seconds to work, then see if we need to start up the HUD
-	hs.timer.doAfter(1, startHUD)
+	-- Give it all time to work, then see if we need to start up the HUD
+	hs.timer.doAfter(WAITFORPS, startHUD)
 end
 
 
 hs.hotkey.bind("Cmd Shift", "f12", nil, function() stopOrStartHUD() end )
-
-
--- See: http://www.hammerspoon.org/docs/hs.task.html#setStreamCallback
--- newStatus: Th latest status values to be updated with (less the identifying lead-in, "mod: ")
-function modStatusReceived(newStatus)
-	-- string.len("------") == 12
-	if string.len(newStatus ~= 12) then
-		return		-- error, give up
-	end
-	if newStatus == lastSeenStatus then
-		return		-- shouldn't happen, but just in case
-	end
-	-- TODO: Replace this alert with displayStatus(newStatus)
-	alert("New Status: "..newStatus)
-end
 
 
 local HUD = nil
@@ -163,56 +157,79 @@ layerNames = {
 	"Layer 8",
 	"Layer 9, or above",
 }
-layerNames[0] = "Base"
+layerNames[0] = "Base"	-- because we want the table to be zero-based.
 layerName = layerNames[0]	-- default start
+
+-- See: http://www.hammerspoon.org/docs/hs.task.html#setStreamCallback
+-- newStatus: The latest status values to be updated to (less the identifying lead-in, "mod: ")
+-- See displayStatus() for format definition.
+function modStatusReceived(newStatus)
+	-- string.len("------") == 6
+	if string.len(newStatus ~= 6) then
+		return		-- error, give up
+	end
+	if newStatus == lastSeenStatus then
+		return		-- shouldn't happen, but just in case
+	end
+	-- TODO: Replace this alert with displayStatus(newStatus)
+	alert("New Status: "..newStatus)
+end
 
 
 -- OK, this is the real work
 --		The format of the input is:
 --			mod: #abcde
 --		Where:
---			"mod: " is a litteral for this record, that we care about here
---			"#" A layer number, 0.. 9. Any layer >9 is reported as 9
---			a A value for the Layer
---			b A value for the Shift modifier
---			c A value for the Control modifier
---			d A value for the Option modifier
---			e A value for the Command modifier
---		The values available for the layer and each modifier are: 0, 3, 6, 9 and represent the
+--			"mod: " is a literal for this record, that we care about here.
+--				Stripped off before this function is called.
+--			# A layer number, 0.. 9. Any layer >9 is reported as 9 from the keyboard firmware
+--			a An intensity value for the Layer
+--			b An intensity value for the Command modifier
+--			c An intensity value for the Option modifier
+--			d An intensity value for the Control modifier
+--			e An intensity value for the Shift modifier
+--		The intensity values available for the layer and each modifier are: 0, 3, 6, 9 and represent the
 --		"intensity" of the layer or modifier where:
 --		0 - Not active
 --		3 - Active, one-shot. Will deactivate on next key press
 --		6 - Active, being held by the user. Will deactivate upon release
 --		9 - Locked (like caps lock). Will remain active until the modifier is pressed and 
 --			released again, or in the case of layer until another layer is selected.
---		We'll use these values to inform the "brightness" of the display of the modifier (symbol)
---		0 = off, 9 = brightest
+--		We'll use these intensity values to inform the "brightness" of the display of the modifier (symbol)
+--		0 = off, 9 = brightest, or most opaque
 
 --		Layer and layer intensity is always set. Layer intensity of 0 is meaningless (not allowed)
---		When layer "0" to "9" is received set layer text to layerNames[tonumber(layer)]:
---		0 = Base
---		1 = Numeric
---		2 = Nav/Pnct
---		3 = SpaceFn
---		4 = Layer 4, etc.
+--		TODO: Layer intensity is ignored for now, but could reflect the one=shot state of the layer
+--		Set layer text to layerNames[tonumber(layer)], defined above
 function displayStatus(newStat)
 	-- TODO: update with real changes to modifier and layer text
-	debuglog("Display newStat: "..newStat)
+	debuglog("displayStatus(): "..newStat)
 	layerName = layerNames[tonumber(sub(newStat,6,1))]
 	layerVal = 		tonumber(sub(newStat,7,1))
 
-	--	modShift   "⇧"
-	--	modControl "⋏" 
-	--	modOption  "⌥"
+	-- was tearDownHUD()
+	-- TODO: Simplify: Only update those that changed
+    if boxtext[1] then boxtext[1]:delete() end
+    if boxtext[2] then boxtext[2]:delete() end
+    if boxtext[3] then boxtext[3]:delete() end
+    if boxtext[4] then boxtext[4]:delete() end
+    if boxtext[5] then boxtext[5]:delete() end
+	
 	--	modCommand "⌘"
-	modShiftVal = 	tonumber(sub(newStat,8,1))
-	modControlVal = tonumber(sub(newStat,9,1))
-	modOptionVal = 	tonumber(sub(newStat,10,1))
-	modCommandVal = tonumber(sub(newStat,11,1))
+	--	modOption  "⌥"
+	--	modControl "⋏" 
+	--	modShift   "⇧"
+    for i =1, 4 do
+    	boxtext[i] = makeBoxText(i, tonumber(string.sub(newStat,i+2,i+2)), 0)
+    	boxtext[i]:show()
+    end
+	layerNumb =     tonumber(string.sub(newStat,1,1))
+	layerVal =      tonumber(string.sub(newStat,2,2))
+	boxtext[5] = makeBoxText(5, layerVal, layerNumb)
+   	boxtext[i]:show()
 
-	-- tearDownHUD()
-	updateHUD()
-	debuglog("Layer: ".. layerName.. "  Add/Delete: ".. addDelete..  "   Shift: ".. tostring(modShift))
+	-- BUG: No longer need... updateHUD()
+	debuglog("HUD text and intensity updated.")
 end
 
 function updateHUD()
@@ -284,7 +301,7 @@ end
 --	tansparencyLevel: 0 for invisible, 1 for 1/3, 2 for 2/3, 3 for 3/3 (opaque)
 function makeBoxText(whichText, tansparencyLevel, layerNumber)
 	--debuglog("--- makeBoxText: "..whichText..", "..tansparencyLevel..", "..layerNumber.."; ")
-	textToShow = MODIFIERS[whichText]
+	if whichText <  5 then textToShow = MODIFIERS[whichText] end
 	if whichText == 5 then textToShow = layerNames[layerNumber] end
 	-- local stextCmd   = hs.styledtext.new("⌘", { ["color"] = textColor[9], ["ligature"] = 0, ["shadow"] = shadow } )
 	styleTextext = hs.styledtext.new(textToShow, { ["color"] = textColor[tansparencyLevel*3], ["ligature"] = 0, ["shadow"] = shadow } )
