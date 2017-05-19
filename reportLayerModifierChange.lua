@@ -39,8 +39,8 @@ local HIDLISTENER = '/Applications/hid_listen/binaries/hid_listen.mac'
 local PSCOMMAND   = '/bin/ps'
 local KILLCOMMAND = '/bin/kill'
 local PSOPTION    = '-A'
---local MODIFIERS   = {"⌘", "⌥", "⌃", "⇧", "-"}
-local MODIFIERS   = {"Ba", "Ba", "Ba", "Ba"}
+local MODIFIERS   = {"⌘", "⌥", "⌃", "⇧", "-"}
+--local MODIFIERS   = {"Ba", "Ba", "Ba", "Ba"}
 
 local WAITFORPS   = 1 -- Seconds to wait.
 
