@@ -142,15 +142,6 @@ layerNames[0] = "Base"	-- because we want the table to be zero-based.
 layerName = layerNames[0]	-- default start
 local boxtext={}
 
--- See: http://www.hammerspoon.org/docs/hs.task.html#setStreamCallback
--- newStatus: The latest status values to be updated to (less the identifying lead-in, "mod: ")
--- See displayStatus() for format definition.
-function modStatusReceived(newStatus)
-	-- string.len("------") == 6
-	-- TODO: Replace this alert with displayStatus(newStatus)
-	alert("New Status: "..newStatus)
-end
-
 
 -- OK, this is the real work
 --		The format of the input is:
@@ -177,6 +168,10 @@ end
 --		Layer and layer intensity is always set. Layer intensity of 0 is meaningless (not allowed)
 --		TODO: Layer intensity is ignored for now, but could reflect the one=shot state of the layer
 --		Set layer text to layerNames[tonumber(layer)], defined above
+-- newStatus: The latest status values to be updated to (less the identifying lead-in, "mod: ")
+-- See displayStatus() for format definition.
+-- newStatus: The latest status values to be updated to (less the identifying lead-in, "mod: ")
+-- See displayStatus() for format definition.
 function displayStatus(newStat)
 	-- TODO: update with real changes to modifier and layer text
 	debuglog("displayStatus(): "..newStat)
