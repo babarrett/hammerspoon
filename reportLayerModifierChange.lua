@@ -121,7 +121,7 @@ function stopOrStartHUD()
 	psScanTask:start()
 	
 	-- Give it all time to work, then see if we need to start up the HUD
-	hs.timer.doAfter(WAITFORPS, startHUD)
+	hs.timer.doAfter(WAITFORPS, startStopHUD)
 end
 
 hs.hotkey.bind("Cmd Shift", "f12", nil, function() stopOrStartHUD() end )
@@ -195,17 +195,12 @@ function displayStatus(newStat)
 	--	modShift   "⇧"
 	--	Remove all, start fresh
 	-- TODO: Simplify: Only update those that changed
-    if boxtext[1] then boxtext[1]:delete() end
-    if boxtext[2] then boxtext[2]:delete() end
-    if boxtext[3] then boxtext[3]:delete() end
-    if boxtext[4] then boxtext[4]:delete() end
-    if boxtext[5] then boxtext[5]:delete() end
-	
+	tearDownHUDtext()
+		
 	--	Kill off BG if there's nothing to display (default status)
 	if string.sub(newStat,-4) == "0000" and string.sub(newStat,1,1) == "0" then
 		if box ~= nil then 
-			box:delete()
-			box = nil
+			box:hide()
 		end
 		return
 	end
@@ -276,8 +271,8 @@ boxtext[3] = hs.drawing.text(textrect[3], stextCtrl)
 boxtext[4] = hs.drawing.text(textrect[4], stextShift)
 boxtext[5] = hs.drawing.text(textrect[5], stextLayer)
 
--- Destroy HUD by deleting any graphics objects still on screen
-function tearDownHUD()
+-- Destroy HUD text by deleting any graphics objects still on screen
+function tearDownHUDtext()
     if boxtext[1] then boxtext[1]:delete() boxtext[1] = nil end
     if boxtext[2] then boxtext[2]:delete() boxtext[2] = nil end
     if boxtext[3] then boxtext[3]:delete() boxtext[3] = nil end
@@ -304,34 +299,33 @@ end
 -- Store created objects in known variables
 function createHUDbg()
 	if box then 
+		-- Already exists, make sure it's showing
 	    box:show()
-		return
+	else
+		-- Create on-screen rectangle
+		box = hs.drawing.rectangle(boxrect)
+		box:setFillColor({["red"]=0.5,["blue"]=0.5,["green"]=0.5,["alpha"]=0.5}):setFill(true)
+		box:setRoundedRectRadii(10, 10)
+		box:setLevel(hs.drawing.windowLevels["floating"])	-- above the rest
+		box:show()
 	end
-	-- Create on-screen rectangle
-    box = hs.drawing.rectangle(boxrect)
-    box:setFillColor({["red"]=0.5,["blue"]=0.5,["green"]=0.5,["alpha"]=0.5}):setFill(true)
-    box:setRoundedRectRadii(10, 10)
-    box:setLevel(hs.drawing.windowLevels["floating"])	-- above the rest
-    box:show()
 end
 
---	The callback functions MUST be defined first or nils get passed.
+--	Function: startStopHUD()
 --	Global, weStoppedIt:
 --		true: then we killed an HUD process, so we're done.
 --		false: didn't kill an HUD process, so create one
-function startHUD()
+--	Remember: The callback functions MUST be defined first or nils get passed.
+function startStopHUD()
 	if weStoppedIt then
 		hs.alert.show("Modifier display: Off")
 		debuglog("Modifier display: Off")
-		-- TODO: tear down any HUD graphics here.
-		tearDownHUD()
-	    if box then box:delete() end
-	    box = nil
+		tearDownHUDtext()
+	    if box then box:hide() end
 	else
 		-- There was no process to stop... Start it up.
 		debuglog("Modifier display: On")
 		-- Start listener, point the stream to the receiving function.
-		
 		shellTask = hs.task.new(HIDLISTENER, nil, shellTaskStreaming)
 		shellTask:start()
 		hs.alert.show("Modifier display: On")
