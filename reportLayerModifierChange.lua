@@ -7,14 +7,19 @@
 -- by: Bruce Barrett
 
 -- TODO: 
+--		Update keyboard (hw) firmware
+--		Hide HID background/box/frame when all settings are default. (Layer=0, no mod keys active)
+--		Show HID background... when any setting is not default.
 --		Handle Mod change to display update
 --		Cmd+Shift+F11 to change display & test
 --		Rename box --> HUDFrame(?)
 --		Update internal docs
---		Update keyboard (hw) firmware
---		BUG: Fast on/off gets out of sync? "Debounce if happen within 2 seconds of each other? 
+--		BUG: Fast on/off gets out of sync? "Debounce if happen within 2 seconds of each other?
+--		Future: Also display "mode" such as mouse movement, window movement, window sizing
+--		Run Lualint on all software
 reportLayerModifierChange = {}
 
+-- TODO: Review and edit this for accuracy. 
 -- On (Report Layer Modifier Change) activate (Cmd+Shift+F12) run the shell command: 
 --		if shellTask ~= nil then terminate() else 
 --			if neverStarted then 
@@ -40,7 +45,6 @@ local PSCOMMAND   = '/bin/ps'
 local KILLCOMMAND = '/bin/kill'
 local PSOPTION    = '-A'
 local MODIFIERS   = {"⌘", "⌥", "⌃", "⇧", "-"}
---local MODIFIERS   = {"Ba", "Ba", "Ba", "Ba"}
 
 local WAITFORPS   = 1 -- Seconds to wait.
 
@@ -48,10 +52,14 @@ local HIDLEADIN = "KL: "	-- BUG: must change to "mod: " once keyboard firmware i
 
 shellTask = nil
 neverStarted = true
-local	weStoppedIt = false
+local weStoppedIt = false
+local lastSeenStatus = ""
+local frame
+local boxrect
+local box
 
-
--- This function collects the modifier events as they come in from the keyboard
+-- This function is a callback from the task streaming output.
+-- Collects the modifier events as they come in from the keyboard
 -- Updates HUD, if found.
 -- This function remains active until the next Cmd+Shift+F12 is received.
 function shellTaskStreaming(mtaskid, mstdout, mstderr)
@@ -59,7 +67,6 @@ function shellTaskStreaming(mtaskid, mstdout, mstderr)
 	for line in string.gmatch(mstdout, "[^\n]+") do
 		-- Look for "mod: " at start of line, ignore all others.
 		if string.sub(line, 1, string.len(HIDLEADIN)) == HIDLEADIN then
-			debuglog("Modifier found: " .. line)
 			displayStatus(string.sub(line, string.len(HIDLEADIN)+1))
 		end
 	end
@@ -169,26 +176,24 @@ local boxtext={}
 --		TODO: Layer intensity is ignored for now, but could reflect the one=shot state of the layer
 --		Set layer text to layerNames[tonumber(layer)], defined above
 -- newStatus: The latest status values to be updated to (less the identifying lead-in, "mod: ")
--- See displayStatus() for format definition.
--- newStatus: The latest status values to be updated to (less the identifying lead-in, "mod: ")
--- See displayStatus() for format definition.
 function displayStatus(newStat)
 	-- TODO: update with real changes to modifier and layer text
+	-- TODO: Add or suppress HUD background as needed.
 	debuglog("displayStatus(): "..newStat)
 	if string.len(newStat) ~= 6 then
 		return		-- error, give up
 	end
---	if newStat == lastSeenStatus then
---		return		-- shouldn't happen, but just in case
---	end
-	layerName = layerNames[tonumber(string.sub(newStat,6,1))]
-	layerVal = 		tonumber(string.sub(newStat,7,1))
+	if newStat == lastSeenStatus then
+		return		-- shouldn't happen, but just in case
+	end
+	layerName = layerNames[tonumber(string.sub(newStat,1,1))]
+	layerVal = 		tonumber(string.sub(newStat,2,2))
 
 	--	modCommand "⌘"
 	--	modOption  "⌥"
 	--	modControl "⋏" 
 	--	modShift   "⇧"
-	-- was tearDownHUD()
+	--	Remove all, start fresh
 	-- TODO: Simplify: Only update those that changed
     if boxtext[1] then boxtext[1]:delete() end
     if boxtext[2] then boxtext[2]:delete() end
@@ -196,6 +201,14 @@ function displayStatus(newStat)
     if boxtext[4] then boxtext[4]:delete() end
     if boxtext[5] then boxtext[5]:delete() end
 	
+	--	Kill off BG if there's nothing to display (default status)
+	if string.sub(newStat,-4) == "0000" and string.sub(newStat,1,1) == "0" then
+		if box ~= nil then 
+			box:delete()
+			box = nil
+		end
+		return
+	end
     for i =1, 4 do
     	boxtext[i] = makeBoxText(i, tonumber(string.sub(newStat,i+2,i+2)), 0)
     	boxtext[i]:show()
@@ -205,8 +218,7 @@ function displayStatus(newStat)
 	boxtext[5] = makeBoxText(5, layerVal, layerNumb)
    	boxtext[5]:show()
 
-	-- BUG: No longer need... updateHUD()
-	debuglog("HUD text and intensity updated.")
+	debuglog("displayStatus(): HUD text and intensity updated.")
 end
 
 function updateHUD()
@@ -225,9 +237,10 @@ end
 -- Testing graphics
 --------------------------------------------------------------------------------------
 --	Objects created once, then used as needed.
-local frame = hs.screen.primaryScreen():frame()
-local boxrect   = hs.geometry.rect(frame.x+frame.w-290, frame.y+frame.h-150, 275, 100)
-local box = hs.drawing.rectangle(boxrect)
+frame = hs.screen.primaryScreen():frame()
+boxrect   = hs.geometry.rect(frame.x+frame.w-290, frame.y+frame.h-150, 275, 100)
+--  Create as needed
+box = nil
 
 -- Location of the text box for each position
 local textrect={}
@@ -270,7 +283,6 @@ function tearDownHUD()
     if boxtext[3] then boxtext[3]:delete() boxtext[3] = nil end
     if boxtext[4] then boxtext[4]:delete() boxtext[4] = nil end
     if boxtext[5] then boxtext[5]:delete() boxtext[5] = nil end
-    box:delete()
 end
 
 -- Function: makeBoxText(whichText, tansparencyLevel)
@@ -286,12 +298,15 @@ function makeBoxText(whichText, tansparencyLevel, layerNumber)
 	return(hs.drawing.text(textrect[whichText], styleTextext))
 end
 
--- Function: createHUD()
--- Creates the on-screen graphics for:
+-- Function: createHUDbg()
+-- Creates the on-screen graphics (if needed) for:
 --		The background, translucent rectangle with rounded corners
--- Later, show text of modifiers: ⌘⌥⌃⇧, and layer name
 -- Store created objects in known variables
-function createHUD()
+function createHUDbg()
+	if box then 
+	    box:show()
+		return
+	end
 	-- Create on-screen rectangle
     box = hs.drawing.rectangle(boxrect)
     box:setFillColor({["red"]=0.5,["blue"]=0.5,["green"]=0.5,["alpha"]=0.5}):setFill(true)
@@ -301,13 +316,17 @@ function createHUD()
 end
 
 --	The callback functions MUST be defined first or nils get passed.
---	weStoppedIt: Global. If true then we killed an HUD process, so we're done.
+--	Global, weStoppedIt:
+--		true: then we killed an HUD process, so we're done.
+--		false: didn't kill an HUD process, so create one
 function startHUD()
 	if weStoppedIt then
 		hs.alert.show("Modifier display: Off")
 		debuglog("Modifier display: Off")
 		-- TODO: tear down any HUD graphics here.
 		tearDownHUD()
+	    if box then box:delete() end
+	    box = nil
 	else
 		-- There was no process to stop... Start it up.
 		debuglog("Modifier display: On")
@@ -316,10 +335,10 @@ function startHUD()
 		shellTask = hs.task.new(HIDLISTENER, nil, shellTaskStreaming)
 		shellTask:start()
 		hs.alert.show("Modifier display: On")
-		-- TODO: Start up an empty HUD here.
-		createHUD()
+		-- Show an empty HUD here, as acknowledgement of start up.
+		createHUDbg()
 		-- Create modifier indicators:
---		displayStatus("0901369")
+--		displayStatus("090000")
 		displayStatus("099369")
 	end
 end
