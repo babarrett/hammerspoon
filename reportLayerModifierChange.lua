@@ -8,10 +8,9 @@
 
 -- TODO: 
 --		Update keyboard (hw) firmware
---		Hide HID background/box/frame when all settings are default. (Layer=0, no mod keys active)
---		Show HID background... when any setting is not default.
---		Handle Mod change to display update
---		Cmd+Shift+F11 to change display & test
+--		√ Hide HID background/box/frame when all settings are default. (Layer=0, no mod keys active)
+--		√ Show HID background... when any setting is not default.
+--		√ Handle Mod change to display update
 --		Rename box --> HUDFrame(?)
 --		Update internal docs
 --		BUG: Fast on/off gets out of sync? "Debounce if happen within 2 seconds of each other?
@@ -56,7 +55,9 @@ local weStoppedIt = false
 local lastSeenStatus = ""
 local frame
 local boxrect
-local box
+local HUDFrame
+local testTimer = nil
+local testCount = 0
 
 -- This function is a callback from the task streaming output.
 -- Collects the modifier events as they come in from the keyboard
@@ -95,6 +96,13 @@ function psResults(exitCode, stdOut, stdErr)
 		  debuglog("New task: ".. KILLCOMMAND.. "; pid="..pid)
 		  killTask = hs.task.new(KILLCOMMAND, nil, {pid} )
 		  killTask:start()
+		  if testTimer then
+			debuglog("Stopping testTimer (b)-------------------------------------------")
+			testTimer:stop()
+			testTimer = nil
+		  end
+		  weStoppedIt = true
+
 		end
 	end
 end
@@ -104,7 +112,7 @@ end
 -- If not running, bring up the HUD and start data collection and update.
 -- This way we both Stop and Start with Cmd+Shift+F12
 --
--- Note: Also spawns "ps" command looking for (and killing) an already running listener that we don't know about.
+-- Note: Also spawns "ps" command looking for, and killing, an already running listener that we did't know about.
 -- We delay n seconds to let the spawned ps and kill do their jobs.
 function stopOrStartHUD()
 	weStoppedIt = false
@@ -113,6 +121,11 @@ function stopOrStartHUD()
 		debuglog("Stopping known listener task. "..tostring(shellTask))
 		shellTask:terminate()
 		shellTask = nil
+		if testTimer then
+			debuglog("Stopping testTimer (a)============")
+			testTimer:stop()
+			testTimer = nil
+		end
 		weStoppedIt = true
 	end
 	-- Scan and kill processes, no matter what
@@ -122,10 +135,67 @@ function stopOrStartHUD()
 	
 	-- Give it all time to work, then see if we need to start up the HUD
 	hs.timer.doAfter(WAITFORPS, startStopHUD)
+	
+	-- Test by updating every second. UNITTEST only
+	-- test()
 end
 
 hs.hotkey.bind("Cmd Shift", "f12", nil, function() stopOrStartHUD() end )
 
+local testStates = {
+"099999",
+"090000",	-- nothing to see here
+"093000",	-- cmd 0, 3, 6, 9
+"096000",
+"099000",
+"090000",	-- Opt 0, 3, 6, 9
+"090300",
+"090600",
+"090900",
+"090000",	-- Ctrl 0, 3, 6, 9
+"090030",
+"090060",
+"090090",
+"090000",	-- shift 0, 3, 6, 9
+"090003",
+"090006",
+"090009",
+"090000",	-- EQ display moves to right
+"093000",
+"096300",
+"099630",
+"096963",
+"093696",
+"090369",
+"090036",
+"090003",
+"090000",
+"099000",	-- all layers
+"190900",
+"290090",
+"390009",
+"490090",
+"590900",
+"699000",
+"790600",
+"890060",
+"990006",
+"990009",
+}
+function test()
+	testCount = testCount + 1
+	if testCount > 37 and testTimer then
+		testTimer:stop()
+		testTimer = nil
+	else
+		if testTimer == nil then
+			testTimer = hs.timer.doEvery(1, test)
+			debuglog("New timer: "..tostring(testTimer))
+		else
+			displayStatus(testStates[testCount])
+		end
+	end
+end
 
 local HUD = nil
 local HUDView
@@ -177,8 +247,6 @@ local boxtext={}
 --		Set layer text to layerNames[tonumber(layer)], defined above
 -- newStatus: The latest status values to be updated to (less the identifying lead-in, "mod: ")
 function displayStatus(newStat)
-	-- TODO: update with real changes to modifier and layer text
-	-- TODO: Add or suppress HUD background as needed.
 	debuglog("displayStatus(): "..newStat)
 	if string.len(newStat) ~= 6 then
 		return		-- error, give up
@@ -199,33 +267,23 @@ function displayStatus(newStat)
 		
 	--	Kill off BG if there's nothing to display (default status)
 	if string.sub(newStat,-4) == "0000" and string.sub(newStat,1,1) == "0" then
-		if box ~= nil then 
-			box:hide()
+		if HUDFrame then 
+			HUDFrame:hide()
 		end
-		return
+	else
+		createHUDbg()
+		for i =1, 4 do
+			boxtext[i] = makeBoxText(i, tonumber(string.sub(newStat,i+2,i+2)), 0)
+			boxtext[i]:show()
+		end
+		layerNumb =     tonumber(string.sub(newStat,1,1))
+		layerVal =      tonumber(string.sub(newStat,2,2))
+		boxtext[5] = makeBoxText(5, layerVal, layerNumb)
+		boxtext[5]:show()
+
+		debuglog("displayStatus(): HUD text and intensity updated.")
 	end
-    for i =1, 4 do
-    	boxtext[i] = makeBoxText(i, tonumber(string.sub(newStat,i+2,i+2)), 0)
-    	boxtext[i]:show()
-    end
-	layerNumb =     tonumber(string.sub(newStat,1,1))
-	layerVal =      tonumber(string.sub(newStat,2,2))
-	boxtext[5] = makeBoxText(5, layerVal, layerNumb)
-   	boxtext[5]:show()
-
-	debuglog("displayStatus(): HUD text and intensity updated.")
-end
-
-function updateHUD()
-  -- TODO: replace w/ graphics
-  if not HUDView then
-    -- if it doesn't exist, make it
-	debuglog("Create new HUD display")
-	local screen = hs.screen.primaryScreen()
-  else
-    -- if it exists, refresh it
-	debuglog("Refresh HUD display")
-  end
+	lastSeenStatus = newStat
 end
 
 --------------------------------------------------------------------------------------
@@ -235,9 +293,9 @@ end
 frame = hs.screen.primaryScreen():frame()
 boxrect   = hs.geometry.rect(frame.x+frame.w-290, frame.y+frame.h-150, 275, 100)
 --  Create as needed
-box = nil
+HUDFrame = nil
 
--- Location of the text box for each position
+-- Location of the text HUDFrame for each position
 local textrect={}
 textrect[1] = hs.geometry.rect(frame.x+frame.w-260, frame.y+frame.h-140, 235, 160)	-- modifiers
 textrect[2] = hs.geometry.rect(frame.x+frame.w-200, frame.y+frame.h-140, 235, 160)
@@ -298,16 +356,16 @@ end
 --		The background, translucent rectangle with rounded corners
 -- Store created objects in known variables
 function createHUDbg()
-	if box then 
+	if HUDFrame then 
 		-- Already exists, make sure it's showing
-	    box:show()
+	    HUDFrame:show()
 	else
 		-- Create on-screen rectangle
-		box = hs.drawing.rectangle(boxrect)
-		box:setFillColor({["red"]=0.5,["blue"]=0.5,["green"]=0.5,["alpha"]=0.5}):setFill(true)
-		box:setRoundedRectRadii(10, 10)
-		box:setLevel(hs.drawing.windowLevels["floating"])	-- above the rest
-		box:show()
+		HUDFrame = hs.drawing.rectangle(boxrect)
+		HUDFrame:setFillColor({["red"]=0.5,["blue"]=0.5,["green"]=0.5,["alpha"]=0.5}):setFill(true)
+		HUDFrame:setRoundedRectRadii(10, 10)
+		HUDFrame:setLevel(hs.drawing.windowLevels["floating"])	-- above the rest
+		HUDFrame:show()
 	end
 end
 
@@ -321,7 +379,7 @@ function startStopHUD()
 		hs.alert.show("Modifier display: Off")
 		debuglog("Modifier display: Off")
 		tearDownHUDtext()
-	    if box then box:hide() end
+	    if HUDFrame then HUDFrame:hide() end
 	else
 		-- There was no process to stop... Start it up.
 		debuglog("Modifier display: On")
@@ -333,8 +391,9 @@ function startStopHUD()
 		createHUDbg()
 		-- Create modifier indicators:
 --		displayStatus("090000")
-		displayStatus("099369")
+--		displayStatus("099369")
 	end
 end
+
 
 return reportLayerModifierChange
