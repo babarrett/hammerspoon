@@ -418,3 +418,34 @@ function generateAppOrWebTable()
 end
 
 return launchApplications
+
+--Another idea of interest...
+--Application picker, like Cmd+Tab but instead:
+--* A GUI, in a matrix of some sort
+--* App images fill the matrix
+--* The matrix may be sparse. Maybe more like a cross than a complete grid
+--* Allow up, down, left, right to select; Allow NW, NE, SW, SE too; 
+--* Allow click to launch; Bring the matrix up "under" the current mouse location.
+--* Only currently running apps
+--* Track the time spent *active* in each running app, and/or the number of times switched into.
+--		Use that to prioritize the running programs to reduce the number of navigation events 
+--		to get to the "most used" apps
+--* Space to selection for that app
+--* Return to present open window selection for
+--
+-- Possible matrix: (# represent # of Key strokes not counting Hyper+Lead to start and <space> to select)
+--  9 apps in 0 or 1 key strokes;
+-- 14 apps in 2 key strokes;
+-- 25 apps in <= 2 keystrokes
+--
+-- Or, with only horizontal and vertical movements: 
+--        5 apps in 1 keystroke;
+--        9 apps with double-tap keystrokes; (I think I usually have < 9 apps running at a time.)
+--       13 apps in 2 keystrokes or less.
+--			 Allow		 Allow
+--			Diagonal	Horiz+Vert
+--            22222        2  
+--            21112       212 
+--            21012      21012
+--            21112       212 
+--            22222        2  
