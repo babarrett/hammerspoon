@@ -417,7 +417,6 @@ function generateAppOrWebTable()
     return tableText
 end
 
-return launchApplications
 
 --Another idea of interest...
 --Application picker, like Cmd+Tab but instead:
@@ -455,4 +454,23 @@ return launchApplications
 --		http://applehelpwriter.com/
 --		https://botbot.me/freenode/hammerspoon/2017-05-01/?tz=America/Los_Angeles
 --			i notice that `hs.image.imageFromAppBundle('lol') returns a generic icon
+--	hs.application.frontmostApplication() -> hs.application object
+--  hs.application:bundleID() -> string
+--  hs.drawing.image(sizeRect, imageData) -> drawingObject or nil
+--  
+-- Test by showing current App icon:	Works!!
 
+if false then
+	frame = hs.screen.primaryScreen():frame()
+	boxrect   = hs.geometry.rect(frame.x+frame.w-290, frame.y+frame.h-150, 275, 100)
+
+	frontIcon = hs.image.imageFromAppBundle(hs.application.frontmostApplication():bundleID()); 
+	frontDrawing = hs.drawing.image(boxrect, frontIcon);
+
+	frontDrawing:setLevel(hs.drawing.windowLevels["floating"])	-- above the rest
+	frontDrawing:show()
+end
+
+
+
+return launchApplications
