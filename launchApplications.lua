@@ -449,3 +449,10 @@ return launchApplications
 --            21012      21012
 --            21112       212 
 --            22222        2  
+--
+-- Kindred soles:
+--		https://tomdebruijn.com/posts/super-fast-application-switching/
+--		http://applehelpwriter.com/
+--		https://botbot.me/freenode/hammerspoon/2017-05-01/?tz=America/Los_Angeles
+--			i notice that `hs.image.imageFromAppBundle('lol') returns a generic icon
+
