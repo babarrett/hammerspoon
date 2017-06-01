@@ -138,7 +138,10 @@ for index, modalKey in pairs({modalAppKey, modalWebKey}) do
 		modalKey:exit() end)
 
 
--- arrow keys, to select app
+-- arrow keys, to select app to run
+-- insert jikl or wasd as arrow keys here too, if you wish.
+-- better yet, just map them as you usually would and they'll
+-- pass through here anyway.
 	modalKey:bind('', 'left', nil, 
 		function() 
 		xsel = math.max(xmin, xsel-1)
@@ -159,74 +162,7 @@ for index, modalKey in pairs({modalAppKey, modalWebKey}) do
 		ysel = math.min(ymax, ysel+1)
 		reloadPicker()
 		end)
-	end
-
-
---	HyperFn+Tab starts "Switch Application mode."
---	It terminates with selecting an app, or <Esc>
-local switchApp = hs.hotkey.modal.new(HyperFn, 'Tab')
-
---	Bind keys of interest, both Apps and Web Pages
---	hs.hotkey.modal:bind(mods, key, message, pressedfn, releasedfn, repeatfn) -> hs.hotkey.modal object
-switchApp:bind('', 'escape', 
-	function() 
-	switchApp:exit() end)
-switchApp:bind('', 'space',  
-	function() 
-	switchToCurrentApp()
-	switchApp:exit() end)
-switchApp:bind('', 'return',  
-	function() 
-	switchToCurrentApp()
-	switchApp:exit() end)
-
-switchApp:bind('', 'left', nil, 
-	function() 
---	xsel = math.max(xmin, xsel-1)
---	reloadPicker()
-	end)
-switchApp:bind('', 'right', nil, 
-	function() 
---	xsel = math.min(xmax, xsel+1)
---	reloadPicker()
-	end)
-switchApp:bind('', 'up', nil, 
-	function() 
---	ysel = math.max(ymin, ysel-1)
---	reloadPicker()
-	end)
-switchApp:bind('', 'down', nil, 
-	function() 
---	ysel = math.min(ymax, ysel+1)
---	reloadPicker()
-	end)
-
-
--- arrow keys, app & web
--- insert jikl or wasd as arrow keys here too, if you wish.
--- better yet, just map them as you usually would and they'll
--- pass through here anyway.
-switchApp:bind('', 'left', nil, 
-	function() 
-	xsel = math.max(xmin, xsel-1)
-	reloadPicker()
-	end)
-switchApp:bind('', 'right', nil, 
-	function() 
-	xsel = math.min(xmax, xsel+1)
-	reloadPicker()
-	end)
-switchApp:bind('', 'up', nil, 
-	function() 
-	ysel = math.max(ymin, ysel-1)
-	reloadPicker()
-	end)
-switchApp:bind('', 'down', nil, 
-	function() 
-	ysel = math.min(ymax, ysel+1)
-	reloadPicker()
-	end)
-
+end
 
 
 -- App launch keys (defined in appShortCuts)
@@ -264,10 +200,6 @@ function modalWebKey:entered()
   centerAndShowPicker(webShortCuts)
 end
 
-function switchApp:entered()
-  -- TODO: 
-end
-
 -- Move cursor to "center" and load "web page picker:
 function centerAndShowPicker(pickerTable)
   -- TODO: Re-do these with '1'-based indexing.
@@ -302,15 +234,6 @@ function takeDownPicker()
     pickerView=nil
   end
   inMode = nil
-end
-
-function switchApp:exited() 
-  -- TODO: Take down App switcher
-  takeDownPicker()
-end
-
-function switchToCurrentApp()
-	-- nothing yet
 end
 
 function launchAppOrWebBySelection()
@@ -494,7 +417,7 @@ end
 
 
 --Another idea of interest...
---Application picker, like Cmd+Tab but instead:
+--Application switcher, like Cmd+Tab but better. Instead:
 --* A GUI, in a matrix of some sort
 --* App images fill the matrix
 --* The matrix may be sparse. Maybe more like a cross than a complete grid
@@ -549,6 +472,63 @@ end
 --  
 -- Test by showing current Apps icons:	Works!!
 
+--------------------------------------------------------------------------------------
+--------------------------------------------------------------------------------------
+--	HyperFn+Tab starts "Switch Application mode."
+--	It terminates with switching to an app, or <Esc>
+local switchApp = hs.hotkey.modal.new(HyperFn, 'Tab')
+
+--	Bind keys of interest for switching apps
+--	hs.hotkey.foo:bind(mods, key, message, pressedfn, releasedfn, repeatfn) -> hs.hotkey.modal object
+switchApp:bind('', 'escape', 
+	function() 
+	switchApp:exit() end)
+switchApp:bind('', 'space',  
+	function() 
+	switchToCurrentApp()
+	switchApp:exit() end)
+switchApp:bind('', 'return',  
+	function() 
+	switchToCurrentApp()
+	switchApp:exit() end)
+
+-- arrow keys, for switching to a running app
+switchApp:bind('', 'left', nil, 
+	function() 
+--	xsel = math.max(xmin, xsel-1)
+--	reloadPicker()
+	end)
+switchApp:bind('', 'right', nil, 
+	function() 
+--	xsel = math.min(xmax, xsel+1)
+--	reloadPicker()
+	end)
+switchApp:bind('', 'up', nil, 
+	function() 
+--	ysel = math.max(ymin, ysel-1)
+--	reloadPicker()
+	end)
+switchApp:bind('', 'down', nil, 
+	function() 
+--	ysel = math.min(ymax, ysel+1)
+--	reloadPicker()
+	end)
+
+function switchApp:entered()
+  -- TODO: 
+end
+
+function switchApp:exited() 
+  -- TODO: Take down App switcher
+  takeDownPicker()
+end
+
+function switchToCurrentApp()
+	-- nothing yet
+	-- use selected app in list to launch. bundleID?
+end
+
+
 if true then
 	-- TODO: Maybe, change this to pick the screen with the mouse on it.
 	frame = hs.screen.mainScreen():frame()	-- the one containing the currently focused window
@@ -593,7 +573,7 @@ if true then
 			frontDrawing = hs.drawing.image(boxrect, frontIcon);
 			frontDrawing:setLevel(hs.drawing.windowLevels["floating"])	-- above the rest
 			table.insert(frontDrawingList, frontDrawing:show() )
-			-- TODO: Add text to the end of the list
+			-- TODO: Add text below each app in list. Track it so we can delete when it's time to tear down the image.
 			-- hs.drawing.text(textrect[whichText], styleTextext)show()
 			-- table.insert(frontDrawingList, some_text_structure )
 			startX = startX + 100	-- march across the screen
