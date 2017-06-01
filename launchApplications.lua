@@ -455,4 +455,7 @@ return launchApplications
 --		http://applehelpwriter.com/
 --		https://botbot.me/freenode/hammerspoon/2017-05-01/?tz=America/Los_Angeles
 --			i notice that `hs.image.imageFromAppBundle('lol') returns a generic icon
+--		hs.application.runningApplications() -> list of hs.application objects
+--		hs.application.frontmostApplication() -> hs.application object
+--		hs.application:bundleID() -> string
 
