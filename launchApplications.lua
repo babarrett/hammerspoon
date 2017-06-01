@@ -425,15 +425,16 @@ end
 --* The matrix may be sparse. Maybe more like a cross than a complete grid
 --* Allow up, down, left, right to select;
 --* Allow NW, NE, SW, SE too; 
+--* Bring up on active window. Centered?
 --* (Later) Allow click to launch; Bring the matrix up "under" the current mouse location.
---* Or, bring up on active window. Centered?
 --* Only currently running apps
 --* (Later) Track the time spent *active* in each running app, and/or the number of times switched into.
 --		Use that to prioritize the running programs to reduce the number of navigation events 
 --		to get to the "most used" apps
 --* Space to select app we navigated to
---* Return to present open window selection for app we navigated to
---* Use {some_modifier_or_combo, maybe Hyper}+ Right Arrow to activate. 
+--* (Later) "Badge" each app with number of open windows
+--* (Later) Use Return key to present open window selection for app we navigated to
+--* Use {some_modifier_or_combo, maybe Hyper}+ Right Arrow to activate this mode.
 --    This way you finger is already on the right arrow and selecting center or next 2 right
 --    Apps requires no finger movement.
 --
@@ -470,18 +471,15 @@ end
 --  hs.application:bundleID() -> string
 --  hs.drawing.image(sizeRect, imageData) -> drawingObject or nil
 --  
--- Test by showing current App icon:	Works!!
+-- Test by showing current Apps icons:	Works!!
 
-if false then
-	-- TODO: Or, change this to pick the screen with the mouse on it.
+if true then
+	-- TODO: Maybe, change this to pick the screen with the mouse on it.
 	frame = hs.screen.mainScreen():frame()	-- the one containing the currently focused window
 
-	-- TODO: gather all active apps:
-	--		hs.application.runningApplications() -> list of hs.application objects
 	-- TODO: keep track of which one is current
-	-- TODO: Count them
 	-- TODO: Lay them out on the screen as grid
-	-- TODO: Remove them after 10 sec.
+	-- TODO: Remove them after 5 sec.
 	appList = hs.application.runningApplications()
 	count = 0
 	for index, app in pairs(appList) do
@@ -490,8 +488,12 @@ if false then
 			count = count + 1
 		end
 	end
-	appList = hs.application.runningApplications()
+	-- TODO: Once we know the count we can create the BG (screened back gray, right shape)
+	-- TODO: and later populate it with icons.
+	-- appList = hs.application.runningApplications()
+	frontApp = hs.application.frontmostApplication()
 	-- frame.x and .y may not be at 0,0
+	-- Compute the matrix area, say 3 x 3, as needed.
 	startX = frame.x + frame.w/2 - (count*100/2)
 	startY = frame.y + frame.h/2 + -50
 	frontDrawingList = {}
@@ -507,8 +509,11 @@ if false then
 			boxrect   = hs.geometry.rect(startX, startY, 100, 100)
 			frontDrawing = hs.drawing.image(boxrect, frontIcon);
 			frontDrawing:setLevel(hs.drawing.windowLevels["floating"])	-- above the rest
-			frontDrawingList[index] = frontDrawing:show()
-			startX = startX + 100
+			table.insert(frontDrawingList, frontDrawing:show() )
+			-- TODO: Add text to the end of the list
+			-- hs.drawing.text(textrect[whichText], styleTextext)show()
+			-- table.insert(frontDrawingList, some_text_structure )
+			startX = startX + 100	-- march across the screen
 		end
 	end
 
@@ -524,10 +529,9 @@ hs.timer.doAfter(5, function ()
 return launchApplications
 
 
-
-
 -- SH-268 design.
 -- sh-579 / 580
 -- credentials:
 --		u/p: alice@wonderland.com / aspera
+--		bo3b@example.com / b3j (bo3b jones)
 --		host: https://shares2-ci.aspera.us
