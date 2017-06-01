@@ -416,23 +416,25 @@ function generateAppOrWebTable()
 end
 
 
---Another idea of interest...
---Application switcher, like Cmd+Tab but better. Instead:
+--TODO: Application switcher, like Cmd+Tab but better. Instead:
 --* A GUI, in a matrix of some sort
---* App images fill the matrix
+--* √ App images fill the matrix
+--* App name (truncated of needed) below the icon
 --* The matrix may be sparse. Maybe more like a cross than a complete grid
 --* Allow up, down, left, right to select;
 --* Allow NW, NE, SW, SE too; 
---* Bring up on active window. Centered?
+--* Indicate selection with rectangle around App icon
+--* √ Bring up on active window. Centered
 --* (Later) Allow click to launch; Bring the matrix up "under" the current mouse location.
---* Only currently running apps
+--* √ Only currently running apps
 --* (Later) Track the time spent *active* in each running app, and/or the number of times switched into.
 --		Use that to prioritize the running programs to reduce the number of navigation events 
 --		to get to the "most used" apps
 --* Space to select app we navigated to
 --* (Later) "Badge" each app with number of open windows
 --* (Later) Use Return key to present open window selection for app we navigated to
---* Use {some_modifier_or_combo, maybe Hyper}+ Right Arrow to activate this mode.
+--* √ Use Hyper+Tab to activate
+--* (later) Use {some_modifier_or_combo, maybe Hyper}+ Right Arrow to activate this mode.
 --    This way you finger is already on the right arrow and selecting center or next 2 right
 --    Apps requires no finger movement.
 --
@@ -464,7 +466,13 @@ end
 --		https://tomdebruijn.com/posts/super-fast-application-switching/
 --		http://applehelpwriter.com/
 --		https://botbot.me/freenode/hammerspoon/2017-05-01/?tz=America/Los_Angeles
---			i notice that `hs.image.imageFromAppBundle('lol') returns a generic icon
+--			Notice that `hs.image.imageFromAppBundle('lol') returns a generic icon
+--		https://github.com/knu/hs-knu -- includes app watcher, USK kbd differentiator.
+--		http://bezhermoso.github.io/2016/01/20/making-perfect-ramen-lua-os-x-automation-with-hammerspoon/
+--			Switch *screen* focus. Also move mouse o screen:
+--			local pt = geometry.rectMidPoint(screen:fullFrame())
+--			mouse.setAbsolutePosition(pt)
+--		fn key in macOS 10.12: https://github.com/Hammerspoon/hammerspoon/issues/922
 --		hs.application.runningApplications() -> list of hs.application objects
 --		hs.application.frontmostApplication() -> hs.application object
 --		hs.application:bundleID() -> string
@@ -595,5 +603,6 @@ return launchApplications
 -- sh-579 / 580
 -- credentials:
 --		u/p: alice@wonderland.com / aspera
---		bo3b@example.com / b3j (bo3b jones)
+--		bo3b@example.com / 456 rty (Bo3b jones)
 --		host: https://shares2-ci.aspera.us
+--		https://shares2.aspera.us/
