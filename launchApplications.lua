@@ -494,10 +494,17 @@ if true then
 	-- appList = hs.application.runningApplications()
 	frontApp = hs.application.frontmostApplication()
 	-- frame.x and .y may not be at 0,0
-	-- Compute the matrix area, say 3 x 3, as needed.
+	-- TODO: Compute the matrix area, say 3 x 3, as needed. Depends on # of apps found
 	startX = frame.x + frame.w/2 - (count*100/2)
 	startY = frame.y + frame.h/2 + -50
 	frontDrawingList = {}
+	-- Create on-screen rectangle
+	bgRect = hs.drawing.rectangle(hs.geometry.rect(startX-10, startY-10, count*100+20, 120))
+	bgRect:setFillColor({["red"]=0.5,["blue"]=0.5,["green"]=0.5,["alpha"]=0.5}):setFill(true)
+	bgRect:setRoundedRectRadii(10, 10)
+	bgRect:setLevel(hs.drawing.windowLevels["floating"])
+	table.insert(frontDrawingList, bgRect:show() )
+	
 	debuglog("App List")
 	for index, app in pairs(appList) do
 		-- Only those in dock
