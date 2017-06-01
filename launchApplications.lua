@@ -417,38 +417,50 @@ function generateAppOrWebTable()
     return tableText
 end
 
-return launchApplications
 
 --Another idea of interest...
 --Application picker, like Cmd+Tab but instead:
 --* A GUI, in a matrix of some sort
 --* App images fill the matrix
 --* The matrix may be sparse. Maybe more like a cross than a complete grid
---* Allow up, down, left, right to select; Allow NW, NE, SW, SE too; 
---* Allow click to launch; Bring the matrix up "under" the current mouse location.
+--* Allow up, down, left, right to select;
+--* Allow NW, NE, SW, SE too; 
+--* Bring up on active window. Centered?
+--* (Later) Allow click to launch; Bring the matrix up "under" the current mouse location.
 --* Only currently running apps
---* Track the time spent *active* in each running app, and/or the number of times switched into.
+--* (Later) Track the time spent *active* in each running app, and/or the number of times switched into.
 --		Use that to prioritize the running programs to reduce the number of navigation events 
 --		to get to the "most used" apps
---* Space to selection for that app
---* Return to present open window selection for
+--* Space to select app we navigated to
+--* (Later) "Badge" each app with number of open windows
+--* (Later) Use Return key to present open window selection for app we navigated to
+--* Use {some_modifier_or_combo, maybe Hyper}+ Right Arrow to activate this mode.
+--    This way you finger is already on the right arrow and selecting center or next 2 right
+--    Apps requires no finger movement.
 --
 -- Possible matrix: (# represent # of Key strokes not counting Hyper+Lead to start and <space> to select)
 --  9 apps in 0 or 1 key strokes;
 -- 14 apps in 2 key strokes;
 -- 25 apps in <= 2 keystrokes
+--			 Allow	
+--			Diagonal (NE, SW, etc.)
+--            22222 
+--            21112 
+--            21012 
+--            21112 
+--            22222 
 --
 -- Or, with only horizontal and vertical movements: 
 --        5 apps in 1 keystroke;
 --        9 apps with double-tap keystrokes; (I think I usually have < 9 apps running at a time.)
---       13 apps in 2 keystrokes or less.
---			 Allow		 Allow
---			Diagonal	Horiz+Vert
---            22222        2  
---            21112       212 
---            21012      21012
---            21112       212 
---            22222        2  
+--       13 apps in 2 keystrokes or less. Right, then Up for example.
+--			  Allow
+--			Horiz+Vert
+--              2  
+--             212 
+--            21012
+--             212 
+--              2  
 --
 -- Kindred soles:
 --		https://tomdebruijn.com/posts/super-fast-application-switching/
@@ -458,4 +470,68 @@ return launchApplications
 --		hs.application.runningApplications() -> list of hs.application objects
 --		hs.application.frontmostApplication() -> hs.application object
 --		hs.application:bundleID() -> string
+--  	hs.drawing.image(sizeRect, imageData) -> drawingObject or nil
+--  
+-- Test by showing current Apps icons:	Works!!
 
+if true then
+	-- TODO: Maybe, change this to pick the screen with the mouse on it.
+	frame = hs.screen.mainScreen():frame()	-- the one containing the currently focused window
+
+	-- TODO: keep track of which one is current
+	-- TODO: Lay them out on the screen as grid
+	-- TODO: Remove them after 5 sec.
+	appList = hs.application.runningApplications()
+	count = 0
+	for index, app in pairs(appList) do
+		-- Only those in dock
+		if app:kind() == 1 then
+			count = count + 1
+		end
+	end
+	-- TODO: Once we know the count we can create the BG (screened back gray, right shape)
+	-- TODO: and later populate it with icons.
+	-- appList = hs.application.runningApplications()
+	frontApp = hs.application.frontmostApplication()
+	-- frame.x and .y may not be at 0,0
+	-- Compute the matrix area, say 3 x 3, as needed.
+	startX = frame.x + frame.w/2 - (count*100/2)
+	startY = frame.y + frame.h/2 + -50
+	frontDrawingList = {}
+	debuglog("App List")
+	for index, app in pairs(appList) do
+		-- Only those in dock
+		if app:kind() == 1 then
+			appName = hs.application.nameForBundleID(app:bundleID())
+			i = (index)   and index   or "nil";
+			a = (appName) and appName or "(none)";
+			debuglog(tostring(i) ..": ".. a)	-- tostring(app)
+			frontIcon = hs.image.imageFromAppBundle(app:bundleID()); 
+			boxrect   = hs.geometry.rect(startX, startY, 100, 100)
+			frontDrawing = hs.drawing.image(boxrect, frontIcon);
+			frontDrawing:setLevel(hs.drawing.windowLevels["floating"])	-- above the rest
+			table.insert(frontDrawingList, frontDrawing:show() )
+			-- TODO: Add text to the end of the list
+			-- hs.drawing.text(textrect[whichText], styleTextext)show()
+			-- table.insert(frontDrawingList, some_text_structure )
+			startX = startX + 100	-- march across the screen
+		end
+	end
+
+end
+
+hs.timer.doAfter(5, function ()
+		for _, drawing in pairs(frontDrawingList) do
+			drawing:delete()
+		end
+	end
+)
+
+return launchApplications
+
+-- SH-268 design.
+-- sh-579 / 580
+-- credentials:
+--		u/p: alice@wonderland.com / aspera
+--		bo3b@example.com / b3j (bo3b jones)
+--		host: https://shares2-ci.aspera.us
