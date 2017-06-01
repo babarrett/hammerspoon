@@ -115,11 +115,11 @@ local developmentShortCuts = {
 
 
 --	HyperFn+A starts "Launch Application mode."
---	It terminates with selection an app, or <Esc>
+--	It terminates with selecting an app, or <Esc>
 local modalAppKey = hs.hotkey.modal.new(HyperFn, 'A')
 
 --	HyperFn+W starts "Launch Webpage mode."
---	It terminates with selection a web page, or <Esc>
+--	It terminates with selecting a web page, or <Esc>
 local modalWebKey = hs.hotkey.modal.new(HyperFn, 'W')
 
 --	Bind keys of interest, both Apps and Web Pages
@@ -138,10 +138,7 @@ for index, modalKey in pairs({modalAppKey, modalWebKey}) do
 		modalKey:exit() end)
 
 
--- arrow keys, app & web
-	-- insert jikl or wasd as arrow keys here too, if you wish.
-	-- better yet, just map them as you usually would and they'll
-	-- pass through here anyway.
+-- arrow keys, to select app
 	modalKey:bind('', 'left', nil, 
 		function() 
 		xsel = math.max(xmin, xsel-1)
@@ -162,8 +159,73 @@ for index, modalKey in pairs({modalAppKey, modalWebKey}) do
 		ysel = math.min(ymax, ysel+1)
 		reloadPicker()
 		end)
+	end
 
-end
+
+--	HyperFn+Tab starts "Switch Application mode."
+--	It terminates with selecting an app, or <Esc>
+local switchApp = hs.hotkey.modal.new(HyperFn, 'Tab')
+
+--	Bind keys of interest, both Apps and Web Pages
+--	hs.hotkey.modal:bind(mods, key, message, pressedfn, releasedfn, repeatfn) -> hs.hotkey.modal object
+switchApp:bind('', 'escape', 
+	function() 
+	switchApp:exit() end)
+switchApp:bind('', 'space',  
+	function() 
+	switchToCurrentApp()
+	switchApp:exit() end)
+switchApp:bind('', 'return',  
+	function() 
+	switchToCurrentApp()
+	switchApp:exit() end)
+
+switchApp:bind('', 'left', nil, 
+	function() 
+--	xsel = math.max(xmin, xsel-1)
+--	reloadPicker()
+	end)
+switchApp:bind('', 'right', nil, 
+	function() 
+--	xsel = math.min(xmax, xsel+1)
+--	reloadPicker()
+	end)
+switchApp:bind('', 'up', nil, 
+	function() 
+--	ysel = math.max(ymin, ysel-1)
+--	reloadPicker()
+	end)
+switchApp:bind('', 'down', nil, 
+	function() 
+--	ysel = math.min(ymax, ysel+1)
+--	reloadPicker()
+	end)
+
+
+-- arrow keys, app & web
+-- insert jikl or wasd as arrow keys here too, if you wish.
+-- better yet, just map them as you usually would and they'll
+-- pass through here anyway.
+switchApp:bind('', 'left', nil, 
+	function() 
+	xsel = math.max(xmin, xsel-1)
+	reloadPicker()
+	end)
+switchApp:bind('', 'right', nil, 
+	function() 
+	xsel = math.min(xmax, xsel+1)
+	reloadPicker()
+	end)
+switchApp:bind('', 'up', nil, 
+	function() 
+	ysel = math.max(ymin, ysel-1)
+	reloadPicker()
+	end)
+switchApp:bind('', 'down', nil, 
+	function() 
+	ysel = math.min(ymax, ysel+1)
+	reloadPicker()
+	end)
 
 
 
@@ -202,6 +264,10 @@ function modalWebKey:entered()
   centerAndShowPicker(webShortCuts)
 end
 
+function switchApp:entered()
+  -- TODO: 
+end
+
 -- Move cursor to "center" and load "web page picker:
 function centerAndShowPicker(pickerTable)
   -- TODO: Re-do these with '1'-based indexing.
@@ -226,7 +292,7 @@ end
 
 
 function modalWebKey:exited() 
-  -- Take down App selector
+  -- Take down Web page selector
   takeDownPicker()
 end
 
@@ -236,6 +302,15 @@ function takeDownPicker()
     pickerView=nil
   end
   inMode = nil
+end
+
+function switchApp:exited() 
+  -- TODO: Take down App switcher
+  takeDownPicker()
+end
+
+function switchToCurrentApp()
+	-- nothing yet
 end
 
 function launchAppOrWebBySelection()
