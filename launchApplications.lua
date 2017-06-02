@@ -605,10 +605,10 @@ end
 	end
 	-- Create selection indicator, centered if possible
 	-- Center cell = ceil((x-1)%cellsX/2) + math.fmod(count/cellsY)
-	column = math.ceil((x-1)%cellsX/2)+1;
-	row    = (math.modf((count-1)/cellsX));
+	column = math.ceil(cellsX/2);
+	row    = math.ceil(cellsY/2);
 	sumpart = column + (row-1)*cellsX;
-	debuglog(column.."  "..row.."  "..sumpart)
+	debuglog("column/row/'sum': "..column.."  "..row.."  "..sumpart)
 	selRect = hs.drawing.rectangle(cellNumbToRect(sumpart));
 	selRect:setFillColor({["red"]=1.0,["blue"]=1.0,["green"]=1.0,["alpha"]=0.1}):setFill(true)
 	selRect:setRoundedRectRadii(5, 5)
