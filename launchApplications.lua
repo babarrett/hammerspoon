@@ -554,23 +554,23 @@ if true then
 	end
 	-- Icon sizes are nominally 100x100
 	-- BG rect is +10 on all 4 sides
-	cellWidth = 100;
-	cellHeight = 100;
+	cellWidth = 75;
+	cellHeight = 75;
 	bgBoarder = 10;
 	cellsX = math.ceil(math.sqrt(count));
 	cellsY = math.ceil(count/cellsX);
 	cellsHeight = cellsY * cellHeight;
 	cellsWidth  = cellsX * cellWidth;
-	-- TODO: Once we know the count we can create the BG (screened back gray, right shape)
-	-- TODO: and later populate it with icons.
+	-- Once we know the count we can create the BG (screened back gray, rectangle)
+	-- and later populate it with icons.
 	-- appList = hs.application.runningApplications()
 	frontApp = hs.application.frontmostApplication()
-	-- frame.x and .y may not be at 0,0
-	-- TODO: Compute the matrix area, say 3 x 3, as needed. Depends on # of apps found
+	-- frame.x and .y may not be at 0,0. Depends on screen.
+	-- Compute the matrix area, say 3 x 3, as needed. Depends on # of apps found
 	bgX = frame.x + frame.w/2 - (cellsX*cellWidth/2) - bgBoarder;
 	bgY = frame.y + frame.h/2 - cellHeight/2 - bgBoarder;
 	frontDrawingList = {}
-	-- Create on-screen rectangle
+	-- Create on-screen BG rectangle
 	bgRect = hs.drawing.rectangle(hs.geometry.rect(bgX, bgY, cellsWidth+2*bgBoarder, cellsHeight+2*bgBoarder))
 	bgRect:setFillColor({["red"]=0.5,["blue"]=0.5,["green"]=0.5,["alpha"]=0.5}):setFill(true)
 	bgRect:setRoundedRectRadii(10, 10)
@@ -610,7 +610,7 @@ end
 	sumpart = column + (row-1)*cellsX;
 	debuglog(column.."  "..row.."  "..sumpart)
 	selRect = hs.drawing.rectangle(cellNumbToRect(sumpart));
-	selRect:setFillColor({["red"]=1.0,["blue"]=1.0,["green"]=1.0,["alpha"]=0.01}):setFill(true)
+	selRect:setFillColor({["red"]=1.0,["blue"]=1.0,["green"]=1.0,["alpha"]=0.1}):setFill(true)
 	selRect:setRoundedRectRadii(5, 5)
 	selRect:setLevel(hs.drawing.windowLevels["floating"])
 	table.insert(frontDrawingList, selRect:show() )
