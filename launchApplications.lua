@@ -552,23 +552,39 @@ if true then
 			count = count + 1
 		end
 	end
+	-- Icon sizes are nominally 100x100
+	-- BG rect is +10 on all 4 sides
+	cellWidth = 100;
+	cellHeight = 100;
+	bgBoarder = 10;
+	cellsX = math.ceil(math.sqrt(count));
+	cellsY = math.ceil(count/cellsX);
+	cellsHeight = cellsY * cellHeight;
+	cellsWidth  = cellsX * cellWidth;
 	-- TODO: Once we know the count we can create the BG (screened back gray, right shape)
 	-- TODO: and later populate it with icons.
 	-- appList = hs.application.runningApplications()
 	frontApp = hs.application.frontmostApplication()
 	-- frame.x and .y may not be at 0,0
 	-- TODO: Compute the matrix area, say 3 x 3, as needed. Depends on # of apps found
-	startX = frame.x + frame.w/2 - (count*100/2)
-	startY = frame.y + frame.h/2 + -50
+	bgX = frame.x + frame.w/2 - (cellsX*cellWidth/2) - bgBoarder;
+	bgY = frame.y + frame.h/2 - cellHeight/2 - bgBoarder;
 	frontDrawingList = {}
 	-- Create on-screen rectangle
-	bgRect = hs.drawing.rectangle(hs.geometry.rect(startX-10, startY-10, count*100+20, 120))
+	bgRect = hs.drawing.rectangle(hs.geometry.rect(bgX, bgY, cellsWidth+2*bgBoarder, cellsHeight+2*bgBoarder))
 	bgRect:setFillColor({["red"]=0.5,["blue"]=0.5,["green"]=0.5,["alpha"]=0.5}):setFill(true)
 	bgRect:setRoundedRectRadii(10, 10)
 	bgRect:setLevel(hs.drawing.windowLevels["floating"])
 	table.insert(frontDrawingList, bgRect:show() )
 	
+function cellNumbToRect(cellnum)
+	x = bgX+bgBoarder + ( (cellnum-1) % cellsX) * cellWidth;
+	y = bgY+bgBoarder + math.floor((cellnum-1) / cellsX) * cellHeight;
+	return hs.geometry.rect(x, y, cellWidth, cellHeight);
+end
+
 	debuglog("App List")
+	cnt = 1;
 	for index, app in pairs(appList) do
 		-- Only those in dock
 		if app:kind() == 1 then
@@ -577,18 +593,30 @@ if true then
 			a = (appName) and appName or "(none)";
 			debuglog(tostring(i) ..": ".. a)	-- tostring(app)
 			frontIcon = hs.image.imageFromAppBundle(app:bundleID()); 
-			boxrect   = hs.geometry.rect(startX, startY, 100, 100)
+			boxrect   = cellNumbToRect(cnt);
 			frontDrawing = hs.drawing.image(boxrect, frontIcon);
 			frontDrawing:setLevel(hs.drawing.windowLevels["floating"])	-- above the rest
 			table.insert(frontDrawingList, frontDrawing:show() )
 			-- TODO: Add text below each app in list. Track it so we can delete when it's time to tear down the image.
 			-- hs.drawing.text(textrect[whichText], styleTextext)show()
 			-- table.insert(frontDrawingList, some_text_structure )
-			startX = startX + 100	-- march across the screen
+			cnt = cnt + 1;
 		end
 	end
+	-- Create selection indicator, centered if possible
+	-- Center cell = ceil((x-1)%cellsX/2) + math.fmod(count/cellsY)
+	column = math.ceil((x-1)%cellsX/2)+1;
+	row    = (math.modf((count-1)/cellsX));
+	sumpart = column + (row-1)*cellsX;
+	debuglog(column.."  "..row.."  "..sumpart)
+	selRect = hs.drawing.rectangle(cellNumbToRect(sumpart));
+	selRect:setFillColor({["red"]=1.0,["blue"]=1.0,["green"]=1.0,["alpha"]=0.01}):setFill(true)
+	selRect:setRoundedRectRadii(5, 5)
+	selRect:setLevel(hs.drawing.windowLevels["floating"])
+	table.insert(frontDrawingList, selRect:show() )
 
 end
+
 
 hs.timer.doAfter(5, function ()
 		for _, drawing in pairs(frontDrawingList) do
