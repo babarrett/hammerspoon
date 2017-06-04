@@ -97,10 +97,15 @@ local webShortCuts = {
 	W = {"Geekhack", nil, "https://geekhack.org/index.php?action=watched"},		-- Geekhack, Watched
 }
 
-function countTableElements(myTable)
+-- myTable:		the table we want to know how many elements it contains
+-- test: 		is an optional callback. Called with k, v (Key value).
+--				test returns true for "count this one."
+function countTableElements(myTable, test)
   local count = 0
   for k,v in pairs(myTable) do
-    count = count + 1
+    if test and test(k, v) then
+      count = count + 1
+    end
   end
   return count
 end
@@ -524,11 +529,13 @@ switchApp:bind('', 'down', nil,
 
 function switchApp:entered()
   -- TODO: 
+  -- Build a grid of app names
+  bringUpSwitcher()
 end
 
 function switchApp:exited() 
   -- TODO: Take down App switcher
-  takeDownPicker()
+  takeDownSwitcher()
 end
 
 function switchToCurrentApp()
@@ -536,8 +543,18 @@ function switchToCurrentApp()
 	-- use selected app in list to launch. bundleID?
 end
 
+function cellNumbToRect(cellnum)
+	x = bgX+bgBoarder + ( (cellnum-1) % cellsX) * cellWidth;
+	y = bgY+bgBoarder + math.floor((cellnum-1) / cellsX) * cellHeight;
+	return hs.geometry.rect(x, y, cellWidth, cellHeight);
+end
 
-if true then
+
+function bringUpSwitcher()
+	function showingTest(k, v)
+		-- Only those in dock
+		return (v:kind() == 1)
+	end
 	-- TODO: Maybe, change this to pick the screen with the mouse on it.
 	frame = hs.screen.mainScreen():frame()	-- the one containing the currently focused window
 
@@ -545,13 +562,8 @@ if true then
 	-- TODO: Lay them out on the screen as grid
 	-- TODO: Remove them after 5 sec.
 	appList = hs.application.runningApplications()
-	count = 0
-	for index, app in pairs(appList) do
-		-- Only those in dock
-		if app:kind() == 1 then
-			count = count + 1
-		end
-	end
+	count = countTableElements(appList, showingTest)
+	
 	-- Icon sizes are nominally 100x100
 	-- BG rect is +10 on all 4 sides
 	cellWidth = 75;
@@ -577,12 +589,6 @@ if true then
 	bgRect:setLevel(hs.drawing.windowLevels["floating"])
 	table.insert(frontDrawingList, bgRect:show() )
 	
-function cellNumbToRect(cellnum)
-	x = bgX+bgBoarder + ( (cellnum-1) % cellsX) * cellWidth;
-	y = bgY+bgBoarder + math.floor((cellnum-1) / cellsX) * cellHeight;
-	return hs.geometry.rect(x, y, cellWidth, cellHeight);
-end
-
 	debuglog("App List")
 	cnt = 1;
 	for index, app in pairs(appList) do
@@ -598,8 +604,7 @@ end
 			frontDrawing:setLevel(hs.drawing.windowLevels["floating"])	-- above the rest
 			table.insert(frontDrawingList, frontDrawing:show() )
 			-- TODO: Add text below each app in list. Track it so we can delete when it's time to tear down the image.
-			-- hs.drawing.text(textrect[whichText], styleTextext)show()
-			-- table.insert(frontDrawingList, some_text_structure )
+ 			-- table.insert(frontDrawingList, some_text_structure )
 			cnt = cnt + 1;
 		end
 	end
@@ -611,19 +616,22 @@ end
 	debuglog("column/row/'sum': "..column.."  "..row.."  "..sumpart)
 	selRect = hs.drawing.rectangle(cellNumbToRect(sumpart));
 	selRect:setFillColor({["red"]=1.0,["blue"]=1.0,["green"]=1.0,["alpha"]=0.1}):setFill(true)
-	selRect:setRoundedRectRadii(5, 5)
+	selRect:setRoundedRectRadii(5, 5);
+	selRect:setStroke(true);
+	selRect:setStrokeWidth(6);
+    selRect:setStrokeColor({["red"]=0.75,["blue"]=0,["green"]=0,["alpha"]=1})
 	selRect:setLevel(hs.drawing.windowLevels["floating"])
 	table.insert(frontDrawingList, selRect:show() )
 
 end
 
-
-hs.timer.doAfter(5, function ()
-		for _, drawing in pairs(frontDrawingList) do
-			drawing:delete()
-		end
+function takeDownSwitcher ()
+	for _, drawing in pairs(frontDrawingList) do
+		drawing:delete()
 	end
-)
+end
+
+-- hs.timer.doAfter(5, takeDownSwitcher)
 
 return launchApplications
 
@@ -634,3 +642,18 @@ return launchApplications
 --		bo3b@example.com / 456 rty (Bo3b jones)
 --		host: https://shares2-ci.aspera.us
 --		https://shares2.aspera.us/
+
+--	Map of the order to add application icons to the grid.
+--	Optimized for: fewest keystrokes, and minimizing number of rows.
+--	I often run with 5 or 6 app running. This plan lets me have 17
+--	apps running and still only have 3 rows active. 23 as represented.
+--	We could fill out the entire grid and add 12 more apps for 35 total.
+--	
+--	            XX
+-- row 01 02 03 04 05 06 07
+-- --- -- -- -- -- -- -- --
+--	01       23 21 22
+--	02    15 11 07 10 14
+--	03 17 05 04 .. 02 03 16 (center)
+--	04    13 09 06 08 12 
+--	05       20 18 19 
