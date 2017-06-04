@@ -6,9 +6,9 @@
 --	TODO: Create another modual for KeyToKey mappings such as Numeric Pad to move functions.
 --	TODO: Find some way wo handle NumLock, What's blocking it? No Karibiner == always numeric.
 
-VERSION = "2017-Apr-16"
+VERSION = "2017-Jun-03"
 hs.console.clearConsole()
-LUA_PATH = os.getenv("HOME") .. "/deg/git/hammerspoon/?"
+LUA_PATH = os.getenv("HOME") .. "/dev/git/hammerspoon/?"
 
 HyperFn = {"cmd", "alt", "ctrl", "shift"}	-- Mash the 4 modifier keys for some new function
 HyperFnString = "⌘⌥⌃⇧"					-- Visual representation
@@ -45,6 +45,7 @@ local windowManagement 			= require "windowManagement"
 local miscFunctions 			= require "miscFunctions"
 local cheatsheets				= require "cheatsheets"
 local launchApplications		= require "launchApplications"	-- or Webpages
+local switchApplications		= require "switchApplications"
 local reportLayerModifierChange	= require "reportLayerModifierChange"
 require "KeyPressShow"
 require "bindFunctionKeys"
