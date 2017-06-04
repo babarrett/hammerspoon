@@ -94,7 +94,6 @@ function countTableElements(myTable, test)
   for k,v in pairs(myTable) do
     if test == nil or test(k, v) then
       count = count + 1
-      debuglog("count++")
     end
   end
   return count
@@ -208,7 +207,6 @@ function bringUpSwitcher()
 	-- Lay them out on the screen as grid
 	allApps = hs.application.runningApplications()
 	appCount = countTableElements(allApps, showingTest)
-	debuglog("appCount: ".. appCount)
 	
 	-- Compute the matrix squares, say 3 x 3, as needed. Depends on # of apps found
 	cellsX = math.ceil(math.sqrt(appCount));
@@ -253,7 +251,7 @@ function bringUpSwitcher()
 	column = math.ceil(cellsX/2);
 	row    = math.ceil(cellsY/2);
 	sumpart = column + (row-1)*cellsX;
-	debuglog("column/row/'sum': "..column.."  "..row.."  "..sumpart)
+--	debuglog("column/row/'sum': "..column.."  "..row.."  "..sumpart)
 	displaySelRect(sumpart)
 end
 
