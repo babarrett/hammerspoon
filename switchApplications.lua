@@ -319,8 +319,56 @@ function takeDownSwitcher ()
 	if currentSelDrawing then currentSelDrawing:delete() end
 end
 
--- hs.timer.doAfter(5, takeDownSwitcher)
 
+-- Tests for hs.chooser
+if true then
+  function chooserCompletion(selectionTable)
+    debuglog("chooserCompletion selectionTable: "..tostring(selectionTable))
+  end
+  function takeDownChooser()
+    debuglog("takeDownChooser")
+    --
+    myChooser:delete()
+  end
+  function bringUpChooser()
+    --
+    debuglog("bringUpChooser")
+    myChooser = hs.chooser.new(chooserCompletion)
+    chooserChoices = {
+	{
+	  ["text"] = "First Choice",
+	  --["subText"] = "This is the subtext of the first choice",
+	  ["uuid"] = "0001"
+	},
+	{ ["text"] = "Second Option",
+	   --["subText"] = "I wonder what I should type here?",
+	   ["uuid"] = "Bbbb"
+	},
+	{ ["text"] = "Third Possibility",
+	   ["subText"] = "What a lot of choosing there is going on here!",
+	   ["uuid"] = "III3"
+	},
+    }
+    myChooser:choices(chooserChoices) 
+    
+    myChooser:width(25)
+    myChooser:rows(countTableElements(chooserChoices))
+    myChooser:show()
+    if false then
+    myChooser:select(2) 
+    hs.timer.usleep(100000)
+    myChooser:select(3) 
+    hs.timer.usleep(100000)
+    myChooser:select(2) 
+    hs.timer.usleep(100000)
+    myChooser:select(1) 
+    hs.timer.usleep(100000)
+    end
+  end
+  
+  bringUpChooser()
+  -- hs.timer.doAfter(5, chooserCompletion)
+end
 
 -- SH-268 design.
 -- sh-579 / 580
