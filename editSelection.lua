@@ -11,6 +11,7 @@
 --	* Convert selection to Title case
 --	* Convert selection to lower case
 --	* Open up camel case selection (ThisIsATest --> this is a test)
+--	* TODO: Swap characters Ctrl+F9
 --
 --	Delete Word functions:
 --	* Delete left 1 word. (Ctrl+Backspace) 
@@ -33,12 +34,17 @@ local	sel = nil
 --	Imperfect, perhaps. May not work well on large selections.
 --	Taken from: https://github.com/Hammerspoon/hammerspoon/issues/634
 function getTextSelection()	-- returns text or nil while leaving pasteboard undisturbed.
-	local oldText = hs.pasteboard.getContents()
+	local oldText = ""
+	oldText = hs.pasteboard.getContents()
 	hs.eventtap.keyStroke({"cmd"}, "c")
 	hs.timer.usleep(100000)
-	local text = hs.pasteboard.getContents()
+	local text = hs.pasteboard.getContents()	-- if nothing is selected this is unchanged
 	hs.pasteboard.setContents(oldText)
-	return text
+	if text ~= oldText then 
+	  return text
+	else
+	  return ""
+	end
 end
 
 -------------------------------------------
@@ -178,10 +184,43 @@ function deletePreviousWord()
 --	hs.eventtap.keyStroke({""}, "right")
 end
 
+-- swapChars - exchange adjacent characters.
+-- If:  | is insertion point, ^^ is start of file, ^ is start of line, 
+--		$ is end of line, $$ is end of file, word_center_word2 has center selected then:
+--		This:		becomes this:
+--		ht|e		the|
+--		wr|od		word|
+--		wodr|$		word|$
+--		wodr|$$		word|$$
+--		_drow_		word|
+--		_drow$^_	no change, contains \n
 
-
-
-
+function swapChars()
+	
+	textSel = getTextSelection()
+	if string.len(textSel) > 0 then
+	  if string.find(textSel, "\n") == nil then
+	    -- if current selection is not empty, and does not contain newline then swap all characters
+	    hs.eventtap.keyStrokes(string.reverse(textSel))
+	    return
+	  else
+	    -- contains selection and \n, ignore
+	    return
+	  end
+	else
+	  -- no selection
+	  hs.eventtap.keyStroke("", "right")
+	  hs.eventtap.keyStroke("Shift", "left")
+	  hs.eventtap.keyStroke("Shift", "left")
+	  textSel = getTextSelection()
+	  if string.find(textSel, "\n") == nil then
+	    hs.eventtap.keyStrokes(string.reverse(textSel))
+	  else
+	    hs.eventtap.keyStroke("", "left")
+	    hs.eventtap.keyStroke("", "right")
+	  end
+	end
+end
 hs.hotkey.bind("ctrl", "f1", nil, function()  typePreSelectionPost()  end )
 hs.hotkey.bind("ctrl", "f2", nil, function()  findNext()  end )
 -- alt == option
@@ -195,6 +234,8 @@ hs.hotkey.bind("ctrl",  "f5", nil, function()  toUppercase()	end )
 hs.hotkey.bind("ctrl",  "f6", nil, function()  toLowercase()	end )
 hs.hotkey.bind("ctrl",  "f7", nil, function()  toTitleCase()	end )
 hs.hotkey.bind("ctrl",  "f8", nil, function()  toUncamelCase()	end )
+--	f9, f10, f11 are intercepted by macOS. Can't be used. :-(
+hs.hotkey.bind("ctrl",  "f12", nil, function()  swapChars()	end )
 
 
 return editSelection
