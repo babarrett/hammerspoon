@@ -13,6 +13,7 @@ switchApplications = {}
 --  * (Later, maybe) Allow click to switch;
 --  * (Later, maybe) Bring the matrix up "under" the current mouse location
 --  * √ Only currently running apps
+--  * Add a "black list" of apps that show up in doc, but you nemer want to switch to. (SpamSieve)
 --  * (Later) Track the time spent *active* in each running app, and/or the number of times switched into.
 --		Use that to prioritize the running programs to reduce the number of navigation events 
 --		to get to the "most used" apps
@@ -90,6 +91,7 @@ end
 -- test: 		is an optional callback. Called with k, v (Key value).
 --				test returns true for "count this one."
 function countTableElements(myTable, test)
+  if myTable == nil then return 0 end
   local count = 0
   for k,v in pairs(myTable) do
     if test == nil or test(k, v) then
@@ -100,6 +102,7 @@ function countTableElements(myTable, test)
 end
 
 --	Globals---------------------------------------------------------------------------
+mode = ""		-- Starts out "App", can change to "Window"
 currentSelDrawing = nil
 currentSel = nil
 appCount = 0
@@ -125,49 +128,103 @@ switchApp:bind('', 'escape',
 	switchApp:exit() end)
 switchApp:bind('', 'space',  
 	function() 
-	switchToCurrentApp()
+	if mode == "App" then
+	  switchToCurrentApp()
+	  switchApp:exit()
+	else
+	  -- Window, TODO: open selected window, and exit switchApp
+	  switchApp:exit()
+	end
 	end)
 switchApp:bind('', 'return',  
 	function() 
-	switchToCurrentApp()
-	-- TODO: Bring up app's windows, if > 1, and allow user to pick
+	if mode == "App" then
+		switchToCurrentApp()
+		-- TODO: If > 1 window, and allow user to choose which window
+		-- TODO: Bring up app's windows as a text list. Up/Down will then be used to select. 
+		--		Return or space to choose and go. 
+		-- 		Esc will just ignore window, but we've already done the App selection.
+		listOfApps = hs.application.applicationsForBundleID( appList[currentSel] )
+		appWindowList = listOfApps[1]:allWindows()
+	
+		if countTableElements(appWindowList) <= 1 then
+		  -- nothing more to do... zero, or only 1 window anyway.
+		  switchApp:exit()
+		  return
+		end
+		debuglog("# of windows: "..countTableElements(appWindowList))
+		debuglog("Windows for: "..tostring( appList[currentSel] ))
+		for k,v in pairs(appWindowList) do
+		  -- TODO: Display window choices here instead of debuglog
+		  tmpTitle = (appWindowList[k]:title() == "") and "(no title)" or appWindowList[k]:title()
+		  debuglog(tostring(k).." -- ".. tmpTitle .."<<")
+		end
+		-- Change mode to "windowListMode"
+		mode = "Window"
+		-- user chooses windowChosen
+		switchApp:exit()	-- TODO: REMOVE THIS when the rest of the window code is complete.
+	else
+	  -- Window, TODO: open selected window, and exit switchApp
+	  windowChosen = 1
+	  appWindowList[windowChosen]:becomeMain()
+	  switchApp:exit()
+	end
 	end)
 
 -- arrow keys, for switching to a running app
 switchApp:bind('', 'left', nil, 
 	function() 
-	currentSel = math.max(currentSel-1, 1)
-	displaySelRect(currentSel)
+	if mode == "App" then
+	  currentSel = math.max(currentSel-1, 1)
+	  displaySelRect(currentSel)
+	else
+	  -- Window, ignore
+	end
 	end)
 switchApp:bind('', 'right', nil, 
 	function() 
-	currentSel = math.min(currentSel+1, appCount)
-	displaySelRect(currentSel)
+	if mode == "App" then
+	  currentSel = math.min(currentSel+1, appCount)
+	  displaySelRect(currentSel)
+	else
+	  -- Window, ignore
+	end
 	end)
+
+-- arrow keys, for switching to a running app, or for choosing a window
 switchApp:bind('', 'up', nil, 
-	function() 
-	currentSel = math.max(currentSel-cellsX, 1)
-	displaySelRect(currentSel)
+	function()
+	if mode == "App" then
+	  currentSel = math.max(currentSel-cellsX, 1)
+	  displaySelRect(currentSel)
+	else
+	  -- Window
+	end
 	end)
 switchApp:bind('', 'down', nil, 
 	function() 
-	currentSel = math.min(currentSel+cellsX, appCount)
-	displaySelRect(currentSel)
+	if mode == "App" then
+	  currentSel = math.min(currentSel+cellsX, appCount)
+	  displaySelRect(currentSel)
+	else
+	  -- Window
+	end
 	end)
 
 function switchApp:entered()
+  mode = "App"
   -- Build a grid of app names
   bringUpSwitcher()
 end
 
-function switchApp:exited() 
+function switchApp:exited()
+  debuglog("***>> exited <<***")
   takeDownSwitcher()
 end
 
 function switchToCurrentApp()
 	-- Use selected app (indexed by cell number) to switch to, by bundleID
 	debuglog("Switching to: "..tostring( appList[currentSel] ))
-	switchApp:exit()
 	hs.application.launchOrFocusByBundleID(appList[currentSel])
 end
 
