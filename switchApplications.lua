@@ -371,10 +371,12 @@ if true then
 end
 
 -- SH-268 design.
--- sh-579 / 580
+-- SH-579 / 580
 -- credentials:
 --		u/p: alice@wonderland.com / aspera
 --		bo3b@example.com / 456 rty (Bo3b jones)
+--		email: bruceb@earthreflections.com		pw: 456 rty		(Name: Org_Admin OS_Org)
+--		email: bbarrett@asperasoft.com			pw: 456 rty		(Name: Project_Admin Touch_Project)
 --		host: https://shares2-ci.aspera.us
 --		https://shares2.aspera.us/
 
