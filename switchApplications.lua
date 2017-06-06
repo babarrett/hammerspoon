@@ -7,7 +7,7 @@ switchApplications = {}
 --  * App name (truncated of needed) below the icon
 --  * The matrix may be sparse. Maybe more like a cross than a complete grid
 --  * √ Allow up, down, left, right to select;
---  * Allow NW, NE, SW, SE too; 
+--  * (later, large keyboards) Allow NW, NE, SW, SE too; 
 --  * √ Indicate the selection with rectangle around App icon
 --  * √ Bring up on active window. Centered
 --  * (Later, maybe) Allow click to switch;
@@ -24,6 +24,12 @@ switchApplications = {}
 --    This way you finger is already on the right arrow and selecting center or next 2 right
 --    Apps requires no finger movement.
 --
+--Keyboard keys:
+--  * Arrows, navigate around the grid
+--  * Space, switch immediately to selected app
+--  * Return, if selected app has > 1 window open switch to the window chooser (list), else open immediatly
+--  * Escape, cancel the app switch
+
 -- Possible matrix: (# represent # of Key strokes not counting Hyper+Lead to start and <space> to select)
 --  9 apps in 0 or 1 key strokes;
 -- 14 apps in 2 key strokes;
@@ -79,10 +85,10 @@ switchApplications = {}
 --		hs.application:bundleID() -> string
 --  	hs.drawing.image(sizeRect, imageData) -> drawingObject or nil
 
---	Utilities-------------------------------------------------------------------------
+--	Utility functions----------------------------------------------------------------
 
 function showingTest(k, v)
-	-- Only those in dock, and not current (active) app
+	-- Only those in dock, and not current (active) app, and TODO: not "blacklisted" apps
 	if frontAppBundleID == tostring(v:bundleID()) then return false end
 	return (v:kind() == 1)
 end
@@ -90,6 +96,7 @@ end
 -- myTable:		the table we want to know how many elements it contains
 -- test: 		is an optional callback. Called with k, v (Key value).
 --				test returns true for "count this one."
+--				If test is nill don;t bother with the test, count all elements.
 function countTableElements(myTable, test)
   if myTable == nil then return 0 end
   local count = 0
@@ -102,7 +109,6 @@ function countTableElements(myTable, test)
 end
 
 --	Globals---------------------------------------------------------------------------
-mode = ""		-- Starts out "App", can change to "Window"
 currentSelDrawing = nil
 currentSel = nil
 appCount = 0
@@ -128,91 +134,69 @@ switchApp:bind('', 'escape',
 	switchApp:exit() end)
 switchApp:bind('', 'space',  
 	function() 
-	if mode == "App" then
-	  switchToCurrentApp()
-	  switchApp:exit()
-	else
-	  -- Window, TODO: open selected window, and exit switchApp
-	  switchApp:exit()
-	end
+	switchToCurrentApp()
+	switchApp:exit()
 	end)
 switchApp:bind('', 'return',  
 	function() 
-	if mode == "App" then
-		switchToCurrentApp()
 		-- TODO: If > 1 window, and allow user to choose which window
 		-- TODO: Bring up app's windows as a text list. Up/Down will then be used to select. 
 		--		Return or space to choose and go. 
 		-- 		Esc will just ignore window, but we've already done the App selection.
 		listOfApps = hs.application.applicationsForBundleID( appList[currentSel] )
 		appWindowList = listOfApps[1]:allWindows()
-	
+
 		if countTableElements(appWindowList) <= 1 then
 		  -- nothing more to do... zero, or only 1 window anyway.
+		  switchToCurrentApp()
 		  switchApp:exit()
 		  return
 		end
 		debuglog("# of windows: "..countTableElements(appWindowList))
 		debuglog("Windows for: "..tostring( appList[currentSel] ))
+		chooserChoices = {}
 		for k,v in pairs(appWindowList) do
 		  -- TODO: Display window choices here instead of debuglog
 		  tmpTitle = (appWindowList[k]:title() == "") and "(no title)" or appWindowList[k]:title()
 		  debuglog(tostring(k).." -- ".. tmpTitle .."<<")
+
+		  table.insert(chooserChoices, 
+			{
+			  ["text"] = tmpTitle,
+			  ["windowChosen"] = k
+			}			
+		  )
 		end
-		-- Change mode to "windowListMode"
-		mode = "Window"
-		-- user chooses windowChosen
-		switchApp:exit()	-- TODO: REMOVE THIS when the rest of the window code is complete.
-	else
-	  -- Window, TODO: open selected window, and exit switchApp
-	  windowChosen = 1
-	  appWindowList[windowChosen]:becomeMain()
-	  switchApp:exit()
-	end
+		-- once it's built...
+		switchApp:exit()		-- stop intercepting arrow keys.
+		bringUpChooser(chooserChoices)
 	end)
 
 -- arrow keys, for switching to a running app
 switchApp:bind('', 'left', nil, 
 	function() 
-	if mode == "App" then
 	  currentSel = math.max(currentSel-1, 1)
 	  displaySelRect(currentSel)
-	else
-	  -- Window, ignore
-	end
 	end)
 switchApp:bind('', 'right', nil, 
 	function() 
-	if mode == "App" then
 	  currentSel = math.min(currentSel+1, appCount)
 	  displaySelRect(currentSel)
-	else
-	  -- Window, ignore
-	end
 	end)
 
 -- arrow keys, for switching to a running app, or for choosing a window
 switchApp:bind('', 'up', nil, 
 	function()
-	if mode == "App" then
 	  currentSel = math.max(currentSel-cellsX, 1)
 	  displaySelRect(currentSel)
-	else
-	  -- Window
-	end
 	end)
 switchApp:bind('', 'down', nil, 
 	function() 
-	if mode == "App" then
 	  currentSel = math.min(currentSel+cellsX, appCount)
 	  displaySelRect(currentSel)
-	else
-	  -- Window
-	end
 	end)
 
 function switchApp:entered()
-  mode = "App"
   -- Build a grid of app names
   bringUpSwitcher()
 end
@@ -320,56 +304,56 @@ function takeDownSwitcher ()
 end
 
 
--- Tests for hs.chooser
-if true then
+--------------------------------------------------------------------------------------
+--	Chooser for selecting which window.
+--------------------------------------------------------------------------------------
   function chooserCompletion(selectionTable)
-    debuglog("chooserCompletion selectionTable: "..tostring(selectionTable))
+--    debuglog("chooserCompletion selectionTable: "..tostring(selectionTable))
+--    debuglog("chooserCompletion title: ".. selectionTable["text"])
+    
+    -- Open the requested window, unless user canceled the chooser.
+    takeDownChooser()
+    switchToCurrentApp()
+    if selectionTable ~= nil then
+	  appWindowList[selectionTable["windowChosen"]]:becomeMain()
+	end
+
   end
   function takeDownChooser()
     debuglog("takeDownChooser")
-    --
     myChooser:delete()
   end
-  function bringUpChooser()
+  
+  
+  function bringUpChooser(chooserChoices)
     --
     debuglog("bringUpChooser")
     myChooser = hs.chooser.new(chooserCompletion)
-    chooserChoices = {
+    -- TODO: Remove this old, harmless, test code
+    if chooserChoices == nil then
+	   chooserChoices = {
 	{
 	  ["text"] = "First Choice",
 	  --["subText"] = "This is the subtext of the first choice",
-	  ["uuid"] = "0001"
+	  ["windowChosen"] = 1
 	},
 	{ ["text"] = "Second Option",
 	   --["subText"] = "I wonder what I should type here?",
-	   ["uuid"] = "Bbbb"
+	   ["windowChosen"] = 2
 	},
-	{ ["text"] = "Third Possibility",
-	   ["subText"] = "What a lot of choosing there is going on here!",
-	   ["uuid"] = "III3"
+	{ ["text"] = "Third Possibility is a relly, really long string. Like a window title that just goes on and on and on.",
+	   ["windowChosen"] = 3
 	},
-    }
+	}
+	end
+	
     myChooser:choices(chooserChoices) 
     
-    myChooser:width(25)
+    myChooser:width(30)
     myChooser:rows(countTableElements(chooserChoices))
     myChooser:show()
-    if false then
-    myChooser:select(2) 
-    hs.timer.usleep(100000)
-    myChooser:select(3) 
-    hs.timer.usleep(100000)
-    myChooser:select(2) 
-    hs.timer.usleep(100000)
-    myChooser:select(1) 
-    hs.timer.usleep(100000)
-    end
   end
   
-  bringUpChooser()
-  -- hs.timer.doAfter(5, chooserCompletion)
-end
-
 -- SH-268 design.
 -- sh-579 / 580
 -- credentials:
