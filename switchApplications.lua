@@ -96,7 +96,7 @@ end
 -- myTable:		the table we want to know how many elements it contains
 -- test: 		is an optional callback. Called with k, v (Key value).
 --				test returns true for "count this one."
---				If test is nill don;t bother with the test, count all elements.
+--				If test is nill don't bother with the test, count all elements.
 function countTableElements(myTable, test)
   if myTable == nil then return 0 end
   local count = 0
@@ -353,7 +353,29 @@ end
     myChooser:rows(countTableElements(chooserChoices))
     myChooser:show()
   end
+
+if false then
+function makeSwitcher()
+  myUI = {
+  ["textColor"] = {0,1,0},
+  ["onlyActiveApplication"] = true,
+  ["showThumbnails"] = false,
+  ["showSelectedThumbnail"] = false,
+  ["selectedThumbnailSize"] = 128,
+  }
+  wf = hs.window.filter.new("BBEdit")
+  switcher = hs.window.switcher.new(wf, myUI) -- default windowfilter: only visible windows, all Spaces
+  switcher:next()
+--  switcher:previous()
+--  switcher_space = hs.window.switcher.new(hs.window.filter.new():setCurrentSpace(true):setDefaultFilter{}) -- include minimized/hidden windows, current Space only
+--  switcher_browsers = hs.window.switcher.new{'Safari','Google Chrome'} -- specialized switcher for your dozens of browser windows :)
+end
   
+  -- bind to hotkeys; WARNING: at least one modifier key is required!
+  hs.hotkey.bind('alt','tab','Show Window Switcher',function() makeSwitcher() end)
+
+  
+end  
 -- SH-268 design.
 -- SH-579 / 580
 -- credentials:
