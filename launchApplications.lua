@@ -285,7 +285,12 @@ function reloadPicker()
     pickerView:html(launchApplications.generateHtml())
   else
   -- if it doesn't exist, make it
-	pickerView = hs.webview.new({x = 200, y = 200, w = 650, h = 350}, { developerExtrasEnabled = false, suppressesIncrementalRendering = false })
+	frame = hs.screen.mainScreen():frame()	-- the one containing the currently focused window
+	bgX = frame.x + frame.w/2 - 650/2
+	bgY = frame.y + frame.h/2 - 350/2
+    
+    webPageRect = {x = bgX, y = bgY, w = 650, h = 350}
+	pickerView = hs.webview.new(webPageRect, { developerExtrasEnabled = false, suppressesIncrementalRendering = false })
 	:windowStyle("utility")
 	:closeOnEscape(true)
 	:html(launchApplications.generateHtml())
