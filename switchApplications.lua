@@ -139,9 +139,9 @@ switchApp:bind('', 'space',
 	end)
 switchApp:bind('', 'return',  
 	function() 
-		-- TODO: If > 1 window, and allow user to choose which window
-		-- TODO: Bring up app's windows as a text list. Up/Down will then be used to select. 
-		--		Return or space to choose and go. 
+		-- If > 1 window allow user to choose which window from list
+		-- Bring up app's windows as a hs.chooser list. Up/Down will then be used to select. 
+		--		Return to choose and open. 
 		-- 		Esc will just ignore window, but we've already done the App selection.
 		listOfApps = hs.application.applicationsForBundleID( appList[currentSel] )
 		appWindowList = listOfApps[1]:allWindows()
@@ -156,7 +156,6 @@ switchApp:bind('', 'return',
 		debuglog("Windows for: "..tostring( appList[currentSel] ))
 		chooserChoices = {}
 		for k,v in pairs(appWindowList) do
-		  -- TODO: Display window choices here instead of debuglog
 		  tmpTitle = (appWindowList[k]:title() == "") and "(no title)" or appWindowList[k]:title()
 		  debuglog(tostring(k).." -- ".. tmpTitle .."<<")
 
@@ -168,7 +167,7 @@ switchApp:bind('', 'return',
 		  )
 		end
 		-- once it's built...
-		switchApp:exit()		-- stop intercepting arrow keys.
+		switchApp:exit()		-- Take down the app switcher, stops intercepting arrow keys so hs.chooser gets them.
 		bringUpChooser(chooserChoices)
 	end)
 
@@ -328,28 +327,10 @@ end
   function bringUpChooser(chooserChoices)
     --
     debuglog("bringUpChooser")
-    myChooser = hs.chooser.new(chooserCompletion)
-    -- TODO: Remove this old, harmless, test code
-    if chooserChoices == nil then
-	   chooserChoices = {
-	{
-	  ["text"] = "First Choice",
-	  --["subText"] = "This is the subtext of the first choice",
-	  ["windowChosen"] = 1
-	},
-	{ ["text"] = "Second Option",
-	   --["subText"] = "I wonder what I should type here?",
-	   ["windowChosen"] = 2
-	},
-	{ ["text"] = "Third Possibility is a relly, really long string. Like a window title that just goes on and on and on.",
-	   ["windowChosen"] = 3
-	},
-	}
-	end
-	
+    myChooser = hs.chooser.new(chooserCompletion)	
     myChooser:choices(chooserChoices) 
     
-    myChooser:width(30)
+    myChooser:width(30)		-- 30% of screen width, centered.
     myChooser:rows(countTableElements(chooserChoices))
     myChooser:show()
   end
