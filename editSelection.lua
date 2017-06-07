@@ -11,7 +11,7 @@
 --	* Convert selection to Title case
 --	* Convert selection to lower case
 --	* Open up camel case selection (ThisIsATest --> this is a test)
---	* TODO: Swap characters Ctrl+F9
+--	* Swap characters Ctrl+F12 (F9, 10, 11 are caught by OS X and cannot be used)
 --
 --	Delete Word functions:
 --	* Delete left 1 word. (Ctrl+Backspace) 
@@ -34,8 +34,7 @@ local	sel = nil
 --	Imperfect, perhaps. May not work well on large selections.
 --	Taken from: https://github.com/Hammerspoon/hammerspoon/issues/634
 function getTextSelection()	-- returns text or nil while leaving pasteboard undisturbed.
-	local oldText = ""
-	oldText = hs.pasteboard.getContents()
+	local oldText = hs.pasteboard.getContents()
 	hs.eventtap.keyStroke({"cmd"}, "c")
 	hs.timer.usleep(100000)
 	local text = hs.pasteboard.getContents()	-- if nothing is selected this is unchanged
