@@ -100,10 +100,12 @@ local webShortCuts = {
 -- myTable:		the table we want to know how many elements it contains
 -- test: 		is an optional callback. Called with k, v (Key value).
 --				test returns true for "count this one."
+--				If test is nill don't bother with the test, count all elements.
 function countTableElements(myTable, test)
+  if myTable == nil then return 0 end
   local count = 0
   for k,v in pairs(myTable) do
-    if test and test(k, v) then
+    if test == nil or test(k, v) then
       count = count + 1
     end
   end
