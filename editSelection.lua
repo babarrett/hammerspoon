@@ -36,7 +36,7 @@ local	sel = nil
 function getTextSelection()	-- returns text or nil while leaving pasteboard undisturbed.
 	local oldText = hs.pasteboard.getContents()
 	hs.eventtap.keyStroke({"cmd"}, "c")
-	hs.timer.usleep(100000)
+	hs.timer.usleep(25000)
 	local text = hs.pasteboard.getContents()	-- if nothing is selected this is unchanged
 	hs.pasteboard.setContents(oldText)
 	if text ~= oldText then 
