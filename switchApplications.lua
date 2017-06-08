@@ -4,7 +4,7 @@ switchApplications = {}
 --  * √ A GUI, in a matrix of some sort
 --  * √ App images fill the matrix
 --  * √ Use Hyper+Tab to activate
---  * App name (truncated of needed) below the icon
+--  * App name (truncated if needed) below the icon
 --  * The matrix may be sparse. Maybe more like a cross than a complete grid
 --  * √ Allow up, down, left, right to select;
 --  * (later, large keyboards) Allow NW, NE, SW, SE too; 
@@ -19,7 +19,8 @@ switchApplications = {}
 --		to get to the "most used" apps
 --  * √ Space to select app we navigated to
 --  * (Later) "Badge" each app with number of open windows
---  * (Later) Use Return key to present open window selection for app we navigated to
+--  * √ Use Return key to present list of open windows in chooser for app we switched to
+--  * √ Window chooser is also available w/o switching apps. HyperFn+` (back-tick)
 --  * (later, maybe) Use {some_modifier_or_combo, maybe Hyper}+ Right Arrow to activate this mode.
 --    This way you finger is already on the right arrow and selecting center or next 2 right
 --    Apps requires no finger movement.
@@ -128,7 +129,7 @@ bgBoarder = 10;
 local switchApp = hs.hotkey.modal.new(HyperFn, 'Tab')
 
 --	Bind keys of interest for switching apps
---	hs.hotkey.foo:bind(mods, key, message, pressedfn, releasedfn, repeatfn) -> hs.hotkey.modal object
+--	switchApp:bind(mods, key, message, pressedfn, releasedfn, repeatfn) -> hs.hotkey.modal object
 switchApp:bind('', 'escape', 
 	function() 
 	switchApp:exit() end)
@@ -152,22 +153,27 @@ switchApp:bind('', 'return',
 		  switchApp:exit()
 		  return
 		end
+		-- TODO: replace the following with: showAppWindows()
 		debuglog("# of windows: "..countTableElements(appWindowList))
 		debuglog("Windows for: "..tostring( appList[currentSel] ))
 		chooserChoices = {}
 		for k,v in pairs(appWindowList) do
-		  tmpTitle = (appWindowList[k]:title() == "") and "(no title)" or appWindowList[k]:title()
-		  debuglog(tostring(k).." -- ".. tmpTitle .."<<")
+		  realTitle = appWindowList[k]:title()
+		  displayTitle = (realTitle == "") and "(no title)" or appWindowList[k]:title()
+		  displayTitle = string.gsub(displayTitle, "/.*/", "")		-- strip off path, if present
+		  debuglog(tostring(k).." -- ".. displayTitle .."<<")
 
 		  table.insert(chooserChoices, 
 			{
-			  ["text"] = tmpTitle,
-			  ["windowChosen"] = k
+			  ["text"] = displayTitle,
+		      ["realTitle"] = realTitle
 			}			
 		  )
 		end
 		-- once it's built...
+		switchToCurrentApp()
 		switchApp:exit()		-- Take down the app switcher, stops intercepting arrow keys so hs.chooser gets them.
+		hs.timer.usleep(100000)
 		bringUpChooser(chooserChoices)
 	end)
 
@@ -311,10 +317,13 @@ end
 --    debuglog("chooserCompletion title: ".. selectionTable["text"])
     
     -- Open the requested window, unless user canceled the chooser.
+    debuglog("chooserCompletion")
     takeDownChooser()
-    switchToCurrentApp()
     if selectionTable ~= nil then
-	  appWindowList[selectionTable["windowChosen"]]:becomeMain()
+      debuglog("  realTitle: ".. selectionTable["realTitle"])
+      debuglog("  text: ".. selectionTable["text"])
+	  win = hs.window.find(selectionTable["realTitle"]):becomeMain()
+	  win:focus()
 	end
 
   end
@@ -334,6 +343,45 @@ end
     myChooser:rows(countTableElements(chooserChoices))
     myChooser:show()
   end
+
+
+--------------------------------------------------------------------------------------
+--	Show Current Windows HyperFn-`
+--------------------------------------------------------------------------------------
+  function showAppWindows()
+	-- If > 0 window allow user to choose which window from list
+	-- Bring up app's windows as a hs.chooser list. Up/Down will then be used to select. 
+	--		Return to choose and open. 
+	-- 		Esc will just ignore window.
+	appWindowList = hs.application.frontmostApplication():allWindows()
+
+	if countTableElements(appWindowList) < 1 then
+	  -- nothing more to do... no windows
+	  return
+	end
+	debuglog("# of windows: "..countTableElements(appWindowList))
+	chooserChoices = {}
+	for k,v in pairs(appWindowList) do
+	  realTitle = appWindowList[k]:title()
+	  displayTitle = (realTitle == "") and "(no title)" or appWindowList[k]:title()
+	  displayTitle = string.gsub(displayTitle, "/.*/", "")		-- strip off path, if present
+	  debuglog(tostring(k).." -- ".. realTitle .." -- ".. displayTitle)
+
+	  table.insert(chooserChoices, 
+		{
+		  ["text"] = displayTitle,
+		  ["realTitle"] = realTitle
+		}			
+	  )
+	end
+	-- once it's built...
+	bringUpChooser(chooserChoices)
+
+  end
+  hs.hotkey.bind(HyperFn,'`','Window current App windows', showAppWindows)
+
+
+
 
 if false then
 function makeSwitcher()
