@@ -153,28 +153,10 @@ switchApp:bind('', 'return',
 		  switchApp:exit()
 		  return
 		end
-		-- TODO: replace the following with: showAppWindows()
-		debuglog("# of windows: "..countTableElements(appWindowList))
-		debuglog("Windows for: "..tostring( appList[currentSel] ))
-		chooserChoices = {}
-		for k,v in pairs(appWindowList) do
-		  realTitle = appWindowList[k]:title()
-		  displayTitle = (realTitle == "") and "(no title)" or appWindowList[k]:title()
-		  displayTitle = string.gsub(displayTitle, "/.*/", "")		-- strip off path, if present
-		  debuglog(tostring(k).." -- ".. displayTitle .."<<")
-
-		  table.insert(chooserChoices, 
-			{
-			  ["text"] = displayTitle,
-		      ["realTitle"] = realTitle
-			}			
-		  )
-		end
-		-- once it's built...
 		switchToCurrentApp()
 		switchApp:exit()		-- Take down the app switcher, stops intercepting arrow keys so hs.chooser gets them.
-		hs.timer.usleep(100000)
-		bringUpChooser(chooserChoices)
+		hs.timer.usleep(50000)
+		showAppWindows()
 	end)
 
 -- arrow keys, for switching to a running app

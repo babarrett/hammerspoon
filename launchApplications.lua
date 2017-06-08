@@ -95,6 +95,8 @@ local webShortCuts = {
     T = {"Confluence TP", nil, "https://confluence.aspera.us/display/TP/Technical+Publications"},
 
 	W = {"Geekhack", nil, "https://geekhack.org/index.php?action=watched"},		-- Geekhack, Watched
+    Zgm = {'Google maps', nil, 'https://www.google.com/maps/' },
+
 }
 
 -- myTable:		the table we want to know how many elements it contains
@@ -186,13 +188,16 @@ end
 
 -- Web launch keys (defined in webShortCuts)
 -- Pick up Web pages to offer, sorted by activation key
+-- Any key > 1 character we do not bind to
 for key, webInfo in hs.fnutils.sortByKeys(webShortCuts) do
-    modalWebKey:bind('', key, 'Opening page: '..webInfo[1], 
-      function()
-      	launchAppOrWeb(webInfo[3])
-      	-- hs.execute("open " .. webInfo[3])
+	if string.len(key) == 1 then
+      modalWebKey:bind('', key, 'Opening page: '..webInfo[1], 
+        function()
+      	  launchAppOrWeb(webInfo[3])
+      	  -- hs.execute("open " .. webInfo[3])
       end,	-- Key down, launch
       function() modalWebKey:exit() end)							-- Key up, leave mode
+    end
 end
 
 function modalAppKey:entered()
