@@ -155,8 +155,9 @@ switchApp:bind('', 'return',
 		end
 		switchToCurrentApp()
 		switchApp:exit()		-- Take down the app switcher, stops intercepting arrow keys so hs.chooser gets them.
-		hs.timer.usleep(50000)
-		showAppWindows()
+		hs.timer.doAfter(0.5, showAppWindows) 
+--		hs.timer.usleep(100000)
+--		showAppWindows()
 	end)
 
 -- arrow keys, for switching to a running app
@@ -304,7 +305,10 @@ end
     if selectionTable ~= nil then
       debuglog("  realTitle: ".. selectionTable["realTitle"])
       debuglog("  text: ".. selectionTable["text"])
-	  win = hs.window.find(selectionTable["realTitle"]):becomeMain()
+      winName = selectionTable["realTitle"]
+	  win = hs.window.get(selectionTable["winID"])
+	  debuglog("  win: ".. tostring(win))
+	  win:becomeMain()
 	  win:focus()
 	end
 
@@ -345,6 +349,7 @@ end
 	chooserChoices = {}
 	for k,v in pairs(appWindowList) do
 	  realTitle = appWindowList[k]:title()
+	  winID = appWindowList[k]:id()
 	  displayTitle = (realTitle == "") and "(no title)" or appWindowList[k]:title()
 	  displayTitle = string.gsub(displayTitle, "/.*/", "")		-- strip off path, if present
 	  debuglog(tostring(k).." -- ".. realTitle .." -- ".. displayTitle)
@@ -352,7 +357,8 @@ end
 	  table.insert(chooserChoices, 
 		{
 		  ["text"] = displayTitle,
-		  ["realTitle"] = realTitle
+		  ["realTitle"] = realTitle,
+		  ["winID"] = winID
 		}			
 	  )
 	end
