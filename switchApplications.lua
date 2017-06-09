@@ -1,5 +1,7 @@
 switchApplications = {}
 
+-- TODO: Window Switcher: List current window last (or not at all?)
+
 --Application switcher, like Cmd+Tab but better. Instead:
 --  * √ A GUI, in a matrix of some sort
 --  * √ App images fill the matrix
@@ -7,7 +9,7 @@ switchApplications = {}
 --  * App name (truncated if needed) below the icon
 --  * The matrix may be sparse. Maybe more like a cross than a complete grid
 --  * √ Allow up, down, left, right to select;
---  * (later, large keyboards) Allow NW, NE, SW, SE too; 
+--  * (later, large keyboards) Allow NW, NE, SW, SE too;
 --  * √ Indicate the selection with rectangle around App icon
 --  * √ Bring up on active window. Centered
 --  * (Later, maybe) Allow click to switch;
@@ -15,7 +17,7 @@ switchApplications = {}
 --  * √ Only currently running apps
 --  * Add a "black list" of apps that show up in doc, but you nemer want to switch to. (SpamSieve)
 --  * (Later) Track the time spent *active* in each running app, and/or the number of times switched into.
---		Use that to prioritize the running programs to reduce the number of navigation events 
+--		Use that to prioritize the running programs to reduce the number of navigation events
 --		to get to the "most used" apps
 --  * √ Space to select app we navigated to
 --  * (Later) "Badge" each app with number of open windows
@@ -37,23 +39,23 @@ switchApplications = {}
 -- 25 apps in <= 2 keystrokes
 --			 Allow	
 --			Diagonal (NE, SW, etc.)
---            22222 
---            21112 
---            21012 
---            21112 
---            22222 
+--            22222
+--            21112
+--            21012
+--            21112
+--            22222
 --
--- Or, with only horizontal and vertical movements: 
+-- Or, with only horizontal and vertical movements:
 --        5 apps in 1 keystroke;
 --        9 apps with double-tap keystrokes; (I think I usually have < 9 apps running at a time.)
 --       13 apps in 2 keystrokes or less. Right, then Up for example.
 --			  Allow
 --			Horiz+Vert
---              2  
---             212 
+--              2
+--             212
 --            21012
---             212 
---              2  
+--             212
+--              2
 --
 --	Map of the order to add application icons to the grid.
 --	Optimized for: fewest keystrokes, and minimizing number of rows.
@@ -67,8 +69,8 @@ switchApplications = {}
 --	01       23 21 22
 --	02    15 11 07 10 14
 --	03 17 05 04 .. 02 03 16 (center)
---	04    13 09 06 08 12 
---	05       20 18 19 
+--	04    13 09 06 08 12
+--	05       20 18 19
 --
 -- Kindred soles:
 --		https://tomdebruijn.com/posts/super-fast-application-switching/
@@ -130,19 +132,19 @@ local switchApp = hs.hotkey.modal.new(HyperFn, 'Tab')
 
 --	Bind keys of interest for switching apps
 --	switchApp:bind(mods, key, message, pressedfn, releasedfn, repeatfn) -> hs.hotkey.modal object
-switchApp:bind('', 'escape', 
-	function() 
+switchApp:bind('', 'escape',
+	function()
 	switchApp:exit() end)
-switchApp:bind('', 'space',  
-	function() 
+switchApp:bind('', 'space',
+	function()
 	switchToCurrentApp()
 	switchApp:exit()
 	end)
-switchApp:bind('', 'return',  
-	function() 
+switchApp:bind('', 'return',
+	function()
 		-- If > 1 window allow user to choose which window from list
-		-- Bring up app's windows as a hs.chooser list. Up/Down will then be used to select. 
-		--		Return to choose and open. 
+		-- Bring up app's windows as a hs.chooser list. Up/Down will then be used to select.
+		--		Return to choose and open.
 		-- 		Esc will just ignore window, but we've already done the App selection.
 		listOfApps = hs.application.applicationsForBundleID( appList[currentSel] )
 		appWindowList = listOfApps[1]:allWindows()
@@ -155,31 +157,31 @@ switchApp:bind('', 'return',
 		end
 		switchToCurrentApp()
 		switchApp:exit()		-- Take down the app switcher, stops intercepting arrow keys so hs.chooser gets them.
-		hs.timer.doAfter(0.5, showAppWindows) 
+		hs.timer.doAfter(0.5, showAppWindows)
 --		hs.timer.usleep(100000)
 --		showAppWindows()
 	end)
 
 -- arrow keys, for switching to a running app
-switchApp:bind('', 'left', nil, 
-	function() 
+switchApp:bind('', 'left', nil,
+	function()
 	  currentSel = math.max(currentSel-1, 1)
 	  displaySelRect(currentSel)
 	end)
-switchApp:bind('', 'right', nil, 
-	function() 
+switchApp:bind('', 'right', nil,
+	function()
 	  currentSel = math.min(currentSel+1, appCount)
 	  displaySelRect(currentSel)
 	end)
 
 -- arrow keys, for switching to a running app, or for choosing a window
-switchApp:bind('', 'up', nil, 
+switchApp:bind('', 'up', nil,
 	function()
 	  currentSel = math.max(currentSel-cellsX, 1)
 	  displaySelRect(currentSel)
 	end)
-switchApp:bind('', 'down', nil, 
-	function() 
+switchApp:bind('', 'down', nil,
+	function()
 	  currentSel = math.min(currentSel+cellsX, appCount)
 	  displaySelRect(currentSel)
 	end)
@@ -265,12 +267,12 @@ function bringUpSwitcher()
 			appName = hs.application.nameForBundleID(app:bundleID())
 			i = (index)   and index   or "nil";
 			a = (appName) and appName or "(none)";
-			frontIcon = hs.image.imageFromAppBundle(app:bundleID()); 
+			frontIcon = hs.image.imageFromAppBundle(app:bundleID());
 			boxrect   = cellNumbToRect(cnt);
 			frontDrawing = hs.drawing.image(boxrect, frontIcon);
 			frontDrawing:setLevel(hs.drawing.windowLevels["floating"])	-- above the rest
 			table.insert(frontDrawingList, frontDrawing:show() )
-			-- TODO: Add text below each app in list. Track it so we can delete when it's time to 
+			-- TODO: Add text below each app in list. Track it so we can delete when it's time to
 			-- tear down the image.
  			-- table.insert(frontDrawingList, some_text_structure )
 			cnt = cnt + 1;
@@ -295,19 +297,21 @@ end
 --------------------------------------------------------------------------------------
 --	Chooser for selecting which window.
 --------------------------------------------------------------------------------------
+-- selectionTable: One object from the chooserChoices list.
+-- 		Contains:
+--			  ["text"] = displayTitle, shortened as needed
+--			  ["winID"] = winID, the unique ID so we can actually manipulate the window.
   function chooserCompletion(selectionTable)
 --    debuglog("chooserCompletion selectionTable: "..tostring(selectionTable))
 --    debuglog("chooserCompletion title: ".. selectionTable["text"])
-    
+
     -- Open the requested window, unless user canceled the chooser.
     debuglog("chooserCompletion")
     takeDownChooser()
     if selectionTable ~= nil then
-      debuglog("  realTitle: ".. selectionTable["realTitle"])
-      debuglog("  text: ".. selectionTable["text"])
-      winName = selectionTable["realTitle"]
+--      debuglog("  text: ".. selectionTable["text"])
 	  win = hs.window.get(selectionTable["winID"])
-	  debuglog("  win: ".. tostring(win))
+--	  debuglog("  win: ".. tostring(win))
 	  win:becomeMain()
 	  win:focus()
 	end
@@ -317,14 +321,14 @@ end
     debuglog("takeDownChooser")
     myChooser:delete()
   end
-  
-  
+
+
   function bringUpChooser(chooserChoices)
     --
     debuglog("bringUpChooser")
     myChooser = hs.chooser.new(chooserCompletion)	
-    myChooser:choices(chooserChoices) 
-    
+    myChooser:choices(chooserChoices)
+
     myChooser:width(30)		-- 30% of screen width, centered.
     myChooser:rows(countTableElements(chooserChoices))
     myChooser:show()
@@ -336,37 +340,56 @@ end
 --------------------------------------------------------------------------------------
   function showAppWindows()
 	-- If > 0 window allow user to choose which window from list
-	-- Bring up app's windows as a hs.chooser list. Up/Down will then be used to select. 
-	--		Return to choose and open. 
+	-- Bring up app's windows as a hs.chooser list. Up/Down will then be used to select.
+	--		Return to choose and open.
 	-- 		Esc will just ignore window.
 	appWindowList = hs.application.frontmostApplication():allWindows()
 
-	if countTableElements(appWindowList) < 1 then
-	  -- nothing more to do... no windows
+	if countTableElements(appWindowList) <= 0 then
+	    -- nothing more to do... no windows
+	    hs.alert("No windows in active application")
 	  return
 	end
-	debuglog("# of windows: "..countTableElements(appWindowList))
+--	debuglog("# of windows: "..countTableElements(appWindowList))
 	chooserChoices = {}
+	local count = 0
 	for k,v in pairs(appWindowList) do
 	  realTitle = appWindowList[k]:title()
-	  winID = appWindowList[k]:id()
-	  displayTitle = (realTitle == "") and "(no title)" or appWindowList[k]:title()
-	  displayTitle = string.gsub(displayTitle, "/.*/", "")		-- strip off path, if present
-	  debuglog(tostring(k).." -- ".. realTitle .." -- ".. displayTitle)
+	  -- Skip empty titles
+	  if realTitle ~= nil and realTitle ~= "" then
+		  winID = appWindowList[k]:id()
+		  displayTitle = (realTitle == "") and "(no title)" or appWindowList[k]:title()
+		  displayTitle = string.gsub(displayTitle, "/.*/", "")		-- strip off path, if present (NoteTaker App)
+--		  debuglog(tostring(k).." -- ".. realTitle .." -- ".. displayTitle)
 
-	  table.insert(chooserChoices, 
-		{
-		  ["text"] = displayTitle,
-		  ["realTitle"] = realTitle,
-		  ["winID"] = winID
-		}			
-	  )
+		  table.insert(chooserChoices,
+			{
+			  ["text"] = displayTitle,
+			  ["winID"] = winID
+			}
+		  )
+		  count = count + 1
+	  end
+	end
+	if count <= 0 then
+	    -- nothing more to do... no named windows
+	    hs.alert("No windows in active application.")
+	  return
+	end
+	if count <= 1 then
+	    -- nothing to choose... select the only non-empty window.
+	    hs.alert("Selecting the only available window")
+	    win = hs.window.get(chooserChoices[1]["winID"])
+--	    debuglog("  win: ".. tostring(win).."     "..chooserChoices[1]["text"])
+	    win:becomeMain()
+	    win:focus()
+	  return
 	end
 	-- once it's built...
 	bringUpChooser(chooserChoices)
 
   end
-  hs.hotkey.bind(HyperFn,'`','Window current App windows', showAppWindows)
+  hs.hotkey.bind(HyperFn,'`',nil, showAppWindows)
 
 
 
@@ -387,12 +410,12 @@ function makeSwitcher()
 --  switcher_space = hs.window.switcher.new(hs.window.filter.new():setCurrentSpace(true):setDefaultFilter{}) -- include minimized/hidden windows, current Space only
 --  switcher_browsers = hs.window.switcher.new{'Safari','Google Chrome'} -- specialized switcher for your dozens of browser windows :)
 end
-  
+
   -- bind to hotkeys; WARNING: at least one modifier key is required!
   hs.hotkey.bind('alt','tab','Show Window Switcher',function() makeSwitcher() end)
 
-  
-end  
+
+end
 -- SH-268 design.
 -- SH-579 / 580
 -- credentials:
