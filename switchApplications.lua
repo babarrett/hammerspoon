@@ -1,6 +1,6 @@
 switchApplications = {}
 
--- TODO: Window Switcher: List current window last (or not at all?)
+-- TODO: Window Chooser: List current window last (or not at all?)
 
 --Application switcher, like Cmd+Tab but better. Instead:
 --  * √ A GUI, in a matrix of some sort
@@ -328,7 +328,10 @@ end
     debuglog("bringUpChooser")
     myChooser = hs.chooser.new(chooserCompletion)	
     myChooser:choices(chooserChoices)
-
+	-- Get colors to match Application switcher better
+	myChooser:bgDark(false)
+    myChooser:fgColor({["red"]=0.3,["blue"]=0.3,["green"]=0.3,["alpha"]=1.0})
+    
     myChooser:width(30)		-- 30% of screen width, centered.
     myChooser:rows(countTableElements(chooserChoices))
     myChooser:show()
