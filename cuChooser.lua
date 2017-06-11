@@ -1,0 +1,113 @@
+-- cuChooser.lua
+local cu = {}
+--------------------------------------------------------------------------------------
+--	Custom Chooser module API
+--	(because hs.Chooser is not flexible enough)
+--------------------------------------------------------------------------------------
+--	⌘⌥⌃⇧
+--
+--	Visual Model of display:
+--
+--		/------------------ BG ----------------------\
+--		|[1]                                         |
+--		|   +----------------------------------+     |
+--		|   |search term                       |     | <- Optional
+--		|   +----------------------------------+     |
+--		|                                            |
+--		|   +----------------------------------+ |^| |
+--		|   | H1  | H2     | H3  | H4     |    | |.| |	<- Headers, optional
+--		|   +----------------------------------+ |.| |
+--		|                                        |.| |
+--		|   +----------------------------------+ |.| |
+--		|   | C1  | C2     | C3  | C4     |⌘1 | |.| |	<- Row 1
+--		|   +----------------------------------+ |.| |
+--		|   | C1  | C2     | C3  | C4     |⌘2 | |.| |	<- Row 2,... with command key equivalent
+--		|   +----------------------------------+ |.| |
+--		|   :  :     :          :     :        : |.| |
+--		|   +----------------------------------+ |v| |
+--		|     Descriptive text...                    |
+--		|                             ... here.      |
+--		\--------------------------------------------/
+--		<--------------- [BG Width] ----------------->
+--
+--	Legend:
+--		BG		Background of chooser area. 
+--				Settable: Color, Alpha, corner radius [, z-order level?]
+--				Computable: [BG Width] = 2*[1]+Sum(cell widths)
+--		[1]		Boarder between BG outer edge and content
+--		search term	Space to enter search terms, to support the current hs.chooser functionality
+--				Settable: Height, search value (default ""), text style
+--		Cn		Column number. Support at least pairs of columns with different widths
+--		⌘1		Command key equivalent, only available when there is 1 column? Optional
+--		Row n	Row
+--				Settable: height
+--
+--		[BG Width]	outer width of BG region
+--
+--	Definitions:
+--		cellnum: can either be a single integer counting cells from Column1, Row1 across, 
+--					then down, in normal reading order, or a table of X, Y coordinates.
+--					X for column, Y for row. C1,R1 = {1,1} or 1.
+--					For a 3 column table C2,R3 = {2,3} or 8
+--
+--	API Overview
+--		• Constants
+--
+--		• Constructors
+--			° new		cu.chooser.new(completionFn) -> cu.chooser object
+--
+--
+--		• Methods
+--
+--	CONSTRUCTORS
+--	new		cu.chooser.new(completionFn) -> cu.chooser object
+--				completionFn - A function that will be called when the chooser
+--				is dismissed. It should accept one parameter, which will be nil if the user
+--				dismissed the chooser window, otherwise it will be a table containing whatever
+--				information you supplied for the item the user chose.
+--
+--	METHODS BY PART
+--	CU
+--			cu.chooser.show()					--  Recompute sizes, display, etc. Clear selected cell formatting
+--			cu.chooser.hide()					--  Hide everything
+--
+--	BG
+--			(No methods for height or width, those are computed)
+--			cu.chooser.bgcolor(color)
+--			cu.chooser.bginnermargin(points)
+--			cu.chooser.bglocation( centered | topthird | mouse [, active | main ]) -- Where to center BG on screen, and which screen
+--			
+--	CELLS
+--			cu.chooser.cellwidths( table)		--  table of widths, one entry per column. 
+--			cu.chooser.cellheight( height)		--  in points
+--			cu.chooser.cellinnermargin(points)	-- 
+--			cu.chooser.celltextstyle (style )	--  Includes font, color, alignment
+--			cu.chooser.cellselectstyle (style )	--  Includes font, color, alignment for the cell(s) that are selected
+--			cu.chooser.cellmultiselect(boolean)	--  True for allowing > 1 cell to be selected.
+--			cu.chooser.cellselect(cellnum[,add])--  Select the given cell. If add is true add new cell to any existing selection
+--			cu.chooser.celldeselect(cellnum)	--  Deselect. Select is tracked even if the cell is not visible (scrolled off)
+--
+--	ROWS
+--			cu.chooser.rowsvisible( count )		--  number of visible rows. Defaults to count of rows provided.
+--			cu.chooser.rowtotal( count)			--  all rows stored. Needed? or do we just count them. Defaults to count of rows provided.
+--			? cu.chooser.rowtrimexcess(boolean)	--  true for shrink display, including BG if rows provided < count
+--			
+--	SEARCH
+--			cu.chooser.searchheight( height)	--  in points
+--			cu.chooser.searchinnermargin(points)-- 
+--			cu.chooser.searchstyle( style )
+--			... others abut searching fns()
+--			
+--	DESCR
+--			cu.chooser.descrheight( height)		--  in points. Make taler for multi-line text
+--			cu.chooser.descrinnermargin(points)	-- 
+--			cu.chooser.descrstyle( style )
+--			cu.chooser.descrtrimexcess(boolean)	--  true for shrink display, including BG description fits in < provided height
+
+
+
+return cu
+
+
+
+
