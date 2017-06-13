@@ -14,15 +14,14 @@ local cu = {}
 --		|   |search term                       |     | <- Optional
 --		|   +----------------------------------+     |
 --		|                                            |
+--		|   +----------------------------------+     |
+--		|   | H1  | H2     | H3  | H4     |    |     |	<- Header(s), optional
+--		|   +----------------------------------+     |
 --		|   +----------------------------------+ |^| |
---		|   | H1  | H2     | H3  | H4     |    | |.| |	<- Headers, optional
---		|   +----------------------------------+ |.| |
---		|                                        |.| |
---		|   +----------------------------------+ |.| |
 --		|   | C1  | C2     | C3  | C4     |⌘1 | |.| |	<- Row 1
 --		|   +----------------------------------+ |.| |
---		|   | C1  | C2     | C3  | C4     |⌘2 | |.| |	<- Row 2,... with command key equivalent
---		|   +----------------------------------+ |.| |
+--		|   b C1  | C2     | C3  | C4     |⌘2 | |.| |	<- Row 2,... with command key equivalent
+--		|   bbbb-------------------------------+ |.| |
 --		|   :  :     :          :     :        : |.| |
 --		|   +----------------------------------+ |v| |
 --		|     Descriptive text...                    |
@@ -44,12 +43,28 @@ local cu = {}
 --
 --		[BG Width]	outer width of BG region
 --
+--		b		Cell boarders, all around. Definable color, alpha, and width. 
 --	Definitions:
 --		cellnum: can either be a single integer counting cells from Column1, Row1 across, 
 --					then down, in normal reading order, or a table of X, Y coordinates.
 --					X for column, Y for row. C1,R1 = {1,1} or 1.
 --					For a 3 column table C2,R3 = {2,3} or 8
 --
+--	Characters in use by the interface:
+--		Up, down, left, right:			Move to adjacent cell. Stops at first/last column, and row
+--		Shift+Up, down, left, right:	Extend selection if cellMultiSelect(true)
+--		Cmd+1,2,3...:					Select indicated row, if rowShowShortcuts(true)
+--		Enter:		cu is complete. Return table of selected cellnums (if any), unless search field has focus -- then search
+--		Space:		cu is complete. Return table of selected cellnums (if any)
+--		Tab:		anything?
+--		Home:		1st cell in current row
+--		End:		last cell in current row
+--		PageUp:		1st cell in current column
+--		PageDn:		last cell in current column
+--		Esc:		Exit cu w/o changes
+--		others (a-z,A-Z,0-9,special)	Ignore or add to search string
+--		Backspace						Ignore or delete char from search string
+--		
 --	API Overview
 --		• Constants
 --
@@ -60,7 +75,7 @@ local cu = {}
 --		• Methods
 --
 --	CONSTRUCTORS
---	new		cu.chooser.new(completionFn) -> cu.chooser object
+--	new		cu.chooser.new(completionFn, cause) -> cu.chooser object, and the reason for returning. Usually a character that triggered
 --				completionFn - A function that will be called when the chooser
 --				is dismissed. It should accept one parameter, which will be nil if the user
 --				dismissed the chooser window, otherwise it will be a table containing whatever
@@ -70,39 +85,52 @@ local cu = {}
 --	CU
 --			cu.chooser.show()					--  Recompute sizes, display, etc. Clear selected cell formatting
 --			cu.chooser.hide()					--  Hide everything
+--			cu.chooser.delegateChars( table )	--  Table of characters that cu.chooser will handle. Default is all.
 --
 --	BG
 --			(No methods for height or width, those are computed)
---			cu.chooser.bgcolor(color)
---			cu.chooser.bginnermargin(points)
---			cu.chooser.bglocation( centered | topthird | mouse [, active | main ]) -- Where to center BG on screen, and which screen
+--			cu.chooser.bgColor(color)
+--			cu.chooser.bgInnerMargin(points)
+--			cu.chooser.bgLocation( centered | topthird | mouse [, active | main ]) -- Where to center BG on screen, and which screen
 --			
 --	CELLS
---			cu.chooser.cellwidths( table)		--  table of widths, one entry per column. 
---			cu.chooser.cellheight( height)		--  in points
---			cu.chooser.cellinnermargin(points)	-- 
---			cu.chooser.celltextstyle (style )	--  Includes font, color, alignment
---			cu.chooser.cellselectstyle (style )	--  Includes font, color, alignment for the cell(s) that are selected
---			cu.chooser.cellmultiselect(boolean)	--  True for allowing > 1 cell to be selected.
---			cu.chooser.cellselect(cellnum[,add])--  Select the given cell. If add is true add new cell to any existing selection
---			cu.chooser.celldeselect(cellnum)	--  Deselect. Select is tracked even if the cell is not visible (scrolled off)
+--			cu.chooser.cellSet(text[,callback?])--  
+--			cu.chooser.cellUnselectable()		--  So "label" cells don't get selected
+--			cu.chooser.cellWidths( table )		--  table of widths, one entry per column. 
+--			cu.chooser.cellHeight( height )		--  in points
+--			cu.chooser.cellInnerMargin(points )	-- 
+--			cu.chooser.cellTextStyle( style )	--  Includes font, color, alignment
+--			cu.chooser.cellSelectStyle( style )	--  Includes font, color, alignment for the cell(s) that are selected
+--			cu.chooser.cellMultiSelect(boolean)	--  True for allowing > 1 cell to be selected.
+--			cu.chooser.cellSelect(cellnum[,add])--  Select the given cell. If add is true add new cell to any existing selection
+--			cu.chooser.cellDeselect(cellnum)	--  Deselect. Select is tracked even if the cell is not visible (scrolled off)
+--			cu.chooser.cellBoarders([width[,color]])
+--												-- Set boarders around each cell. With no parameters, or width=0 there's no boarder.
+--												-- color includes alpha. Width in points. Boarders are drawn with a minimal number
+--												-- of lines, so for 3 x 4 cells there will be 4 + 5 = 9 lines.
 --
 --	ROWS
---			cu.chooser.rowsvisible( count )		--  number of visible rows. Defaults to count of rows provided.
---			cu.chooser.rowtotal( count)			--  all rows stored. Needed? or do we just count them. Defaults to count of rows provided.
---			? cu.chooser.rowtrimexcess(boolean)	--  true for shrink display, including BG if rows provided < count
---			
+--			cu.chooser.rowsVisible( count )		--  number of visible rows. Defaults to count of rows provided.
+--			cu.chooser.rowTotal( count)			--  all rows stored. Needed? or do we just count them. Defaults to count of rows provided.
+--			? cu.chooser.rowTrimExcess(boolean)	--  true for shrink display, including BG if rows provided < count
+--			cu.chooser.rowShowScroll(boolean)	--  
+--			cu.chooser.rowShowShortcuts(boolean)--  Show Cmd+1, ... shortcuts after last column of each row.
+--
+--	HEADER
+--			cu.chooser.headerSet(column, text)	--  Fill in 1 cell of the header
+--			cu.chooser.headerTextStyle( style )	--  Includes font, color, alignment
+--
 --	SEARCH
---			cu.chooser.searchheight( height)	--  in points
---			cu.chooser.searchinnermargin(points)-- 
---			cu.chooser.searchstyle( style )
---			... others abut searching fns()
+--			cu.chooser.searchHeight( height)	--  in points
+--			cu.chooser.searchInnerMargin(points)-- 
+--			cu.chooser.searchStyle( style )
+--			... others about searching fns()
 --			
 --	DESCR
---			cu.chooser.descrheight( height)		--  in points. Make taler for multi-line text
---			cu.chooser.descrinnermargin(points)	-- 
---			cu.chooser.descrstyle( style )
---			cu.chooser.descrtrimexcess(boolean)	--  true for shrink display, including BG description fits in < provided height
+--			cu.chooser.descrHeight( height)		--  in points. Make taler for multi-line text
+--			cu.chooser.descrInnerMargin(points)	-- 
+--			cu.chooser.descrStyle( style )
+--			cu.chooser.descrTrimExcess(boolean)	--  true for shrink display, including BG description fits in < provided height
 
 
 
