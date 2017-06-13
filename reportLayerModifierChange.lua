@@ -14,6 +14,7 @@
 --		Rename box --> HUDFrame(?)
 --		Update internal docs
 --		BUG: Fast on/off gets out of sync? "Debounce if happen within 2 seconds of each other?
+--		Add simulated LEDs to HUD: Cmd, Opt, Shift, Ctrl -- Layers (3 green LEDs) -- Num Lock (Purple)
 --		Future: Also display "mode" such as mouse movement, window movement, window sizing
 --		Run Lualint on all software
 reportLayerModifierChange = {}
