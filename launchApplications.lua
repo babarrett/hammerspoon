@@ -96,6 +96,10 @@ local webShortCuts = {
 
 	W = {"Geekhack", nil, "https://geekhack.org/index.php?action=watched"},		-- Geekhack, Watched
     Zgm = {'Google maps', nil, 'https://www.google.com/maps/' },
+    Ztd = {'trac - docs builds', nil, 'https://trac.aspera.us/process2/test/docs' },
+    Ztr = {'trac - release builds', nil, 'https://trac.aspera.us/process2/release/' },
+    Ztt = {'trac - test builds', nil, 'https://trac.aspera.us/process2/test/' },
+
 
 }
 
