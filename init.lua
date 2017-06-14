@@ -51,6 +51,8 @@ require "KeyPressShow"
 require "bindFunctionKeys"
 --require "characterMapping"
 require "editSelection"
+local cu						= require "cuChooser"	-- Custom Chooser
+foo = cu.new(function () end)
 
 HF.add("-- Miscellaneous Functions -- "..VERSION.." --\n")
 HF.bind(HyperFn, "H", "hammerspoonHelp")
