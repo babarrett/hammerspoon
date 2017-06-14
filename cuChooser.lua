@@ -43,7 +43,8 @@ local cu = {}
 --
 --		[BG Width]	outer width of BG region
 --
---		b		Cell boarders, all around. Definable color, alpha, and width. 
+--		b		Cell boarders, all around. Definable color, alpha, and width. Boarders are between each cell
+--				so add to the total BG width by (width * (number of columns+1))
 --	Definitions:
 --		cellnum: can either be a single integer counting cells from Column1, Row1 across, 
 --					then down, in normal reading order, or a table of X, Y coordinates.
@@ -75,7 +76,7 @@ local cu = {}
 --		• Methods
 --
 --	CONSTRUCTORS
---	new		cu.chooser.new(completionFn, cause) -> cu.chooser object, and the reason for returning. Usually a character that triggered
+--	new		cu.chooser.new(completionFn) -> cu.chooser object, and the reason for returning. Usually a character that triggered
 --				completionFn - A function that will be called when the chooser
 --				is dismissed. It should accept one parameter, which will be nil if the user
 --				dismissed the chooser window, otherwise it will be a table containing whatever
@@ -131,8 +132,73 @@ local cu = {}
 --			cu.chooser.descrInnerMargin(points)	-- 
 --			cu.chooser.descrStyle( style )
 --			cu.chooser.descrTrimExcess(boolean)	--  true for shrink display, including BG description fits in < provided height
+--
+--
+--	Data Structures  --
+-----------------------
+--
+--		All graphic objects, for eventual removal
+--		newcu.grob	--	The root if the list of graphic objects. .grob is a list of lists. Each sub-list contains
+--						a list of the same type of objects, for example cell styled text, boarder lines, bg itself, etc.
+--
+--						So the structure is:
+--						newcu.grob
+--							.grob.bg
+--							.grob.stbox		-- search text box
+--							.grob.sttext	-- search text edit field
+--							.grob.headbox	-- header boxes (1 per cell)
+--							.grob.headtext	-- header text (1 per cell)
+--							.grob.cellbox
+--							.grob.celltext
+--							.grob.descrtext
+--							.grob.scrlbar
+--							.grob.scrlthumb
+--							.grob.
+--							.grob.
+
+--	new		cu.chooser.new(completionFn) -> cu.chooser object, or nil for error
+function cu.new(completionFn)
+	-- validate input
+	if completionFn == nil then
+		return nil
+	end
+	newcu = {}
+	newcu.grob = {}
+	newcu.bg = {["width"]=100, ["height"]=50, ["color"]={["red"]=0.5,["blue"]=0.5,["green"]=0.5,["alpha"]=0.5}, ["radius"]=5}
+	-- TEST: Show the BG test rectangle
+	local bgRect = ""
+	bgRect = hs.drawing.rectangle(hs.geometry.rect(100, 100, newcu.bg.width, newcu.bg.height))
+	bgRect:setFillColor({["red"]=0.5,["blue"]=0.5,["green"]=0.5,["alpha"]=0.5}):setFill(true)
+	bgRect:setRoundedRectRadii(10, 10)
+	bgRect:setLevel(hs.drawing.windowLevels["floating"])
+	newcu.grob.bg = (newcu.grob.bg ~= nil) and newcu.grob.bg or {}
+	table.insert(newcu.grob.bg, bgRect:show() )
+	hs.timer.doAfter(5, cu.delete)
+	debuglog(bgRect)
+	return newcu
+end
+
+function cu.delete()
+	clearGrobs(newcu.grob.bg)
+end
 
 
+----------------------  Utilities Functions ---------------------
+--	Clear (hide, delete and set to nil) all graphic objects in a list (table).
+--	If, by chance, one of those objects is a table then call recursively on that table.
+--	No return.
+function clearGrobs(groblist)
+	for k, v in pairs(groblist) do
+		debuglog("k: "..k.."; v: "..tostring(v))
+		if type(v) == "table" then
+			clearGrobs(v)
+		else
+			v:hide()
+			v:delete()
+			v=nil
+		end
+	end
+end
 
 return cu
 
