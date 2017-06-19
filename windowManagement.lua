@@ -22,11 +22,12 @@ function baseMove(x, y, w, h, direction)
 		local wfold = win:frame()
 		local wfnew = win:frame()
 		local sf = screen:frame()
-		
+		debuglog("-------------------------------------------\nScreen Frame rect (x, y, w, h): "..sf.x..", "..sf.y..", "..sf.w..", "..sf.h)
 		wfnew.x = math.floor(sf.x + sf.w * x)
 		wfnew.y = math.floor(sf.y + sf.h * y)
 		wfnew.w = math.floor(sf.w * w)
 		wfnew.h = math.floor(sf.h * h)
+		debuglog("-------------------------------------------\nwfnew  Frame rect (x, y, w, h): "..wfnew.x..", "..wfnew.y..", "..wfnew.w..", "..wfnew.h)
 		-- Now see if this = no change... in which case we'll push it to the next screen
 --		debuglog("x fudge: ".. math.abs(wfold.x - wfnew.x))
 --		debuglog("y fudge: ".. math.abs(wfold.y - wfnew.y))
@@ -45,9 +46,9 @@ function baseMove(x, y, w, h, direction)
 			action[direction]()
 
 			-- test to see if there is a screen to move to...
---			debuglog("window within fudge factor, push to next screen, if available.")
+			debuglog("window within fudge factor, push to next screen, if available.")
 			if windowManagement.newScreen then
---				debuglog("OK to move to next screen: "..direction)
+				debuglog("OK to move to next screen: "..direction)
 				sf = windowManagement.newScreen:frame()
 				wfnew.x = math.floor(sf.x + sf.w * x)
 				wfnew.y = math.floor(sf.y + sf.h * y)
@@ -75,16 +76,16 @@ local funNameToHelpText = {
 
 -- y = 0.03 to avoid Mac screen menu bar
 local function left()
-	baseMove(0.00, 0.03, windowSizePercent-0.01, 1.00, "left")
+	baseMove(0.00, 0.00, windowSizePercent-0.01, 0.98, "left")
 end
 local function right()
-	baseMove(1-windowSizePercent+0.01, 0.03, windowSizePercent-0.01, 1.00 , "right")
+	baseMove(1-windowSizePercent+0.01, 0.00, windowSizePercent-0.01, 0.98 , "right")
 end
 local function down()
-	baseMove(0.00, 1-windowSizePercent+0.01, 0.98,  windowSizePercent-0.01, "down")
+	baseMove(0.01, 1-windowSizePercent+0.01, 0.98,  windowSizePercent-0.02, "down")
 end
 local function up()
-	baseMove(0.00, 0.03, 0.98,  windowSizePercent-0.03, "up")
+	baseMove(0.01, 0.02, 0.98,  windowSizePercent-0.02, "up")
 end
 local function percent40()
 	windowSizePercent = 0.40
