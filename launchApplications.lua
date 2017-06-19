@@ -45,20 +45,22 @@ local appShortCuts = {
     B = {'BBEdit', 'BBEdit', nil},
     C = {'Chrome', 'Google Chrome', nil},
 
+    D = {'Chatty (Discuss)', 'Chatty', nil},
     F = {'Finder', 'Finder', nil},
     G = {'OmniGraffle', 'OmniGraffle', nil},
-    I = {'iTerm', 'iTerm', nil},
 
+    I = {'iTerm', 'iTerm', nil},
     J = {'Notes', 'Notes', nil},
     M = {'Mail', 'Mail', nil},
-    N = {'Notetaker', 'Notetaker', nil},
 
+    N = {'Notetaker', 'Notetaker', nil},
     P = {'System Preferences', 'System Preferences', nil},
     R = {'Remote Desktop', '/Applications/Microsoft Remote Desktop.app/', nil}, -- > hs.application.nameForBundleID("com.microsoft.rdc.mac") --> "Microsoft Remote Desktop"
-	S = {"Secure DMG","/Users/bbarrett/Secure.dmg & open /Users/bruce/Secure.dmg",nil},	-- open Secure.dmg either at work or at home.
 
+	S = {"Secure DMG","/Users/bbarrett/Secure.dmg & open /Users/bruce/Secure.dmg",nil},	-- open Secure.dmg either at work or at home.
     T = {'Tunnelblick', 'Tunnelblick', nil},
     V = {'IBM VPN', 'Cisco AnyConnect Secure Mobility Client', nil},
+
     X = {'Firefox', 'Firefox', nil},
 
 	-- Using Zaa so it sorts after the 1-character shortcuts. 
