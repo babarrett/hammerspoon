@@ -1,6 +1,7 @@
 switchApplications = {}
 
--- TODO: Window Chooser: List current window last (or not at all?)
+-- TODO: Window Chooser: List current window last (or not at all?) Esc would return to it
+-- TODO: When canceling window picker no window is selected. Return to orig. selected window.
 
 --Application switcher, like Cmd+Tab but better. Instead:
 --  * √ A GUI, in a matrix of some sort
@@ -90,8 +91,17 @@ switchApplications = {}
 
 --	Utility functions----------------------------------------------------------------
 
+-- Test for "should this app be shown in the picker."
+-- Return true for include the app
+-- We'll include all except:
+--		a) The current app
+--		b) Apps that are not visible (don't show in dock)
+--		c) TODO: Apps on the blacklist. (Spam sieve, Free Ruler,...)
+-- showingTest(k, v)
+-- k:	key, not used
+-- v:	value, an application object
 function showingTest(k, v)
-	-- Only those in dock, and not current (active) app, and TODO: not "blacklisted" apps
+	-- Only those in dock (i.e. visible), and not current (active) app, and TODO: not "blacklisted" apps
 	if frontAppBundleID == tostring(v:bundleID()) then return false end
 	return (v:kind() == 1)
 end
