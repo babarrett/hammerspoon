@@ -32,37 +32,52 @@ local cu = {}
 --	Legend:
 --		BG		Background of chooser area. 
 --				Settable: Color, Alpha, corner radius [, z-order level?]
---				Computable: [BG Width] = 2*[1]+Sum(cell widths)
 --		[1]		Boarder between BG outer edge and content
 --		search term	Space to enter search terms, to support the current hs.chooser functionality
 --				Settable: Height, search value (default ""), text style
 --		Cn		Column number. Support at least pairs of columns with different widths
+--				Settable: height
 --		⌘1		Command key equivalent, only available when there is 1 column? Optional
 --		Row n	Row
 --				Settable: height
+--		C		Cell
+--				Settable: Styled text, and/or image
+--		Cell text
+--				Settable: (optional) Styled text
+--				Settable: (optional) Text rectangle (text area - cell rectangle / 2 = boarder sizes)
+--		Cell image
+--				Settable: (optional) Image (png, jpg, etc,)
+--				Settable: (optional) Text rectangle (text area - cell rectangle / 2 = boarder sizes)
+--
+--		[<...>] (optional) Scrollbar region
 --
 --		[BG Width]	outer width of BG region
+--				Computable: [BG Width] = 2*[1]+Sum(cell widths)+Sum(cell boarder lines)+ scroll bar width
+--
+--		[BG Height]	outer height of BG region
+--				Computable: [BG Width] = 2*[1]+Sum(cell widths)+Sum(cell boarder lines)+scrollbar width
 --
 --		b		Cell boarders, all around. Definable color, alpha, and width. Boarders are between each cell
 --				so add to the total BG width by (width * (number of columns+1))
+--
 --	Definitions:
 --		cellnum: can either be a single integer counting cells from Column1, Row1 across, 
---					then down, in normal reading order, or a table of X, Y coordinates.
+--					then down, in normal reading order, or a table of {X, Y} coordinates.
 --					X for column, Y for row. C1,R1 = {1,1} or 1.
---					For a 3 column table C2,R3 = {2,3} or 8
+--					For a 3 column table C2,R3 = {2,3} or 8.
 --
 --	Characters in use by the interface:
 --		Up, down, left, right:			Move to adjacent cell. Stops at first/last column, and row
 --		Shift+Up, down, left, right:	Extend selection if cellMultiSelect(true)
 --		Cmd+1,2,3...:					Select indicated row, if rowShowShortcuts(true)
 --		Enter:		cu is complete. Return table of selected cellnums (if any), unless search field has focus -- then search
---		Space:		cu is complete. Return table of selected cellnums (if any)
+--		Space:		cu is complete. Return table of selected cellnums (if any), unless search field has focus -- then add space
 --		Tab:		anything?
 --		Home:		1st cell in current row
 --		End:		last cell in current row
 --		PageUp:		1st cell in current column
 --		PageDn:		last cell in current column
---		Esc:		Exit cu w/o changes
+--		Esc:		Exit cu w/o changes. Returns nil
 --		others (a-z,A-Z,0-9,special)	Ignore or add to search string
 --		Backspace						Ignore or delete char from search string
 --		
@@ -114,7 +129,7 @@ local cu = {}
 --			cu.chooser.rowsVisible( count )		--  number of visible rows. Defaults to count of rows provided.
 --			cu.chooser.rowTotal( count)			--  all rows stored. Needed? or do we just count them. Defaults to count of rows provided.
 --			? cu.chooser.rowTrimExcess(boolean)	--  true for shrink display, including BG if rows provided < count
---			cu.chooser.rowShowScroll(boolean)	--  
+--			cu.chooser.rowShowScroll(boolean)	--  Show scrollbar
 --			cu.chooser.rowShowShortcuts(boolean)--  Show Cmd+1, ... shortcuts after last column of each row.
 --
 --	HEADER
