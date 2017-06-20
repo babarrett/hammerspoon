@@ -68,6 +68,7 @@ local appShortCuts = {
 	-- Zaa sorts before Zbb so we can keep these in order as we like
     Zad = {'Adobe Reader', 'Adobe Reader', nil},
     Zca = {'Calendar', 'Calendar', nil},
+    Zgt = {'GoToMeeting', '/Applications/GoToMeeting/GoToMeeting (7155).app', nil},
     Zit = {'iTunes', 'iTunes', nil},
     Znu = {'Numbers', 'Numbers', nil},
     Zpa = {'Pages', 'Pages', nil},
