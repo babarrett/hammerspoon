@@ -25,6 +25,7 @@ launchApplications = {}
 --				callout to Handle(key) which will pick the right behavior based upon the global, including "do nothing"
 --				if the current "mode" does not have that key defined.
 --			3. Need to handle "Space" and "Return" in a similar way.
+--	TODO: Can we support "Q" to quit the currently selected app?
 
 local DEFAULTBROWSER = 'Safari'
 local pickerView = nil
