@@ -199,9 +199,12 @@ end
 
 
 ----------------------  Utilities Functions ---------------------
---  Clear (hide, delete and set to nil) all graphic objects in a list (table).
---  If, by chance, one of those objects is a table then call recursively on that table.
+
+---	Clear (hide, delete and set to nil) all graphic objects in the provided list (table).
+--  Any nil items in the list are ignored. If, by chance, one of the objects in the provided
+--	list is itself a table (;ist) then call recursively to delete the objects in that table.
 --  Nothing returned.
+-- 	@param groblist The list (table) of graphic objects to be removed
 function clearGrobs(groblist)
   for k, v in pairs(groblist) do
     debuglog("k: "..k.."; v: "..tostring(v))
