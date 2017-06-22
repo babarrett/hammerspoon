@@ -225,12 +225,12 @@ function centerAndShowPicker(pickerTable)
   -- TODO: Re-do these with '1'-based indexing.
   -- Select, approximately, the center cell of the App array
   xmin =0
-  xmax =2
+  xmax =3
   ymin =0
   
-  -- Dynamically size # of rows (Y) based upon # of entries in table. Using a fixed 3 columns
+  -- Dynamically size # of rows (Y) based upon # of entries in table. Using a fixed 4 columns
   tc = countTableElements(pickerTable)
-  ymax =math.ceil(tc / 3) -1
+  ymax =math.ceil(tc / 4) -1
   
   xsel = math.floor((xmax-xmin)/2)
   ysel = math.floor((ymax-ymin)/2)
@@ -301,10 +301,10 @@ function reloadPicker()
   else
   -- if it doesn't exist, make it
 	frame = hs.screen.mainScreen():frame()	-- the one containing the currently focused window
-	bgX = frame.x + frame.w/2 - 650/2
+	bgX = frame.x + frame.w/2 - 750/2
 	bgY = frame.y + frame.h/2 - 350/2
     
-    webPageRect = {x = bgX, y = bgY, w = 650, h = 350}
+    webPageRect = {x = bgX, y = bgY, w = 750, h = 350}
 	pickerView = hs.webview.new(webPageRect, { developerExtrasEnabled = false, suppressesIncrementalRendering = false })
 	:windowStyle("utility")
 	:closeOnEscape(true)
@@ -357,7 +357,7 @@ function launchApplications.generateHtml()
 			   margin: 10px; padding: 10px;
 			   background-color: #404040;
 			   color: #c0c0c0;
-			   width: 600px;
+			   width: 700px;
 			   margin: auto;
 			   font-family: "HelveticaNeue-Light", "Helvetica Neue Light",
 				  "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
@@ -391,7 +391,7 @@ function launchApplications.generateHtml()
           </body>
         </html><br>
 		<div id="container">
-		<table id="selTable" width="90%"  border="1">
+		<table id="selTable" width="100%"  border="1">
 		]]..generateAppOrWebTable()..[[
 		</table>
 	</div>
@@ -413,13 +413,13 @@ function generateAppOrWebTable()
 	local i = 0;
 	
 	for key, appInfo in hs.fnutils.sortByKeys((inMode == "App") and appShortCuts or webShortCuts) do
-		tableText = tableText .. "<td class = 'jumpchar' width='5%' align='right'>" .. 
+		tableText = tableText .. "<td class = 'jumpchar' width='3%' align='right'>" .. 
 			((string.len(key) == 1) and key..":" or "&nbsp;");	-- skip entries we don't want to use with 1 character (hot key) shortcuts
 		tableText = tableText .. "<td class="
 		
 		tableText = tableText .. ((x==xsel and y==ysel) and "'sel'" or "'unsel'")
 
-		tableText = tableText .. " width='22%'>" .. appInfo[1] .. "</td>";
+		tableText = tableText .. " width='20%'>" .. appInfo[1] .. "</td>";
 		
 		x = x + 1
 		if x > xmax then
