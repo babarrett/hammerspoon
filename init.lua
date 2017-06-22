@@ -65,6 +65,7 @@ miscFunctions.bind(HyperFn, "D", "dictate")
 --miscFunctions.bind({"ctrl", "shift"}, ",", "moveToStatus")
 miscFunctions.bind(HyperFn, "=", "mouseHighlight")
 miscFunctions.bind(HyperFn, "-", "manydashes")
+--smiscFunctions.bind(HyperFn, "S", "fiveShifts")
 miscFunctions.bind(HyperFn, "L", "lockMyScreen")
 miscFunctions.bind(HyperFn, "T", "todo")	-- Type "TODO: " for code
 
