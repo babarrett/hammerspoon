@@ -105,6 +105,10 @@ end
 	 hs.eventtap.keyStrokes('-------------------------------------------')
 end
 
+-- function fiveShifts()
+--	 hs.eventtap.keyStroke({"shift"}, "")
+--end
+
  function todo()
 	 hs.eventtap.keyStrokes('TODO: ')
 end
@@ -123,6 +127,7 @@ local funNameToFunction = {
 	lockMyScreen = lockMyScreen,
 	mouseHighlight = mouseHighlight,
 	manydashes = manyDashes,
+--	fiveShifts = fiveShifts,
 	todo = todo
 }
 
@@ -138,10 +143,11 @@ local funNameToHelpText = {
 	lockMyScreen = 		'Lock screen so you can walk away',
 	mouseHighlight = 	'Surround mouse cursor with red circle for 3 seconds',
 	manydashes = 		'Type 42 hyphens',
+--	fiveShifts = 		'Sticky keys',
 	todo = 				'Type "TODO: " for codding'
 }
 function miscFunctions.bind(modifiers, char, functName)
-	-- debuglog("miscFunctions binding: "..char.." to "..functName)
+	debuglog("miscFunctions binding: "..char.." to "..functName)
 	hs.hotkey.bind(modifiers, char, nil, funNameToFunction[functName] )	-- bind the key
 	-- Add to the help string
 	HF.add("Hyper+" .. char .. "     - " .. funNameToHelpText[functName] .. "\n")
