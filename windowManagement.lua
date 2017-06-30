@@ -2,6 +2,7 @@
 --	Originally taken from: https://gist.github.com/swo/91ec23d09a3d6da5b684
 --	HyperFn+Left moves window to left part of the screen.
 --	Likewise for other arrows.
+--	Hyper+Numpad-0 goes to (nearly) full screen
 --	If the window is already in place (say left edge) and we get another left
 --	command then move it to the *screen* to the left.
 
@@ -67,6 +68,7 @@ local funNameToHelpText = {
 	right = 	'move window to right of screen.',
 	down = 		'move window to bottom of screen.',
 	up =		'move window to top of screen.',
+	full =		'make window (nearly) full screen.',
 	percent40 =	'Moved windows take 40% of screen',
 	percent50 =	'Moved windows take 50% of screen',
 	percent60 =	'Moved windows take 60% of screen',
@@ -87,6 +89,9 @@ end
 local function up()
 	baseMove(0.01, 0.02, 0.98,  windowSizePercent-0.02, "up")
 end
+local function full()
+	baseMove(0.01, 0.02, 0.98,  1-0.02, "full")
+end
 local function percent40()
 	windowSizePercent = 0.40
 end
@@ -104,6 +109,7 @@ local funNameToFunction = {
 	right = right,
 	down = down,
 	up = up,
+	full = full,
 	percent40 = percent40,
 	percent50 = percent50,
 	percent60 = percent60,
