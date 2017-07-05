@@ -206,10 +206,12 @@ end
 --  Nothing returned.
 -- 	@param groblist The list (table) of graphic objects to be removed
 function clearGrobs(groblist)
+  local k, v
   for k, v in pairs(groblist) do
     debuglog("k: "..k.."; v: "..tostring(v))
     if type(v) == "table" then
       clearGrobs(v)
+      v = nil
     else
       v:hide()
       v:delete()
