@@ -26,6 +26,7 @@ launchApplications = {}
 --        if the current "mode" does not have that key defined.
 --      3. Need to handle "Space" and "Return" in a similar way.
 --  TODO: Can we support "Q" to quit the currently selected app?
+--  TODO: Support 1, 2, 3,.. to skip to the center of that row of the grid.
 
 local DEFAULTBROWSER = 'Safari'
 local pickerView = nil
@@ -72,6 +73,7 @@ local appShortCuts = {
     Zfm = {'FileMaker', '/Applications/FileMaker Pro 13 Advanced/FileMaker Pro Advanced.app', nil},
     Zgt = {'GoToMeeting', '/Applications/GoToMeeting/GoToMeeting (7155).app', nil},
     Zit = {'iTunes', 'iTunes', nil},
+    Zma = {'Markoff', 'Markoff', nil},
     Znu = {'Numbers', 'Numbers', nil},
     Zpa = {'Pages', 'Pages', nil},
     Zpr = {'Preview', 'Preview', nil},
