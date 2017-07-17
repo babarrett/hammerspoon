@@ -75,13 +75,17 @@ Kbd		OSX Pref	Seil	Hammer	Karab	USB Ov*	Function
 									F9-F11			Apps: Preview, Secure, SysPref
 									
 							NumPad					Misc functions, Numeric pad, Razer Anansi + external keypad
-											M1-M4	(Razer Anasi only) Cut, Copy, Paste, Undo
-											M5		(Razer Anasi only) OS X Dictation on/off
+											M1-M4	(Razer Anasi only) F15-F18 become: Cut, Copy, Paste, Undo
+											M5		(Razer Anasi only) F19 becomes: OS X Dictation on/off
 											T1-T5	(Razer Anasi only) Next window, Next App, Close window, Quit app, Cmd+Shift
 											T6,T7	(Razer Anasi only) Left & Right ouse clicks
 											
 * USB Overdrive cannot modify Apple products, by design.
-	These functions should be moved to other products/systems
+	USB Overdrive *is* still in use (17-July-2017) for the Razer M1-M5 keys, and the T1-T7 keys.
+	It intercepts these before Hammerstone gets a chance too.
+	
+	These functions should be moved to other products/systems. Some may
+	not be possible until a custom programmed keyboard is available.
 	such as Hammerspoon or Karabiner:
 	a) so that external Apple keyboards, such as those with numeric pads, work, and
 	b) so that fewer keyboard interceptors are in use, simplifying implementation
