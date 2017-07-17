@@ -25,7 +25,7 @@ Generally:
 						Easy to configure. Some sharing possible.
 						No Apple products
 						Numeric Pad (about to replace)
-						M1-M5 left macro kays
+						M1-M5 left macro keys
 						T1-T7 Thumb keys
 	BBEdit for:			Code snippets. Auto-completion (F5).  Navigate by f() TOC.
 	iTerm2 for:			Command-line keys, remap (begin/end line & word)
@@ -52,26 +52,33 @@ Kbd		OSX Pref	Seil	Hammer	Karab	USB Ov*	Function
 													
 							HyperFn					Cmd+Opt+Ctrl+Shift
 							Hyper+U					Fetch the current URL from Safari, type it
-							Hyper+V					Type clipboard as text (avoid web site CMD-V blockers)
-							Hyper+H					Help, for Hammerspoon functions
-							Hyper+Esc				Stop displaying Help
+							Hyper+V					Type clipboard as text (drop formatting, avoid web site CMD-V blockers)
+							Hyper+H					Help, for Hammerspoon functions. Hyper-H to stop.
+							Hyper+Esc				Stop displaying App or Web launcher
 							HyperFn+Q				Quit App
 							HyperFn+W				Close window (or tab)
 							HyperFn+D				Dictate on/off
 							HyperFn+/				Cmd-Shift (for move to done in Mail)
 							
+							Moving a window that's already at the edge you are going to will try to move it to the next screen
 							Hyper+Left				Window to left half of screen
 							Hyper+Right				Window to right half of screen
 							Hyper+Up				Window to top half of screen
 							Hyper+Down				Window to bottom half of screen
+							Hyper+4					Moved windows are 40% of screen
+							Hyper+5					Moved windows are 50% of screen (default)
+							Hyper+6					Moved windows are 60% of screen
+							Hyper+7					Moved windows are 70% of screen
 													
-									Space			Tap for Space, Hold+char for SpaceFn
-									F1-F12			Apps & Web pages
+									Space			Tap for Space, Hold+char for SpaceFn -- TODO: convert to Hammerspoon
+							F1-8,F12				Apps & Web pages
+									F9-F11			Apps: Preview, Secure, SysPref
 									
 							NumPad					Misc functions, Numeric pad, Razer Anansi + external keypad
-											M1-M4	Cut, Copy, Paste, Undo
-											M5		OS X Dictation on/off
-											T1-T7	Misc.
+											M1-M4	(Razer Anasi only) Cut, Copy, Paste, Undo
+											M5		(Razer Anasi only) OS X Dictation on/off
+											T1-T5	(Razer Anasi only) Next window, Next App, Close window, Quit app, Cmd+Shift
+											T6,T7	(Razer Anasi only) Left & Right ouse clicks
 											
 * USB Overdrive cannot modify Apple products, by design.
 	These functions should be moved to other products/systems
@@ -90,11 +97,11 @@ a) Different kinds of "Caps Lock":
 	Snake_case_for_java	Spaces become "_" until <esc>?
 	etc.
 	
-	Also change case of selection (cut, modify, paste)
+	√ Change case of selection (cut, modify, paste)
 
-b) Run Preview
-c) run oXygen
-d) Confluence: tech pubs, ASCN
+b) √ Run Preview F9
+c) √ run oXygen F12
+d) √ Confluence: tech pubs, ASCN. hyper-w and select
 e) Go to ADN, Learning center
 
 
@@ -301,3 +308,4 @@ GH-122 requests for prototypes:
 1a = 4
 1b = 6 or 7 Nathan
 2  = 3 or 4 Nathan
+
