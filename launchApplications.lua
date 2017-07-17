@@ -27,6 +27,7 @@ launchApplications = {}
 --      3. Need to handle "Space" and "Return" in a similar way.
 --  TODO: Can we support "Q" to quit the currently selected app?
 --  TODO: Support 1, 2, 3,.. to skip to the center of that row of the grid.
+--  TODO: BUG: When only on app is open (Finder) and you Hyper+A nothing appears, but the keyboard is blocked.
 
 local DEFAULTBROWSER = 'Safari'
 local pickerView = nil
