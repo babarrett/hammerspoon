@@ -99,10 +99,12 @@ local webShortCuts = {
     N = {"ADN", nil, "https://developer.asperasoft.com"},
 
     O = {"Trac, Old bugs", nil, "https://trac.aspera.us"},
+    R = {"Reddit/mk", nil, "https://www.reddit.com/r/MechanicalKeyboards/"},
     S = {"Google Sheets", nil, "https://sheets.google.com"},
-    T = {"Confluence TP", nil, "https://confluence.aspera.us/display/TP/Technical+Publications"},
 
-  W = {"Geekhack", nil, "https://geekhack.org/index.php?action=watched"},   -- Geekhack, Watched
+    T = {"Confluence TP", nil, "https://confluence.aspera.us/display/TP/Technical+Publications"},
+    W = {"Geekhack", nil, "https://geekhack.org/index.php?action=watched"},   -- Geekhack, Watched
+    
     Zgm = {'Google maps', nil, 'https://www.google.com/maps/' },
     Ztd = {'trac - docs builds', nil, 'https://trac.aspera.us/process2/test/docs' },
     Ztr = {'trac - release builds', nil, 'https://trac.aspera.us/process2/release/' },
