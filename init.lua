@@ -6,7 +6,7 @@
 --	TODO: Create another modual for KeyToKey mappings such as Numeric Pad to move functions.
 --	TODO: Find some way wo handle NumLock, What's blocking it? No Karibiner == always numeric.
 
-VERSION = "2017-Jun-03"
+VERSION = "2017-Jul-24"
 hs.console.clearConsole()
 LUA_PATH = os.getenv("HOME") .. "/dev/git/hammerspoon/?"
 
@@ -47,7 +47,7 @@ local cheatsheets				= require "cheatsheets"
 local launchApplications		= require "launchApplications"	-- or Webpages
 local switchApplications		= require "switchApplications"
 local reportLayerModifierChange	= require "reportLayerModifierChange"
-require "KeyPressShow"
+require "KeyPressShow"			-- Hyper+K shows/hides key presses on screen
 require "bindFunctionKeys"
 --require "characterMapping"
 require "editSelection"
@@ -56,21 +56,22 @@ foo = cu.new(function () end)
 
 HF.add("-- Miscellaneous Functions -- "..VERSION.." --\n")
 HF.bind(HyperFn, "H", "hammerspoonHelp")
+HF.add("Hyper+A     - Enter Application mode, Arrows or Char launches App.\n")
+HF.add("Hyper+W     - Enter Webpage mode, Arrows or Char opens web page.")
+
+miscFunctions.bind(HyperFn, "D", "dictate")
+miscFunctions.bind(HyperFn, "L", "lockMyScreen")
+miscFunctions.bind(HyperFn, "P", "mdphotoplaceholder")
+miscFunctions.bind(HyperFn, "Q", "quitApp")
+--smiscFunctions.bind(HyperFn, "S", "fiveShifts")
+miscFunctions.bind(HyperFn, "T", "todo")	-- Type "TODO: " for code
 pasteCurrentSafariUrl.bind(HyperFn, "U", "pasteSafariUrl")
 miscFunctions.bind(HyperFn, "V", "typeClipboard")
-miscFunctions.bind(HyperFn, "Q", "quitApp")
-miscFunctions.bind(HyperFn, "D", "dictate")
 --HyperFn+"," and HyperFn+"." get intercepted by OS X and will never call Hammerspoon
 --miscFunctions.bind({"ctrl", "shift"}, "/", "moveToDone")
 --miscFunctions.bind({"ctrl", "shift"}, ",", "moveToStatus")
 miscFunctions.bind(HyperFn, "=", "mouseHighlight")
 miscFunctions.bind(HyperFn, "-", "manydashes")
---smiscFunctions.bind(HyperFn, "S", "fiveShifts")
-miscFunctions.bind(HyperFn, "L", "lockMyScreen")
-miscFunctions.bind(HyperFn, "T", "todo")	-- Type "TODO: " for code
-
-HF.add("Hyper+A     - Enter Application mode, Arrows or Char launches App.\n")
-HF.add("Hyper+W     - Enter Webpage mode, Arrows or Char opens web page.")
 
 HF.add("\n\n-- Window Management Functions --\n")
 windowManagement.bind(HyperFn, "Right", "right")

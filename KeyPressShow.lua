@@ -38,7 +38,7 @@ function showKeyPress(tap_event)
   -- popup duration.
   if (not flags.shift and not flags.cmd and
         not flags.alt and not flags.ctrl) then
-    duration = 0.3
+    duration = 0.5
   end
 
   -- we want to get regular characters via getCharacters as it
@@ -95,8 +95,9 @@ local key_tap = hs.eventtap.new(
   showKeyPress
 )
 
--- Enable/Disable Keypress Show Mode with "C-⌘-⇧-p"
-k = hs.hotkey.modal.new(HyperFn, 'P')
+-- Enable/Disable Keypress Show Mode with "HyperFn+K"
+KeypressShowKey = 'K'
+k = hs.hotkey.modal.new(HyperFn, KeypressShowKey)
 function k:entered()
   hs.alert.show("Enabling Keypress Show Mode", 1.5)
   key_tap:start()
@@ -104,7 +105,7 @@ end
 function k:exited()
   hs.alert.show("Disabling Keypress Show Mode", 1.5)
 end
-k:bind(HyperFn, 'P', function()
+k:bind(HyperFn, KeypressShowKey, function()
     key_tap:stop()
     k:exit()
 end)

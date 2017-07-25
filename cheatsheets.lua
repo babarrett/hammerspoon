@@ -61,8 +61,11 @@ function getAllMenuItems(t)
                     menu = menu.."</ul>"
                 elseif(val['AXRole'] =="AXMenuItem" and not val['AXChildren']) then
                     if( val['AXMenuItemCmdModifiers'] ~='0' and val['AXMenuItemCmdChar'] ~='') then
-                        --print(val['AXMenuItemCmdModifiers'].." | "..val['AXTitle'].." | CmdChar: "..val['AXMenuItemCmdChar'])
-                        menu = menu.."<li><div class='cmdModifiers'>"..commandEnum[val['AXMenuItemCmdModifiers']].." "..val['AXMenuItemCmdChar'].."</div><div class='cmdtext'>".." "..val['AXTitle'].."</div></li>"
+                    	print("1. ".. tostring(val['AXMenuItemCmdModifiers']))
+                        print(val['AXMenuItemCmdModifiers'].." | "..val['AXTitle'].." | CmdChar: "..val['AXMenuItemCmdChar'])
+                        menu = menu.."<li><div class='cmdModifiers'>"..commandEnum[val['AXMenuItemCmdModifiers']]..
+                        		" "..val['AXMenuItemCmdChar'].."</div><div class='cmdtext'>".." "..val['AXTitle']..
+                        		"</div></li>"
                     end 
                 elseif(val['AXRole'] =="AXMenuItem" and type(val['AXChildren']) == "table") then
                     menu = menu..getAllMenuItems(val['AXChildren'][1])

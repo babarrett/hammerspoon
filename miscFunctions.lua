@@ -11,6 +11,10 @@ local miscFunctions = {}
 --	TODO: Only respond if in "Mail" App; Add BBEdit-only functions
 --	HyperFn+/		moveToDone			Move current mail item to "Done"
 --	HyperFn+,		moveToStatus		Move current mail item to "Status"
+--	HyperFn++		mouseHighlight		Show mouse location by putting a circle around it
+--	HyperFn+-		manyDashes			Type 42 dashes
+--	HyperFn+T		todo				Type "TODO: "
+--	HyperFn+P		mdphotoplaceholder	Type something that looks like a photo in markdown.
 
 -- private functions to be referenced & executed later.
 
@@ -101,15 +105,29 @@ function mouseHighlight()
 end
 
 
- function manyDashes()
+function manyDashes()
 	 hs.eventtap.keyStrokes('-------------------------------------------')
 end
+
+function mdphotoplaceholder()
+	 hs.eventtap.keyStrokes("```")
+	 hs.eventtap.keyStroke({}, "Return")
+	 hs.eventtap.keyStrokes("+-----+")
+	 hs.eventtap.keyStroke({}, "Return")
+	 hs.eventtap.keyStrokes("|photo|")
+	 hs.eventtap.keyStroke({}, "Return")
+	 hs.eventtap.keyStrokes("+-----+")
+	 hs.eventtap.keyStroke({}, "Return")
+	 hs.eventtap.keyStrokes("```")
+	 hs.eventtap.keyStroke({}, "Return")
+end
+
 
 -- function fiveShifts()
 --	 hs.eventtap.keyStroke({"shift"}, "")
 --end
 
- function todo()
+function todo()
 	 hs.eventtap.keyStrokes('TODO: ')
 end
 
@@ -127,6 +145,7 @@ local funNameToFunction = {
 	lockMyScreen = lockMyScreen,
 	mouseHighlight = mouseHighlight,
 	manydashes = manyDashes,
+	mdphotoplaceholder = mdphotoplaceholder,
 --	fiveShifts = fiveShifts,
 	todo = todo
 }
@@ -143,6 +162,7 @@ local funNameToHelpText = {
 	lockMyScreen = 		'Lock screen so you can walk away',
 	mouseHighlight = 	'Surround mouse cursor with red circle for 3 seconds',
 	manydashes = 		'Type 42 hyphens',
+	mdphotoplaceholder=	'Type markdown place holder for photo',
 --	fiveShifts = 		'Sticky keys',
 	todo = 				'Type "TODO: " for codding'
 }
