@@ -3,7 +3,7 @@
 Cleaver things I've heard of and thought of.
 
 ## Things I do need to enter:
-* a-z, A-Z, 0-9, punct
+* a-z, A-Z, 0-9, punctuation
 * Space, Tab, Return
 * Command (⌘) + anything
 * Command (⌘) + Shift + anything
@@ -38,14 +38,16 @@ So three adjacent keys of the keyboard looks like:
     +-----+-------+-----+
 ```
 
-Up-arrow is a shifted version of the (default) down arrow.
+Up-arrow is a ~~shifted~~ control version of the (default) down arrow.
+
+Or, Right-arrow is a control version of the (default) left arrow.
 
 #### Pros
 * Save a key in the layout
 * Fingers don't have to leave the keys
 
 #### Cons
-* Shift + Up and down arrows to select line above / below won't work in that way.
+* Shift + Up and down arrows to select line above / below ~~won't work in that way.~~ will require Control too.
 * So may requiring a different layer/modifier for that. Maybe not so bad, That
 seems to be a less frequent operation.
 
