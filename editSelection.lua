@@ -99,18 +99,21 @@ function toTitleCase()
 	capitalizeNext = true
 	for i=1, string.len(sel), 1 do
 		thisChar = string.sub(sel, i, i)
-		if string.find(thisChar, "[ \t'\"“‘(]") then
+		if string.find(thisChar, "[ \t'\"“‘(]") then    -- If white space opening quotes or left paren
 			capitalizeNext = true
 		elseif capitalizeNext then
 			thisChar = string.upper(thisChar)
 			capitalizeNext = false
+		else
+			thisChar = string.lower(thisChar)
 		end
 		newSel = newSel..thisChar
 	end
 	-- Now, uncapitalize any words to avoid (includes skipping 1st and last word.)
+	-- TODO: Should we count even more characters as word breaks? Maybe at least: /, -, !, ¡, ¿, #, %, &, {, }, <, >
 	for _, word in pairs(noCapTitleWords) do
 		-- If any of the uppercased (by mistake) words of intrest are found, make them lowercase.
-		newSel, _ = string.gsub( newSel, "[ \t'\"“‘(]"..word.."[ ,:'’”]", string.lower )
+		newSel, _ = string.gsub( newSel, "[ \t'\"“‘(]"..word.."[ ,:'’”.]", string.lower )
 	end
 	hs.eventtap.keyStrokes(newSel)
 end
