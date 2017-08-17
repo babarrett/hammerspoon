@@ -78,6 +78,7 @@ local appShortCuts = {
     Znu = {'Numbers', 'Numbers', nil},
     Zpa = {'Pages', 'Pages', nil},
     Zpr = {'Preview', 'Preview', nil},
+    Zvi = {'VirtualBox', 'VirtualBox', nil},
 }
 
 local webShortCuts = {
