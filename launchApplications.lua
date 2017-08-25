@@ -65,12 +65,12 @@ local appShortCuts = {
     V = {'IBM VPN', 'Cisco AnyConnect Secure Mobility Client', nil},
 
     X = {'Firefox', 'Firefox', nil},
+    Y = {'Calendar (Year)', 'Calendar', nil},
 
   -- Using Zaa so it sorts after the 1-character shortcuts.
   -- Nothing "sacred" about # of characters in name
   -- Zaa sorts before Zbb so we can keep these in order as we like
     Zad = {'Adobe Reader', 'Adobe Reader', nil},
-    Zca = {'Calendar', 'Calendar', nil},
     Zfm = {'FileMaker', '/Applications/FileMaker Pro 13 Advanced/FileMaker Pro Advanced.app', nil},
     Zgt = {'GoToMeeting', '/Applications/GoToMeeting/GoToMeeting (7155).app', nil},
     Zit = {'iTunes', 'iTunes', nil},
@@ -105,6 +105,7 @@ local webShortCuts = {
 
     T = {"Confluence TP", nil, "https://confluence.aspera.us/display/TP/Technical+Publications"},
     W = {"Geekhack", nil, "https://geekhack.org/index.php?action=watched"},   -- Geekhack, Watched
+    Y = {'Calendar (Year)', nil, 'https://calendar.google.com/calendar/render#main_7'},
     
     Zgm = {'Google maps', nil, 'https://www.google.com/maps/' },
     Ztd = {'trac - docs builds', nil, 'https://trac.aspera.us/process2/test/docs' },
