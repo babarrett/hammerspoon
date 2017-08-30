@@ -134,13 +134,35 @@ function todo()
 end
 
 function mouseToEdge()
-  -- TODO:
-  --  find edges of top-most window
-  --  See if mouse is within 20px of any edges
-  --  If 2 closest edges are adjacent (we're at a corner) use both
-  --  If only 1, then use that one
-  --  Set absolute mouse coordinate to edge (or corner)
-  --  Done
+  -- TODO: BUG: Test more when window is touching edge of screen. May
+  -- need to adjust like we did with "top"
+
+	local win = hs.window.frontmostWindow()
+	local fudge = 40
+	if win ~= nil then	-- only if there's a window to move
+		local wf = win:frame() -- in absolute coordinates
+
+		debuglog("-------------------------------------------\nWindow Frame rect (x, y, w, h): "..wf.x..", "..wf.y..", "..wf.w..", "..wf.h)
+
+    mouseAbs = hs.mouse.getAbsolutePosition()
+		debuglog("---Abs (x,y)---: ("..mouseAbs.x..", "..mouseAbs.y..")")
+		-- update here
+		if (math.abs(mouseAbs.x - wf.x) < fudge) then
+		  mouseAbs.x = wf.x  -- left edge
+		end
+		if (math.abs(mouseAbs.y - wf.y) < fudge) then
+		  mouseAbs.y = math.floor(wf.y)+1  -- top edge
+		end
+
+		if (math.abs(mouseAbs.x - (wf.x+wf.w)) < fudge) then
+		  mouseAbs.x = wf.x+wf.w  -- right edge
+		end
+		if (math.abs(mouseAbs.y - (wf.y+wf.h)) < fudge) then
+		  mouseAbs.y = wf.y+wf.h  -- bottom edge
+		end
+		debuglog("---Abs (x,y)---: ("..mouseAbs.x..", "..mouseAbs.y..")")
+		hs.mouse.setAbsolutePosition(mouseAbs)
+	end
 
 end
 

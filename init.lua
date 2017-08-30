@@ -15,8 +15,8 @@ HyperFnString = "⌘⌥⌃⇧"					-- Visual representation
 
 -- log debug info to Hyperspoon Console
 -- We can disable all logging in one place
-function debuglog(text) 
-  hs.console.printStyledtext("DEBUG: "..tostring(text)) 
+function debuglog(text)
+  hs.console.printStyledtext("DEBUG: "..tostring(text))
 end
 
 --hs.hotkey.bind("", "f8", nil, function() hs.alert("f8") end ) -- works
@@ -72,6 +72,7 @@ miscFunctions.bind(HyperFn, "V", "typeClipboard")
 --miscFunctions.bind({"ctrl", "shift"}, ",", "moveToStatus")
 miscFunctions.bind(HyperFn, "=", "mouseHighlight")
 miscFunctions.bind(HyperFn, "-", "manydashes")
+miscFunctions.bind(HyperFn, "Z", "mouseToEdge")
 
 HF.add("\n\n-- Window Management Functions --\n")
 windowManagement.bind(HyperFn, "Right", "right")
@@ -101,7 +102,7 @@ function reloadConfig(files)
        end
    end
    if doReload then
-       hs.reload() 
+       hs.reload()
    end
 end
 -- Alert "Config loaded" here, happens not as we call reload, but as we load. Default alert durration=2 sec.
