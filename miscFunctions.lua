@@ -15,6 +15,8 @@ local miscFunctions = {}
 --	HyperFn+-		manyDashes			Type 42 dashes
 --	HyperFn+T		todo				Type "TODO: "
 --	HyperFn+P		mdphotoplaceholder	Type something that looks like a photo in markdown.
+--	HyperFn+Z		mouseToEdge			Move mouse cursor, which is somewhat close to the edge of the front-most
+--                               window to sitting right on top the edge. (so mouse can grab it)
 
 -- private functions to be referenced & executed later.
 
@@ -32,7 +34,7 @@ end
 
 function typeClipboardAsText()
 -- Pause for 0.2 seconds every 20 characters to let app catch up.
--- Without this I was occasionally getting swapped characters: teh 
+-- Without this I was occasionally getting swapped characters: teh
 --	rs = tostring(hs.pasteboard.readStyledText())
 	tx = hs.pasteboard.readString(true)	-- table
 --	debuglog(type(tx))
@@ -41,7 +43,7 @@ function typeClipboardAsText()
 --		debuglog("value of vl ("..ky..") is "..tostring(vl))
 		for i = 1, string.len(tostring(vl)), 20 do
 		  st = string.sub(vl, i, i+19)
-		  hs.eventtap.keyStrokes(st) 
+		  hs.eventtap.keyStrokes(st)
 		  sleep(.50)
 		end
 	end
@@ -49,26 +51,26 @@ end
 
 function quitApp()
 	hs.eventtap.keyStroke({"cmd"}, "Q")
-end		
+end
 function miscFunctions.closeWindow()
 	hs.eventtap.keyStroke({"cmd"}, "W")
-end	
+end
 function dictate()
 	hs.alert.show("Dictate")
 	hs.eventtap.keyStroke({"cmd", "opt"}, "comma")
-end		
+end
 function moveToDone()
 	-- BUG: We don't get this far.
 	debuglog("moveTo Done")
 	hs.alert.show("moveTo Done", 4)
 --	hs.eventtap.keyStroke({"cmd", "shift"}, "period")	-- ">"
-end	
+end
 function moveToStatus()
 	-- BUG: We don't get this far if we try to use HyperFn+, or . (or /)?
 	debuglog("moveTo Status")
 	hs.alert.show("moveTo Status", 4)
 --	hs.eventtap.keyStroke({"cmd", "shift"}, "comma")	-- "<"
-end	
+end
 
 function lockMyScreen()
 	hs.caffeinate.lockScreen()
@@ -100,7 +102,7 @@ function mouseHighlight()
     mouseCircle:show()
 
     -- Set a timer to delete the circle after 3 seconds
-    mouseCircleTimer = hs.timer.doAfter(1, function() mouseCircle:delete() 
+    mouseCircleTimer = hs.timer.doAfter(1, function() mouseCircle:delete()
     end)
 end
 
@@ -131,6 +133,16 @@ function todo()
 	 hs.eventtap.keyStrokes('TODO: ')
 end
 
+function mouseToEdge()
+  -- TODO:
+  --  find edges of top-most window
+  --  See if mouse is within 20px of any edges
+  --  If 2 closest edges are adjacent (we're at a corner) use both
+  --  If only 1, then use that one
+  --  Set absolute mouse coordinate to edge (or corner)
+  --  Done
+
+end
 
 -- private
 local funNameToFunction = {
@@ -147,7 +159,8 @@ local funNameToFunction = {
 	manydashes = manyDashes,
 	mdphotoplaceholder = mdphotoplaceholder,
 --	fiveShifts = fiveShifts,
-	todo = todo
+	todo = todo,
+	mouseToEdge = mouseToEdge
 }
 
 local funNameToHelpText = {
@@ -164,7 +177,9 @@ local funNameToHelpText = {
 	manydashes = 		'Type 42 hyphens',
 	mdphotoplaceholder=	'Type markdown place holder for photo',
 --	fiveShifts = 		'Sticky keys',
-	todo = 				'Type "TODO: " for codding'
+	todo = 				'Type "TODO: " for codding',
+  mouseToEdge = 'Move mouse to closest edge or corner of the front-most window.'
+
 }
 function miscFunctions.bind(modifiers, char, functName)
 	debuglog("miscFunctions binding: "..char.." to "..functName)
