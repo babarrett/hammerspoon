@@ -135,17 +135,19 @@ end
 
 function mouseToEdge()
   -- TODO: BUG: Test more when window is touching edge of screen. May
-  -- need to adjust like we did with "top"
+  -- need to adjust like we did with "top." 
+  -- top - OK
+  -- bottom on MBP screen = OK
 
 	local win = hs.window.frontmostWindow()
 	local fudge = 40
 	if win ~= nil then	-- only if there's a window to move
 		local wf = win:frame() -- in absolute coordinates
 
-		debuglog("-------------------------------------------\nWindow Frame rect (x, y, w, h): "..wf.x..", "..wf.y..", "..wf.w..", "..wf.h)
+		-- debuglog("-------------------------------------------\nWindow Frame rect (x, y, w, h): "..wf.x..", "..wf.y..", "..wf.w..", "..wf.h)
 
     mouseAbs = hs.mouse.getAbsolutePosition()
-		debuglog("---Abs (x,y)---: ("..mouseAbs.x..", "..mouseAbs.y..")")
+		-- debuglog("---Abs (x,y)---: ("..mouseAbs.x..", "..mouseAbs.y..")")
 		-- update here
 		if (math.abs(mouseAbs.x - wf.x) < fudge) then
 		  mouseAbs.x = wf.x  -- left edge
@@ -160,7 +162,7 @@ function mouseToEdge()
 		if (math.abs(mouseAbs.y - (wf.y+wf.h)) < fudge) then
 		  mouseAbs.y = wf.y+wf.h  -- bottom edge
 		end
-		debuglog("---Abs (x,y)---: ("..mouseAbs.x..", "..mouseAbs.y..")")
+		-- debuglog("---Abs (x,y)---: ("..mouseAbs.x..", "..mouseAbs.y..")")
 		hs.mouse.setAbsolutePosition(mouseAbs)
 	end
 
@@ -204,7 +206,7 @@ local funNameToHelpText = {
 
 }
 function miscFunctions.bind(modifiers, char, functName)
-	debuglog("miscFunctions binding: "..char.." to "..functName)
+	-- debuglog("miscFunctions binding: "..char.." to "..functName)
 	hs.hotkey.bind(modifiers, char, nil, funNameToFunction[functName] )	-- bind the key
 	-- Add to the help string
 	HF.add("Hyper+" .. char .. "     - " .. funNameToHelpText[functName] .. "\n")

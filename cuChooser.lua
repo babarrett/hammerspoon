@@ -189,7 +189,7 @@ function cu.new(completionFn)
   newcu.grob.bg = (newcu.grob.bg ~= nil) and newcu.grob.bg or {}
   table.insert(newcu.grob.bg, bgRect:show() )
   hs.timer.doAfter(5, cu.delete)
-  debuglog(bgRect)
+  -- debuglog(bgRect)
   return newcu
 end
 
@@ -208,7 +208,7 @@ end
 function clearGrobs(groblist)
   local k, v
   for k, v in pairs(groblist) do
-    debuglog("k: "..k.."; v: "..tostring(v))
+    -- debuglog("k: "..k.."; v: "..tostring(v))
     if type(v) == "table" then
       clearGrobs(v)
       v = nil
