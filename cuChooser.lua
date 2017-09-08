@@ -35,6 +35,10 @@ local cu = {}
 --    [1]   Boarder between BG outer edge and content
 --    "search term"	Space to enter search terms, to support the current hs.chooser functionality
 --        	Settable: Height, search value (default ""), text style
+--          Uses: Sum of Column Widths + 2*cell boarder widths for search term width.
+--    Hn    Heading number. One per column, if displayHeading(true).
+--        	Settable: height
+--          Uses: Any Column Widths for the heading widths.
 --    Cn    Column number. Support at least pairs of columns with different widths
 --        	Settable: height
 --    ⌘1   Command key equivalent, only available when there is 1 column? Optional
@@ -46,16 +50,16 @@ local cu = {}
 --        	Settable: (optional) Styled text
 --        	Settable: (optional) Text rectangle (text area - cell rectangle / 2 = boarder sizes)
 --    Cell image
---        	Settable: (optional) Image (png, jpg, etc,)
---        Settable: (optional) Text rectangle (text area - cell rectangle / 2 = boarder sizes)
+--          Settable: (optional) Image (png, jpg, etc,)
+--          Settable: (optional) Text rectangle (text area - cell rectangle / 2 = boarder sizes)
 --
---    [<...>] (optional) Scrollbar region
+--    [<...>] (optional) Vertical scrollbar region, if displayRowShowShortcuts(true).
 --
 --    [BG Width]	outer width of BG region
---        Computable: [BG Width] = 2*[1]+Sum(cell widths)+Sum(cell boarder lines)+ scroll bar width
+--        Computable: [BG Width] = 2*boarder width+Sum(cell widths)+2*Sum(cell boarder lines)+ scroll bar width
 --
 --    [BG Height] outer height of BG region
---        Computable: [BG Width] = 2*[1]+Sum(cell widths)+Sum(cell boarder lines)+scrollbar width
+--        Computable: [BG Height] = 2*boarder height+Sum(cell heights)+2*Sum(cell boarder lines)+search term height+Descriptive text height
 --
 --    b   Cell boarders, all around. Definable color, alpha, and width. Boarders are between each cell
 --        so add to the total BG width by (width * (number of columns+1))
@@ -69,7 +73,7 @@ local cu = {}
 --	Typed characters accepted and used to drive the interface:
 --    Up, down, left, right:				Move to adjacent cell. Stops at first/last column, and row
 --    Shift+Up, down, left, right:  Extend selection if cellMultiSelect(true)
---    Cmd+1,2,3...:         				Select indicated row and exit, if rowShowShortcuts(true)
+--    Cmd+1,2,3...:         				Select indicated row and exit, if displayRowShowShortcuts(true)
 --    Enter:    cu is complete. Return table of selected cellnums (if any), unless search field has focus -- then search
 --    Space:    cu is complete. Return table of selected cellnums (if any), unless search field has focus -- then add space
 --    Tab:    	anything?
@@ -183,7 +187,7 @@ function cu.new(completionFn)
   -- TEST: Show the BG test rectangle
   local bgRect = ""
   bgRect = hs.drawing.rectangle(hs.geometry.rect(100, 100, newcu.bg.width, newcu.bg.height))
-  bgRect:setFillColor({["red"]=0.5,["blue"]=0.5,["green"]=0.5,["alpha"]=0.5}):setFill(true)
+  bgRect:setFillColor({["red"]=0.7,["blue"]=0.5,["green"]=0.5,["alpha"]=0.5}):setFill(true)
   bgRect:setRoundedRectRadii(10, 10)
   bgRect:setLevel(hs.drawing.windowLevels["floating"])
   newcu.grob.bg = (newcu.grob.bg ~= nil) and newcu.grob.bg or {}
@@ -195,6 +199,7 @@ end
 
 function cu.delete()
   clearGrobs(newcu.grob.bg)
+  newcu.grob.bg = nil
 end
 
 
@@ -202,7 +207,7 @@ end
 
 ---	Clear (hide, delete and set to nil) all graphic objects in the provided list (table).
 --  Any nil items in the list are ignored. If, by chance, one of the objects in the provided
---	list is itself a table (;ist) then call recursively to delete the objects in that table.
+--	list is itself a table (list) then call recursively to delete the objects in that table.
 --  Nothing returned.
 -- 	@param groblist The list (table) of graphic objects to be removed
 function clearGrobs(groblist)
