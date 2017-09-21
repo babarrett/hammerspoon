@@ -27,7 +27,7 @@ launchApplications = {}
 --      3. Need to handle "Space" and "Return" in a similar way.
 --  TODO: Can we support "Q" to quit the currently selected app?
 --  TODO: Support 1, 2, 3,.. to skip to the center of that row of the grid.
---  TODO: BUG: When only on app is open (Finder) and you Hyper+A nothing appears, but the keyboard is blocked.
+--  TODO: BUG: When only one app is open (Finder) and you Hyper+A nothing is displayed, but the keyboard is blocked.
 
 local DEFAULTBROWSER = 'Safari'
 local pickerView = nil
@@ -106,7 +106,7 @@ local webShortCuts = {
     T = {"Confluence TP", nil, "https://confluence.aspera.us/display/TP/Technical+Publications"},
     W = {"Geekhack", nil, "https://geekhack.org/index.php?action=watched"},   -- Geekhack, Watched
     Y = {'Calendar (Year)', nil, 'https://calendar.google.com/calendar/render#main_7'},
-    
+
     Zgm = {'Google maps', nil, 'https://www.google.com/maps/' },
     Ztd = {'trac - docs builds', nil, 'https://trac.aspera.us/process2/test/docs' },
     Ztr = {'trac - release builds', nil, 'https://trac.aspera.us/process2/release/' },
