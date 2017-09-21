@@ -107,6 +107,8 @@ local webShortCuts = {
     W = {"Geekhack", nil, "https://geekhack.org/index.php?action=watched"},   -- Geekhack, Watched
     Y = {'Calendar (Year)', nil, 'https://calendar.google.com/calendar/render#main_7'},
 
+    Z = {'Zendesk', nil, 'https://aspera.zendesk.com/agent/dashboard'},
+
     Zgm = {'Google maps', nil, 'https://www.google.com/maps/' },
     Ztd = {'trac - docs builds', nil, 'https://trac.aspera.us/process2/test/docs' },
     Ztr = {'trac - release builds', nil, 'https://trac.aspera.us/process2/release/' },
