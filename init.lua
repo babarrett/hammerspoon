@@ -6,7 +6,7 @@
 --	TODO: Create another modual for KeyToKey mappings such as Numeric Pad to move functions.
 --	TODO: Find some way wo handle NumLock, What's blocking it? No Karibiner == always numeric.
 
-VERSION = "2017-Jul-24"
+VERSION = "2017-Sept-20"
 hs.console.clearConsole()
 LUA_PATH = os.getenv("HOME") .. "/dev/git/hammerspoon/?"
 
@@ -51,6 +51,7 @@ require "KeyPressShow"			-- Hyper+K shows/hides key presses on screen
 require "bindFunctionKeys"
 --require "characterMapping"
 require "editSelection"
+require "clipboard"         -- Menu item, does not use SpaceFN or HyperFn keys
 local cu						= require "cuChooser"	-- Custom Chooser
 foo = cu.new(function () end)
 

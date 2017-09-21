@@ -108,7 +108,7 @@ local cu = {}
 --      cu.chooser.delegateChars( table ) --  Table of characters that cu.chooser will handle. Default is all.
 --
 --  BG
---      (No methods for height or width, those are computed)
+--      (No methods for height or width, those are computed based on margins and other object sizes)
 --      cu.chooser.bgColor(color)
 --      cu.chooser.bgInnerMargin(points)
 --      cu.chooser.bgLocation( centered | topthird | mouse [, active | main ]) -- Where to center BG on screen, and which screen
