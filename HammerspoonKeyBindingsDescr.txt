@@ -1,0 +1,78 @@
+Key       Function description
+--------- ---------------------------------------------------------------------------
+⌃DELETE   Delete previous word
+
+✧-        43 "-"
+✧`        Current App Window selector
+✧=        Circle mouse 1-2 seconds. Read as "✧+"
+✧4        Window resize 40%
+✧5        Window resize 50%
+✧6        Window resize 60%
+✧7        Window resize 70%
+✧DOWN     Resize window to bottom edge
+✧LEFT     Resize window to left edge
+✧RIGHT    Resize window to right edge
+✧UP       Resize window to top edge
+✧PAD0     Window resize to full screen
+
+✧A        Pick one of your common Applications (26, predefined)
+✧C        Generate "Cheat Sheet" TODO: Repair
+✧D        Dictate (on/Off) TODO: Remove
+✧H        Help
+✧K        Show Keypress (on/Off) -- Debugging
+✧L        Lock screen, and walk away
+✧P        Photo place holder for Markdown docs.
+✧Q        Quit App (⌘Q) TODO: Is this needed? Remove?
+✧T        Type "TODO: "
+✧U        Type current front-most Safari URL at insertion point in another App.
+✧V        Type current clipboard as text. No styling. Avoids paste blockers.
+✧W        Pick one of your common web pages (22, predefined)
+✧Z        Move mouse to closest edge, or corner of the front-most window.
+
+✧TAB      Display active Apps as grid, except current, to switch to.
+
+F1        BBEdit
+F2        iTerm
+F3        Safari
+F4        Finder
+F5        Mail
+F6        Mail In Box (⌘1)
+F7        Move Message to Done (CMD+Shift+".")
+F8        Move Message to Status (CMD+Shift+"/")
+
+F9        Preview TODO: Can't handle with Hammerspoon, Using Karabiner
+F10       Secure - try to mount secure disk image TODO: Can't handle with Hammerspoon, Using Karabiner
+F11       System Preferences TODO: Can't handle with Hammerspoon, Using Karabiner
+
+F12       OxYgen DITA Editor
+F13/⇧F1  Hangouts
+F14/⇧F2  Drive
+F15/⇧F3  Docs
+F16/⇧F4  Sheets
+F17/⇧F5  ASCN - Jira for Connect
+F18/⇧F6  Confluence for Connect TODO: Verify
+F19/⇧F7  Trac
+F20/⇧F8  Confluence for Tech Pubs
+
+⌥F1       Copy selection into <prefix>
+⌥F2       Copy selection into <postfix>
+
+⌃F1       Paste: <prefix>+clipboard+<postfix>
+⌃F2       Find next. (Also SpaceFN+G)
+⌃F4       Select All.
+⌃F5       Selection to UPPER
+⌃F6       Selection to lowercase
+⌃F7       Selection to Title Case
+⌃F8       Selection from CamelCase to camel case
+⌃F12      Swap characters on either side of insertion point. Like Ctrl-T.
+
+⌘⇧F10     F10, because macOS traps F10
+⌘⇧F12     Turn on/off: Report layer modifier change
+
+-------------------------------------------
+Legend:
+⇧        Shift
+^         Control
+⌘        Command
+✧         HyperFn (⌘⌥^⇧)
+?         Meh (⌥^⇧)
