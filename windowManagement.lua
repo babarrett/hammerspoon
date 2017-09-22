@@ -1,8 +1,8 @@
---	Move window to (some) 30,40,..70% of screen (left, right, top, bottom)
+--	Move window to (some) 40,..80% of screen (left, right, top, bottom)
 --	Originally taken from: https://gist.github.com/swo/91ec23d09a3d6da5b684
 --	HyperFn+Left moves window to left part of the screen.
 --	Likewise for other arrows.
---	Hyper+Numpad-0 goes to (nearly) full screen
+--	HyperFn+0 goes to (nearly) full screen
 --	If the window is already in place (say left edge) and we get another left
 --	command then move it to the *screen* to the left.
 
@@ -72,7 +72,8 @@ local funNameToHelpText = {
 	percent40 =	'Moved windows take 40% of screen',
 	percent50 =	'Moved windows take 50% of screen',
 	percent60 =	'Moved windows take 60% of screen',
-	percent70 =	'Moved windows take 70% of screen'
+	percent70 =	'Moved windows take 70% of screen',
+	percent80 =	'Moved windows take 80% of screen'
 }
 
 
@@ -104,6 +105,9 @@ end
 local function percent70()
 	windowSizePercent = 0.70
 end
+local function percent80()
+	windowSizePercent = 0.80
+end
 local funNameToFunction = {
 	left = left,
 	right = right,
@@ -113,7 +117,8 @@ local funNameToFunction = {
 	percent40 = percent40,
 	percent50 = percent50,
 	percent60 = percent60,
-	percent70 = percent70
+	percent70 = percent70,
+	percent80 = percent80
 }
 
 function windowManagement.bind(modifiers, char, functName)
