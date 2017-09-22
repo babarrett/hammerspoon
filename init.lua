@@ -80,11 +80,12 @@ windowManagement.bind(HyperFn, "Right", "right")
 windowManagement.bind(HyperFn, "Left", "left")
 windowManagement.bind(HyperFn, "Down", "down")
 windowManagement.bind(HyperFn, "Up", "up")
-windowManagement.bind(HyperFn, "pad0", "full")
 windowManagement.bind(HyperFn, "4", "percent40")
 windowManagement.bind(HyperFn, "5", "percent50")
 windowManagement.bind(HyperFn, "6", "percent60")
 windowManagement.bind(HyperFn, "7", "percent70")
+windowManagement.bind(HyperFn, "8", "percent80")
+windowManagement.bind(HyperFn, "0", "full")
 
 -- Add list of screens to bottom of Help
 local myScreens = "\n\nActive screens:  {"
