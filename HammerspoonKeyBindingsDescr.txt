@@ -2,18 +2,20 @@ Key       Function description
 --------- ---------------------------------------------------------------------------
 ⌃DELETE   Delete previous word
 
-✧-        43 "-"
+✧TAB      Display active Apps as grid, except current. Selector.
 ✧`        Current App Window selector
+✧-        43 "-"
 ✧=        Circle mouse 1-2 seconds. Read as "✧+"
 ✧4        Window resize 40%
 ✧5        Window resize 50%
 ✧6        Window resize 60%
 ✧7        Window resize 70%
+✧8        Window resize 80%
+✧0        Window resize to (near) full screen
+✧UP       Resize window to top edge
 ✧DOWN     Resize window to bottom edge
 ✧LEFT     Resize window to left edge
 ✧RIGHT    Resize window to right edge
-✧UP       Resize window to top edge
-✧PAD0     Window resize to full screen
 
 ✧A        Pick one of your common Applications (26, predefined)
 ✧C        Generate "Cheat Sheet" TODO: Repair
@@ -26,17 +28,15 @@ Key       Function description
 ✧T        Type "TODO: "
 ✧U        Type current front-most Safari URL at insertion point in another App.
 ✧V        Type current clipboard as text. No styling. Avoids paste blockers.
-✧W        Pick one of your common web pages (22, predefined)
+✧W        Pick one of your common web pages (23, predefined)
 ✧Z        Move mouse to closest edge, or corner of the front-most window.
-
-✧TAB      Display active Apps as grid, except current, to switch to.
 
 F1        BBEdit
 F2        iTerm
 F3        Safari
 F4        Finder
 F5        Mail
-F6        Mail In Box (⌘1)
+F6        Mail In Box window (⌘1)
 F7        Move Message to Done (CMD+Shift+".")
 F8        Move Message to Status (CMD+Shift+"/")
 
@@ -45,7 +45,7 @@ F10       Secure - try to mount secure disk image TODO: Can't handle with Hammer
 F11       System Preferences TODO: Can't handle with Hammerspoon, Using Karabiner
           Note: ⇧+F9, ⇧+F10, ⇧+F11 are also intercepted by OS X (fail)
           Note: ⌘+F9, ⌘+F10, ⌘+F11 are not intercepted by OS X (work)
-          Note: ^+F9, ^+F10, ^+F11 are not intercepted by OS X (work)
+          Note: ⌃+F9, ⌃+F10, ⌃+F11 are not intercepted by OS X (work)
           
 F12       OxYgen DITA Editor
 
@@ -68,17 +68,17 @@ F12       OxYgen DITA Editor
 ⌃F6       Selection to lowercase
 ⌃F7       Selection to Title Case
 ⌃F8       Selection from CamelCase to camel case
-^F9-F11   are available
+⌃F9-F11   are available
 ⌃F12      Swap characters on either side of insertion point. Like Ctrl-T.
 
-          -- TODO: Map all⌘⇧F## to F## --
+          -- TODO: Map all⌘⇧F## to F## for F1 to F12 --
 ⌘⇧F10     F10, because macOS traps F10
 ⌘⇧F12     Turn on/off: Report layer modifier change. TODO: Move to another key combo so ⌘⇧F12 can be mapped to F12
 
 -------------------------------------------
 Legend:
 ⇧        Shift
-^         Control
+⌃        Control
 ⌘        Command
-✧         HyperFn (⌘⌥^⇧)
-?         Meh (⌥^⇧)
+✧         HyperFn (⌘⌥⌃⇧)
+?         Meh (⌥⌃⇧)
