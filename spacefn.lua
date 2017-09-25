@@ -10,7 +10,7 @@ local spacefn = {}
 --	SpaceFn+C		Copy to Clipboard
 --	SpaceFn+V		Paste Clipboard
 --  Navigation Cluster:
---                      ⌫ word      Delete
+--                      ⌫ word   Delete
 --    ↖️  ⬆️    ⇞                     U, I, O
 --⬅⇧  ⬅️  ⬇️    ➡️  ⇧➡️              H, J, K, L, ;  (Outer arrows for select)
 --        ↙️  ⬇️    ⇟                   M, ,, .
@@ -143,19 +143,12 @@ local spacefn = {}
 --    and navigation keys (arrow keys) in combination, this setting allows me to keep
 --    my hands on the home row all the time.
 
---    Just my 2 cents on the rollover detection criterion.  I am interested in using
---    the spacebar as an extra CTRL, so there is a lot of problems with fast typing
---    rollover. ()
---    I found that adding timeouts makes things a bit *unpredictable*, so I don't like
---    them as a solution.
---x
---
 --    Checking release order can prevent most errors as well. The potential
 --    downside is that you may have to retrain yourself to always release modifier
 --    keys last (though this isn't a huge deal). A combination of this and a delay may
 --    be very reliable.
 
-Possible interactions
+--  Possible interactions
 
 
 
