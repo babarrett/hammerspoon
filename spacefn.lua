@@ -82,7 +82,7 @@ local spacefn = {}
 --    I guess the key thing is the first of the checks. It makes all the difference in
 --    the world for me.
 --
---    There are four possible relationships between Space and k:
+--    There are five possible relationships between Space and k:
 --    * Space and k don't overlap. Unambiguous.
 --    * k overlaps the start of Space. Treat as k, Space
 --    * k overlaps the end of Space. Treat as Space, k
@@ -106,8 +106,35 @@ local spacefn = {}
 --  Spc   ------------\____/---------
 --  k     ------\______________/-----
 --        Rule #3 says this is: SpaceFn+k
+--
+--  --------------------- Alternate thoughts, Bruce ----------------------
+--  Spc   -----\____/----------------
+--  k     --------------\______/-----
+--                  Sp   k
+--        Space, k
+--
+--  Spc   -------\__________/--------
+--  k     ----\______/---------------
+--            k             Sp
+--        Rule #1 says this is: k, Space
+--
+--  Spc   -----\__________/-----
+--  k     --------------\______/-----
+--                             Spc, k
+--        Rule #2 says this is: Space, k (queue K's until Spc Up)
+--
+--  Spc   -----\______________________/-----
+--  k     --------------\______/------------
+--                            Spc+k
+--        SpaceFn+k (easy, k within Spc = SpaceFn+k)
+--
+--  Spc   ------------\____/---------
+--  k     ------\______________/-----
+--        This could be: k Down, Space Down, Space Up, k Up = k, Spc
+--        Uncommon enough to be undefined?
 
-
+--
+--
 --  Hasu says: (DR = Duel Role)
 --    Rules determining whether DRmod should perform as key or modifier are very simple:
 --    1. Judging term (200ms in my case) elapsed(timeout) => modifier
