@@ -2,16 +2,16 @@ Key       Function description
 --------- ---------------------------------------------------------------------------
 ⌃DELETE   Delete previous word
 
-✧TAB      Display active Apps as grid, except current. Selector.
-✧`        Current App Window selector
-✧-        43 "-"
+✧TAB      Selector. Display active Apps as grid, except current. 
+✧`        Selector. Select from windows of current App.
+✧-        43 x "-"
 ✧=        Circle mouse 1-2 seconds. Read as "✧+"
 ✧4        Window resize 40%
 ✧5        Window resize 50%
 ✧6        Window resize 60%
 ✧7        Window resize 70%
 ✧8        Window resize 80%
-✧0        Window resize to (near) full screen
+✧0        Window resize to (near) full screen. Immediate.
 ✧UP       Resize window to top edge
 ✧DOWN     Resize window to bottom edge
 ✧LEFT     Resize window to left edge
