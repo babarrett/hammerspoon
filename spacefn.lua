@@ -107,7 +107,10 @@ local spacefn = {}
 --  k     ------\______________/-----
 --        Rule #3 says this is: SpaceFn+k
 --
+--  ----------------------------------------------------------------------
 --  --------------------- Alternate thoughts, Bruce ----------------------
+--  ----------------------------------------------------------------------
+--
 --  Spc   -----\____/----------------
 --  k     --------------\______/-----
 --                  Sp   k
@@ -132,7 +135,31 @@ local spacefn = {}
 --  k     ------\______________/-----
 --        This could be: k Down, Space Down, Space Up, k Up = k, Spc
 --        Uncommon enough to be undefined?
-
+--
+--  So, what's the algorithm for this?
+--
+--  Start:      "At rest" state. Any key typed will behave "normally"
+--              Set flag spcDnStart = false
+--              keysPressed = {}
+--              keysQueued = {}
+--
+--  k Dn:       push k to keysPressed
+--              If spcDnStart then emit Spc+k; 
+--              If not spcDnStart then emit k Dn; 
+--
+--  k Up:       remove k from keysPressed
+--              if k is in keysQueued then remove k from keysQueued; emit k dn, k up
+--              else
+--                  If not spcDnStart then k Dn, k Up; 
+--
+--  Spc Dn:     Set flag spcDnStart = true
+--              Set startTimeMs = now in ms (needed?)
+--
+--  Spc Up:     If only true flag = spcDnStart then emit Spc dn, Spc up
+--
+--
+--
+--
 --
 --
 --  Hasu says: (DR = Duel Role)
