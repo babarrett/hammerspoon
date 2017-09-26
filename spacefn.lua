@@ -111,28 +111,34 @@ local spacefn = {}
 --  --------------------- Alternate thoughts, Bruce ----------------------
 --  ----------------------------------------------------------------------
 --
---  Spc   -----\____/----------------
---  k     --------------\______/-----
---                  Sp   k
---        Space, k
+--1 Spc   -----\____/-----------------------                spcDnStart
+--                  Sp
+--2 k     --------------\______/------------                !spcDnStart
+--                       k
+--        Spc Dn, (no k) Spc Up = Scp
 --
---  Spc   -------\__________/--------
---  k     ----\______/---------------
---            k             Sp
---        Rule #1 says this is: k, Space
---
---  Spc   -----\__________/-----
---  k     --------------\______/-----
---                             Spc, k
---        Rule #2 says this is: Space, k (queue K's until Spc Up)
---
---  Spc   -----\______________________/-----
+--3 Spc   -----\______________________/-----                spcDnStart
 --  k     --------------\______/------------
---                            Spc+k
---        SpaceFn+k (easy, k within Spc = SpaceFn+k)
+--                      Esc
+--        Spc Dn, Esc Dn, Spc Up = Swallow Sp and Esc (including Esc Up)
 --
---  Spc   ------------\____/---------
---  k     ------\______________/-----
+--4 Spc   -----\__________/-----------------                spcDnStart
+--  k     --------------\______/------------
+--                             Spc, k
+--        Rule #2 says this is: Space, k (queue k's until Spc Up)
+--
+--5 Spc   -----\______________________/-----                spcDnStart
+--  k     --------------\______/------------
+--        Spc Dn, k Dn, k Up, Spc Up = Swallow Sp, Emit Spc+k
+--
+--6 Spc   -------\__________/---------------                !spcDnStart
+--  k     ----\______/----------------------
+--            k             Sp
+--        k Dn, Emit, Spc Dn, (don't emit), k Up, Emit k Up
+--        Spc Up = Emit Spc Dn/Up
+--
+--7 Spc   ------------\____/----------------                !spcDnStart
+--  k     ------\______________/------------
 --        This could be: k Down, Space Down, Space Up, k Up = k, Spc
 --        Uncommon enough to be undefined?
 --
@@ -140,26 +146,44 @@ local spacefn = {}
 --
 --  Start:      "At rest" state. Any key typed will behave "normally"
 --              Set flag spcDnStart = false
+--              Set flag kTypedinSpc = false
 --              keysPressed = {}
---              keysQueued = {}
+--              keysDownInSpc = {}
 --
 --  k Dn:       push k to keysPressed
---              If spcDnStart then emit Spc+k; 
---              If not spcDnStart then emit k Dn; 
+--              If spcDnStart then push k to keysDownInSpc; "Swallow" k dn
+--              If !spcDnStart then emit k Dn;
 --
 --  k Up:       remove k from keysPressed
---              if k is in keysQueued then remove k from keysQueued; emit k dn, k up
+--              If spcDnStart then emit k Up; Set flag kTypedinSpc = true;
+--                exit
+--              if k is in keysDownInSpc then remove k from keysDownInSpc; Spc+k;     -- was: emit k dn, k up
 --              else
---                  If not spcDnStart then k Dn, k Up; 
+--                  If !spcDnStart then emit k Up;
 --
---  Spc Dn:     Set flag spcDnStart = true
---              Set startTimeMs = now in ms (needed?)
+--  Spc Dn:     Set spcDnStart = true
+--              /// Set startTimeMs = now in ms (needed?)
+--              "Swallow" Spc Dn
 --
---  Spc Up:     If only true flag = spcDnStart then emit Spc dn, Spc up
+--  Spc Up:     If kTypedinSpc then kTypedinSpc = false;
+--              else
+--                If spcDnStart then emit Spc dn, Spc up
+--              spcDnStart = false
 --
+--  spcDnStart  kTypedinSpc keysPressed keysDownInSpc EMIT
+--  false       false       {}          {}            ""    --start
+-1- false       false       {}          {}            ""    --start
+--  true
+--  false                                             Spc dn, Spc up
+--                          {k}                       k dn
+--                          {}                        k up
 --
---
---
+-2- false       false       {}          {}            ""    --start
+--                          {k}                       k dn
+--  true                                              .
+--              true        {}          {k}           k up
+--              false
+--  false
 --
 --
 --  Hasu says: (DR = Duel Role)
