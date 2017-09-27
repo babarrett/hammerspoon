@@ -110,48 +110,56 @@ local spacefn = {}
 --  ----------------------------------------------------------------------
 --  --------------------- Alternate thoughts, Bruce ----------------------
 --  ----------------------------------------------------------------------
---
---1 Spc   -----\____/-----------------------                spcDnStart
+---- #1: Independent space 
+--  Spc   -----\____/-----------------------                spcDnStart
 --                  Sp
---2 k     --------------\______/------------                !spcDnStart
---                       k
---        Spc Dn, (no k) Spc Up = Scp
+--        Spc Dn, (no k) Spc Up = Emit Spc on Spc Up
 --
---3 Spc   -----\______________________/-----                spcDnStart
+---- #2: Independent k
+--  k     --------------\______/------------                !spcDnStart
+--                       k
+--
+---- #3: Esc within Spc to cancel
+--  Spc   -----\______________________/-----                spcDnStart
 --  k     --------------\______/------------
 --                      Esc
---        Spc Dn, Esc Dn, Spc Up = Swallow Sp and Esc (including Esc Up)
+--        Spc Dn, Esc Dn/Up, Spc Up = Swallow Sp and Esc
 --
---4 Spc   -----\__________/-----------------                spcDnStart
+---- #4: Space down, k down, Spc up, k up after Spc
+----        "Rollover" case, fast typest
+--  Spc   -----\__________/-----------------                spcDnStart
 --  k     --------------\______/------------
 --                             Spc, k
---        Rule #2 says this is: Space, k (queue k's until Spc Up)
 --
---5 Spc   -----\______________________/-----                spcDnStart
+---- #5: k wholly  within Spc
+--  Spc   -----\______________________/-----                spcDnStart
 --  k     --------------\______/------------
 --        Spc Dn, k Dn, k Up, Spc Up = Swallow Sp, Emit Spc+k
---
---6 Spc   -------\__________/---------------                !spcDnStart
---  k     ----\______/----------------------
---            k             Sp
---        k Dn, Emit, Spc Dn, (don't emit), k Up, Emit k Up
---        Spc Up = Emit Spc Dn/Up
---
---7 Spc   ------------\____/----------------                !spcDnStart
---  k     ------\______________/------------
---        This could be: k Down, Space Down, Space Up, k Up = k, Spc
---        Uncommon enough to be undefined?
 --
 --  So, what's the algorithm for this?
 --
 --  Start:      "At rest" state. Any key typed will behave "normally"
 --              Set flag spcDnStart = false
---              Set flag kTypedinSpc = false
+--              Set flag spcKEmitted = false
+--              Set flag tossSpcUp = false
+--              Set flag tossEscUp - false
 --              keysPressed = {}
 --              keysDownInSpc = {}
 --
---  k Dn:       push k to keysPressed
---              If spcDnStart then push k to keysDownInSpc; "Swallow" k dn
+--  k Dn:       if ((k == Esc) and (spcDnStart)) then
+--                tossSpcUp = true
+--                tossEscUp = true
+--                exit
+--              If !spcDnStart then 
+--                emit k Dn
+--                exit;
+--              If spcDnStart then 
+--                -=- what next?
+--  push k to keysDownInSpc; "Swallow" k dn
+--
+--
+--              push k to keysPressed
+--              
 --              If !spcDnStart then emit k Dn;
 --
 --  k Up:       remove k from keysPressed
@@ -165,10 +173,10 @@ local spacefn = {}
 --              /// Set startTimeMs = now in ms (needed?)
 --              "Swallow" Spc Dn
 --
---  Spc Up:     If kTypedinSpc then kTypedinSpc = false;
---              else
---                If spcDnStart then emit Spc dn, Spc up
---              spcDnStart = false
+--  Spc Up:     spcDnStart = false
+--
+--  CleanEnd:
+--
 --
 --  spcDnStart  kTypedinSpc keysPressed keysDownInSpc EMIT
 --  false       false       {}          {}            ""    --start
@@ -326,3 +334,24 @@ end
 
 
 return spacefn
+---- #6: k down, Spc down, k up, Spc up after k
+--  Spc   -------\__________/---------------                !spcDnStart
+--  k     ----\______/----------------------
+--            k             Sp
+--        k Dn, Emit, Spc Dn, (don't emit), k Up, Emit k Up
+--        Spc Up = Emit Spc Dn/Up (no Spc+k's emited to the Spc Dn/Up emits a Spc)
+--
+---- #7: k1 down, Spc down, k1 up, k2 Dn, k2 Up, Spc up
+--  Spc   -------\____________________/-----                !spcDnStart
+--  k     ----\______/----\______/----------
+--            k1           k2
+--        k1 Dn, Emit, Spc Dn, (don't emit), k1 Up, Emit k1 Up,
+--        k2 Dn (emit Spc+k2 Dn), k2 Up (emit Spc+k2 Up)
+--        Spc Up = Emit Spc Dn/Up (no Spc+k's emited to the Spc Dn/Up emits a Spc)
+--
+----  #8: LATER
+--  Spc   ------------\____/----------------                !spcDnStart
+--  k     ------\______________/------------
+--        This could be: k Down, Space Down, Space Up, k Up = k, Spc
+--        Uncommon enough to be undefined?
+--
