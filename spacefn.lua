@@ -110,7 +110,7 @@ local spacefn = {}
 --  ----------------------------------------------------------------------
 --  --------------------- Alternate thoughts, Bruce ----------------------
 --  ----------------------------------------------------------------------
----- #1: Independent space 
+---- #1: Independent space
 --  Spc   -----\____/-----------------------                spcDnStart
 --                  Sp
 --        Spc Dn, (no k) Spc Up = Emit Spc on Spc Up
@@ -136,33 +136,39 @@ local spacefn = {}
 --  k     --------------\______/------------
 --        Spc Dn, k Dn, k Up, Spc Up = Swallow Sp, Emit Spc+k
 --
+---- #7: k1 down, Spc down, k1 up, k2 Dn, k2 Up, Spc up
+--  Spc   -------\____________________/-----                !spcDnStart
+--  k     ----\______/----\______/----------
+--            k1           k2
+--        k1 Dn, Emit, Spc Dn, (don't emit), k1 Up, Emit k1 Up,
+--        k2 Dn (emit Spc+k2 Dn), k2 Up (emit Spc+k2 Up)
+--        Spc Up = Emit Spc Dn/Up (no Spc+k's emited to the Spc Dn/Up emits a Spc)
+--
 --  So, what's the algorithm for this?
 --
 --  Start:      "At rest" state. Any key typed will behave "normally"
---              Set flag spcDnStart = false
---              Set flag spcKEmitted = false
---              Set flag tossSpcUp = false
---              Set flag tossEscUp - false
---              keysPressed = {}
+--              Set spcDnStart, spcKEmitted, tossSpcUp, tossEscUp = false
+--              keysToRelease = {}
 --              keysDownInSpc = {}
 --
 --  k Dn:       if ((k == Esc) and (spcDnStart)) then
 --                tossSpcUp = true
 --                tossEscUp = true
---                exit
---              If !spcDnStart then 
---                emit k Dn
---                exit;
---              If spcDnStart then 
---                -=- what next?
+--                push k to keysToRelease
+--              else
+--                If !spcDnStart then
+--                  emit k Dn
+--                  exit;
+--                If spcDnStart then
+--                  -=- what next?
 --  push k to keysDownInSpc; "Swallow" k dn
 --
 --
---              push k to keysPressed
---              
+--              push k to keysToRelease
+--
 --              If !spcDnStart then emit k Dn;
 --
---  k Up:       remove k from keysPressed
+--  k Up:       remove k from keysToRelease
 --              If spcDnStart then emit k Up; Set flag kTypedinSpc = true;
 --                exit
 --              if k is in keysDownInSpc then remove k from keysDownInSpc; Spc+k;     -- was: emit k dn, k up
@@ -178,7 +184,7 @@ local spacefn = {}
 --  CleanEnd:
 --
 --
---  spcDnStart  kTypedinSpc keysPressed keysDownInSpc EMIT
+--  spcDnStart  kTypedinSpc keysToRelease keysDownInSpc EMIT
 --  false       false       {}          {}            ""    --start
 -1- false       false       {}          {}            ""    --start
 --  true
@@ -339,14 +345,6 @@ return spacefn
 --  k     ----\______/----------------------
 --            k             Sp
 --        k Dn, Emit, Spc Dn, (don't emit), k Up, Emit k Up
---        Spc Up = Emit Spc Dn/Up (no Spc+k's emited to the Spc Dn/Up emits a Spc)
---
----- #7: k1 down, Spc down, k1 up, k2 Dn, k2 Up, Spc up
---  Spc   -------\____________________/-----                !spcDnStart
---  k     ----\______/----\______/----------
---            k1           k2
---        k1 Dn, Emit, Spc Dn, (don't emit), k1 Up, Emit k1 Up,
---        k2 Dn (emit Spc+k2 Dn), k2 Up (emit Spc+k2 Up)
 --        Spc Up = Emit Spc Dn/Up (no Spc+k's emited to the Spc Dn/Up emits a Spc)
 --
 ----  #8: LATER
