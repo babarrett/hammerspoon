@@ -135,5 +135,24 @@ end
 timer = hs.timer.new(frequency, storeCopy)
 timer:start()
 
+--Alternate non-timmer event check for CMD-C
+--Note, unlikely to work for option-click and things like iTern that copy in select.
+--local in_copy = false
+--local copy = hs.eventtap.new({hs.eventtap.event.types.keyDown, hs.eventtap.event.types.keyUp}, function (event)
+--   if event:getCharacters() == 'c' and event:getFlags().cmd then
+--      if event:getType() == hs.eventtap.event.types.keyDown then
+--         in_copy = true
+--      else
+--         if in_copy then
+--            in_copy = false
+--            just_copied = hs.pasteboard.getContents()
+--            hs.printf('just copied ' .. just_copied)
+--         end
+--      end
+--   end
+--end
+--copy:start()
+
+
 setTitle() --Avoid wrong title if the user already has something on his saved history
 jumpcut:setMenu(populateMenu)
