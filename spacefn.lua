@@ -46,11 +46,13 @@ local spacefn = {}
 --  mod - modifier key (Shift, Control, Alt/Option, Win/Command)
 --  --> - arrow key
 --  Esc - Escape
---
+--  Lyr - Layer key. TODO: 
 --
 --  ----------------------------------------------------------------------
 --  --------------------- Alternate thoughts, Bruce ----------------------
 --  ----------------------------------------------------------------------
+--  TODO: re-evaluate these, delete some?
+
 ---- #1: Independent space
 --  Spc   -----\____/-----------------------                spcDnStart
 --                  Sp
@@ -100,18 +102,76 @@ local spacefn = {}
 --
 --  So, what's the algorithm for this?
 --
---  Start:     
+--  These are all called from the event trigger function
 --
---  k Dn:      
---
---  k Up:      
---
---  Spc Dn:    
---
---  Spc Up:    
---
---  CleanEnd:
---
+Start:     
+          SpcDown = false
+          ModsDown = {}
+          whatToDoWithKeyUp = {}
+          keyDownWhileSpaceDown = false
+                    
+k Dn:     If SpcDown then
+            if k == Esc then  -- Maybe means spaceFN+Esc?
+              clear
+              add k + "ignore keyUp" flag to the "whatToDoWithKeyUp" list
+              return true (delete event), {} (no events to be  sent now)
+            end
+            if k in list of active spaceFn keys then
+              handledKey, emmitNewString = spaceFn["k"]() function;
+              if handledKey then
+                keyDownWhileSpaceDown = true
+                add k + "ignore keyUp" flag to the "whatToDoWithKeyUp" list -- nothing to do when the key pops up, swallow it
+                return true (delete event), {} (no events to be  sent now)
+              end
+            else -- inactive key
+              -- Ignore meaningless key?
+              -- TODO: Maybe send the key instead? 
+              add k + "ignore keyUp" flag to the "whatToDoWithKeyUp"
+              return true (delete event), {} (no events to be  sent now)
+            push {k, ModsDown, spacefn = true, ignore=true} on keysDownList
+          else SpcDown is not true
+            add k + "send keyUp" flag to the "whatToDoWithKeyUp"
+            return false (pass event), {} (no events to be sent from us)
+          end
+
+k Up:     Extract "send keyUp" and "ignore keyUp" flags from the "whatToDoWithKeyUp" list
+          if k is not present (should never happen) then return true, {}
+          remove k from the "whatToDoWithKeyUp" list
+          if "send keyUp" then return false, {}
+          if "ignore keyUp" then return true, {}
+          
+
+Spc Dn:   SpcDown = true
+          keyDownWhileSpaceDown = false
+          -- Don't send spcDn yet. If this really is spaceFn+k then we'll never send the space down
+          return true (delete event), {} (no events to be  sent now)
+
+Spc Up:   if keyDownWhileSpaceDown == false then -- We didn't use this as a SpaceFn key. Treat as a space down & up
+            return true (delete event), {spaceDn, spaceUp} 
+          end
+          
+Sticky Keys state diagram is available here: Figure 3. Modifier key state transition diagram
+http://edgarmatias.com/papers/hci96/
+
+mod Dn:    -- Sticky Keys
+
+mod Up:    -- Sticky Keys
+
+-- Given 2 lists of modifiers send whatever modifiers are needed to change stare from 
+-- one to the other.
+--  Example:
+--    fromMod = {shift, alt}
+--    toMod = {alt, ctrl}
+--    changeMods(fromMod, toMod) will generate: shift up, ctrl down
+--  A common usage:
+--    changeMods(fromMod, toMod)
+--    emit desired key(s)
+--    changeMods(toMod, fromMod)  -- restore state.
+function changeMods (fromMod, toMod)
+  
+  
+end
+
 --
 --  spcDnStart  kTypedinSpc keysToRelease keysDownInSpc EMIT
 --  false       false       {}          {}            ""    --start
