@@ -30,8 +30,8 @@ local spacefn = {}
 --    Unused keys: if you hold the space bar and press a key that has no
 --    function in the SpaceFn layout, you get exactly the same result as
 --    if you were not holding space.
-      --    There is an Esc key in the SpaceFn "layer" (E key), because you may want to 
-      --    have direct access to the backquote in the basic layout. Also, it may be 
+      --    There is an Esc key in the SpaceFn "layer" (E key), because you may want to
+      --    have direct access to the backquote in the basic layout. Also, it may be
       --    convenient to be able to press Esc without releasing the space bar.
 --    SpaceFn+B allows for repeating spaces (because holding Space won't repeat any more)
 --    TODO: Support SpaceFn+Mod+(Shift+Arrow) for select word and line.
@@ -46,7 +46,7 @@ local spacefn = {}
 --  mod - modifier key (Shift, Control, Alt/Option, Win/Command)
 --  --> - arrow key
 --  Esc - Escape
---  Lyr - Layer key. TODO: 
+--  Lyr - Layer key. TODO:
 --
 --  ----------------------------------------------------------------------
 --  --------------------- Alternate thoughts, Bruce ----------------------
@@ -104,12 +104,12 @@ local spacefn = {}
 --
 --  These are all called from the event trigger function
 --
-Start:     
+Start:
           SpcDown = false
-          ModsDown = {}
+          currentModsDown = {}
           whatToDoWithKeyUp = {}
           keyDownWhileSpaceDown = false
-                    
+
 k Dn:     If SpcDown then
             if k == Esc then  -- Maybe means spaceFN+Esc?
               clear
@@ -125,7 +125,7 @@ k Dn:     If SpcDown then
               end
             else -- inactive key
               -- Ignore meaningless key?
-              -- TODO: Maybe send the key instead? 
+              -- TODO: Maybe send the key instead?
               add k + "ignore keyUp" flag to the "whatToDoWithKeyUp"
               return true (delete event), {} (no events to be  sent now)
             push {k, ModsDown, spacefn = true, ignore=true} on keysDownList
@@ -139,7 +139,7 @@ k Up:     Extract "send keyUp" and "ignore keyUp" flags from the "whatToDoWithKe
           remove k from the "whatToDoWithKeyUp" list
           if "send keyUp" then return false, {}
           if "ignore keyUp" then return true, {}
-          
+
 
 Spc Dn:   SpcDown = true
           keyDownWhileSpaceDown = false
@@ -147,17 +147,31 @@ Spc Dn:   SpcDown = true
           return true (delete event), {} (no events to be  sent now)
 
 Spc Up:   if keyDownWhileSpaceDown == false then -- We didn't use this as a SpaceFn key. Treat as a space down & up
-            return true (delete event), {spaceDn, spaceUp} 
+            return true (delete event), {spaceDn, spaceUp}
           end
-          
-Sticky Keys state diagram is available here: Figure 3. Modifier key state transition diagram
-http://edgarmatias.com/papers/hci96/
+
+--Sticky Keys state diagram is available here: Figure 3. Modifier key state transition diagram
+--http://edgarmatias.com/papers/hci96/
+--
+--States are:
+--  U/D State #   Action        Result state #
+--  U   0         Mod down      1
+--  D   1         Mod up        2
+--                Key down + up 5
+--  U   2         Mod down      3
+--  D   3         Mod Up        4
+--                Key down + up 5
+--  U   4         Mod down      5
+--                Key down + up 4
+--  D   5         Mod Up        0
+--                Key down + up 5
+
 
 mod Dn:    -- Sticky Keys
 
 mod Up:    -- Sticky Keys
 
--- Given 2 lists of modifiers send whatever modifiers are needed to change stare from 
+-- Given 2 lists of modifiers send whatever modifiers are needed to change stare from
 -- one to the other.
 --  Example:
 --    fromMod = {shift, alt}
@@ -168,8 +182,8 @@ mod Up:    -- Sticky Keys
 --    emit desired key(s)
 --    changeMods(toMod, fromMod)  -- restore state.
 function changeMods (fromMod, toMod)
-  
-  
+
+
 end
 
 --
