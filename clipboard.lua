@@ -29,7 +29,7 @@ local label_length = 50 -- How wide (in characters) the dropdown menu should be.
 local honor_clearcontent = true --asmagill request. If any application clears the pasteboard, we also remove it from the history https://groups.google.com/d/msg/hammerspoon/skEeypZHOmM/Tg8QnEj_N68J
 local pasteOnSelect = true -- Auto-type on click
 --  TODO: when pasteOnSelect == true, have Alt/Option key invert the meaning
---  TODO: Add ability to set preferences: # of clips; Clear on boot?
+--  TODO: Add ability to set preferences: # of clips; Clear on boot? Clear after xx time?
 
 -- Don't change anything bellow this line
 local jumpcut = hs.menubar.new()
