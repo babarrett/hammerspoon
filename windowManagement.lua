@@ -6,6 +6,8 @@
 --	If the window is already in place (say left edge) and we get another left
 --	command then move it to the *screen* to the left.
 
+--  If you find this insufficient, you may try: https://github.com/koekeishiya/chunkwm
+
 local windowManagement = {}
 
 -- Private
