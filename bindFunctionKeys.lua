@@ -49,7 +49,8 @@ hs.hotkey.bind("", "f8", nil, function() launchAppOrWeb( nil, nil, {mods='CMD Sh
 --hs.hotkey.bind("", "f10", nil, function() launchAppOrWeb( "/Users/bbarrett/Secure.dmg & open /Users/bruce/Secure.dmg", nil, nil) end )	-- open Secure.dmg either at work or at home.
 --hs.hotkey.bind("", "f11", nil, function() launchAppOrWeb( 'System Preferences', nil) end )
 
-hs.hotkey.bind("", "f12", nil, function() launchAppOrWeb( 'Oxygen XML Author', nil) end )
+--No longer using Oxygen, disabled. Key is free for other uses. Nov 2017
+--hs.hotkey.bind("", "f12", nil, function() launchAppOrWeb( 'Oxygen XML Author', nil) end )
     
 -- www short cuts
 -- F13..20(24) are for the GH-122 keyboard
