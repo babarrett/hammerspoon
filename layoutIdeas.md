@@ -48,7 +48,7 @@ Or, Right-arrow is a control version of the (default) left arrow.
 
 #### Cons
 * Shift + Up and down arrows to select line above / below ~~won't work in that way.~~ will require Control too.
-* So may requiring a different layer/modifier for that. Maybe not so bad, That
+* So may require a different layer/modifier for that. Maybe not so bad, That
 seems to be a less frequent operation.
 
 
@@ -145,6 +145,24 @@ the regular key registered until release. This makes it possible to have a - say
 * a
 * b
 * c
+
+#### When selecting windows within an app, pop up the choices on the monitor the window belongs to
+
+* Tab Moves to the next monitor
+* Shift-Tab Moves to the previous monitor
+* some key to unify window list onto the current cursor screen.
+
+#### Pros
+* user can spatially remember where the window was and eliminate many, maybe 1/2 the window titles from consideration
+* most useful for browsers and editors
+* c
+
+#### Cons
+* more complex
+* work to generate
+* c
+
+
 
 ## xxx
 #### Idea
