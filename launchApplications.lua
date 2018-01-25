@@ -52,7 +52,7 @@ local appShortCuts = {
     F = {'Finder', 'Finder', nil},
     G = {'OmniGraffle', 'OmniGraffle', nil},
 
-    I = {'iTerm', 'iTerm', nil},
+    I = {'IBM Notes', 'IBM Notes', nil},
     J = {'Notes', 'Notes', nil},
     M = {'Mail', 'Mail', nil},
 
