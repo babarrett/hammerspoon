@@ -82,3 +82,11 @@ Legend:
 ⌘        Command
 ✧         HyperFn (⌘⌥⌃⇧)
 ?         Meh (⌥⌃⇧)
+-------------------------------------------
+To add / change:
+          F4 --> IBM Notes, while at work.
+          ?? --> !$<return>
+          ?? --> <paste><return>
+          ?? --> (  )<bs><bs>
+          ?? --> [<return><return>]<up-arrow><space><space>
+          ?? --> [<return><return>]<up-arrow><space><space>
