@@ -87,6 +87,9 @@ To add / change:
           F4 --> IBM Notes, while at work.
           ?? --> !$<return>
           ?? --> <paste><return>
-          ?? --> (  )<bs><bs>
+          ?? --> (<sp><sp>)<left-arrow><left-arrow>
           ?? --> [<return><return>]<up-arrow><space><space>
           ?? --> [<return><return>]<up-arrow><space><space>
+          ?? --> Menu: Bring all to front
+          ?? --> {move|select}word{left|right}
+          ?? --> CMD+B<right-arrow><right-arrow>  -- BBEDIT only: go to end og the current (), [], or {} block
