@@ -70,12 +70,13 @@ local funNameToHelpText = {
 	right = 	'move window to right of screen.',
 	down = 		'move window to bottom of screen.',
 	up =		'move window to top of screen.',
-	full =		'make window (nearly) full screen.',
+	full =		'center window at current resize size.',
 	percent40 =	'Moved windows take 40% of screen',
 	percent50 =	'Moved windows take 50% of screen',
 	percent60 =	'Moved windows take 60% of screen',
 	percent70 =	'Moved windows take 70% of screen',
-	percent80 =	'Moved windows take 80% of screen'
+	percent80 =	'Moved windows take 80% of screen',
+	percent90 =	'Moved windows take 90% of screen'
 }
 
 
@@ -93,7 +94,7 @@ local function up()
 	baseMove(0.01, 0.02, 0.98,  windowSizePercent-0.02, "up")
 end
 local function full()
-	baseMove(0.01, 0.02, 0.98,  1-0.02, "full")
+	baseMove(0.50-(windowSizePercent/2)-0.02, 0.50-(windowSizePercent/2)-0.02, windowSizePercent+0.04, windowSizePercent+0.04, "full")
 end
 local function percent40()
 	windowSizePercent = 0.40
@@ -110,6 +111,9 @@ end
 local function percent80()
 	windowSizePercent = 0.80
 end
+local function percent90()
+	windowSizePercent = 0.95  -- sic.
+end
 local funNameToFunction = {
 	left = left,
 	right = right,
@@ -120,7 +124,9 @@ local funNameToFunction = {
 	percent50 = percent50,
 	percent60 = percent60,
 	percent70 = percent70,
-	percent80 = percent80
+	percent80 = percent80,
+	percent90 = percent90
+
 }
 
 function windowManagement.bind(modifiers, char, functName)
