@@ -44,7 +44,12 @@ function baseMove(x, y, w, h, direction)
 				["left"] =	function () windowManagement.newScreen = screen:toWest(nil, true) end,
 				["right"] =	function () windowManagement.newScreen = screen:toEast(nil, true) end,
 				["up"] =	function () windowManagement.newScreen = screen:toNorth(nil, true) end,
-				["down"] =	function () windowManagement.newScreen = screen:toSouth(nil, true) end
+				["down"] =	function () windowManagement.newScreen = screen:toSouth(nil, true) end,
+				
+				["NW"] =	function () windowManagement.newScreen = screen:toWest(nil, true) end,
+				["NE"] =	function () windowManagement.newScreen = screen:toEast(nil, true) end,
+				["SW"] =	function () windowManagement.newScreen = screen:toWest(nil, true) end,
+				["SE"] =	function () windowManagement.newScreen = screen:toEast(nil, true) end
 			}
 			action[direction]()
 
@@ -66,17 +71,24 @@ end
 
 -- private
 local funNameToHelpText = {
+	-- arrow kwys:
 	left =		'move window to left of screen.',
 	right = 	'move window to right of screen.',
 	down = 		'move window to bottom of screen.',
-	up =		'move window to top of screen.',
-	full =		'center window at current resize size.',
-	percent40 =	'Moved windows take 40% of screen',
-	percent50 =	'Moved windows take 50% of screen',
-	percent60 =	'Moved windows take 60% of screen',
-	percent70 =	'Moved windows take 70% of screen',
-	percent80 =	'Moved windows take 80% of screen',
-	percent90 =	'Moved windows take 90% of screen'
+	up =		  'move window to top of screen.',
+		
+	home =    'move window to top-left of screen.',
+	pgup =    'move window to top-right of screen.',
+	lineend = 'move window to bottom-left of screen.',
+	pgdn =    'move window to bottom-right of screen.',
+	
+	full =		'center window at current moved window % size.',
+	percent40 =	'Set moved window size to 40% of screen',
+	percent50 =	'Set moved window size to 50% of screen',
+	percent60 =	'Set moved window size to 60% of screen',
+	percent70 =	'Set moved window size to 70% of screen',
+	percent80 =	'Set moved window size to 80% of screen',
+	percent90 =	'Set moved window size to 90% of screen'
 }
 
 
@@ -93,6 +105,20 @@ end
 local function up()
 	baseMove(0.01, 0.02, 0.98,  windowSizePercent-0.02, "up")
 end
+-------------------------------------------
+local function home()
+	baseMove(0.01, 0.02, windowSizePercent-0.02,  windowSizePercent-0.02, "NW")
+end
+local function pgup()
+	baseMove(windowSizePercent, 0.02, windowSizePercent-0.02,  windowSizePercent-0.02, "NE")
+end
+local function lineend()
+	baseMove(0.01, windowSizePercent, windowSizePercent-0.02,  windowSizePercent-0.02, "SW")
+end
+local function pgdn()
+	baseMove(windowSizePercent, windowSizePercent, windowSizePercent-0.02,  windowSizePercent-0.02, "SE")
+end
+-------------------------------------------
 local function full()
 	baseMove(0.50-(windowSizePercent/2)-0.02, 0.50-(windowSizePercent/2)-0.02, windowSizePercent+0.04, windowSizePercent+0.04, "full")
 end
@@ -119,6 +145,11 @@ local funNameToFunction = {
 	right = right,
 	down = down,
 	up = up,
+	home =      home,
+  pgup =      pgup,
+  lineend =   lineend,
+  pgdn =      pgdn,
+
 	full = full,
 	percent40 = percent40,
 	percent50 = percent50,
