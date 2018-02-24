@@ -58,14 +58,14 @@ foo = cu.new(function () end)
 HF.add("-- Miscellaneous Functions -- "..VERSION.." --\n")
 HF.bind(HyperFn, "H", "hammerspoonHelp")
 HF.add("Hyper+A     - Enter Application mode, Arrows or Char launches App.\n")
-HF.add("Hyper+W     - Enter Webpage mode, Arrows or Char opens web page.")
+HF.add("Hyper+W     - Enter Webpage mode, Arrows or Char opens web page.\n")
 
-miscFunctions.bind(HyperFn, "D", "dictate")
+--miscFunctions.bind(HyperFn, "D", "dictate")
 miscFunctions.bind(HyperFn, "L", "lockMyScreen")
 miscFunctions.bind(HyperFn, "P", "mdphotoplaceholder")
 miscFunctions.bind(HyperFn, "Q", "quitApp")
 --smiscFunctions.bind(HyperFn, "S", "fiveShifts")
-miscFunctions.bind(HyperFn, "T", "todo")	-- Type "TODO: " for code
+--miscFunctions.bind(HyperFn, "T", "todo")	-- Type "TODO: " for code
 pasteCurrentSafariUrl.bind(HyperFn, "U", "pasteSafariUrl")
 miscFunctions.bind(HyperFn, "V", "typeClipboard")
 --HyperFn+"," and HyperFn+"." get intercepted by OS X and will never call Hammerspoon
