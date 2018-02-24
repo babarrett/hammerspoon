@@ -32,6 +32,7 @@ launchApplications = {}
 local DEFAULTBROWSER = 'Safari'
 local pickerView = nil
 inMode = nil          -- I'm not crazy about globals, but this really simplified the code
+finalTextToType = ""
 
 -- Format is:
 --   Key_to_press. A single key
@@ -117,6 +118,17 @@ local webShortCuts = {
 
 }
 
+-- Support text snippets in a single column list
+local textShortCuts = {
+  A = {"bbarrett@asperasoft.com", "bbarrett@asperasoft.com", nil},
+  C = {"communitytwok@e", "communitytwok@earthreflections.com", nil},
+  D = {"-------------------------------------------", "-------------------------------------------", nil},  -- D for "dashes"
+  E = {"bruceb@earthreflections.com", "bruceb@earthreflections.com", nil},
+  I = {"brucebarrett@us.ibm.com", "brucebarrett@us.ibm.com", nil},
+  P = {"Markdown Photo", "```\n      +-----+\n      |photo|\n      +-----+\n      ```\n", nil},
+  T = {"TODO: ", "TODO: ", nil}
+}
+
 -- myTable:   the table we want to know how many elements it contains
 -- test:    is an optional callback. Called with k, v (Key value).
 --        test returns true for "count this one."
@@ -141,6 +153,7 @@ local developmentShortCuts = {
 }
 
 
+
 --  HyperFn+A starts "Launch Application mode."
 --  It terminates with selecting an app, or <Esc>
 local modalAppKey = hs.hotkey.modal.new(HyperFn, 'A')
@@ -149,20 +162,38 @@ local modalAppKey = hs.hotkey.modal.new(HyperFn, 'A')
 --  It terminates with selecting a web page, or <Esc>
 local modalWebKey = hs.hotkey.modal.new(HyperFn, 'W')
 
---  Bind keys of interest, both Apps and Web Pages
+--  HyperFn+T starts "Type Text snippets mode."
+--  It terminates with selecting a web page, or <Esc>
+local modalTextKey = hs.hotkey.modal.new(HyperFn, 'T')
+
+--  Bind keys of interest, both Apps, Web Pages, and Text
 --  hs.hotkey.modal:bind(mods, key, message, pressedfn, releasedfn, repeatfn) -> hs.hotkey.modal object
-for index, modalKey in pairs({modalAppKey, modalWebKey}) do
+for index, modalKey in pairs({modalAppKey, modalWebKey, modalTextKey}) do
   modalKey:bind('', 'escape',
     function()
-    modalKey:exit() end)
+      modalKey:exit()
+    end
+    )
   modalKey:bind('', 'space',
     function()
-    launchAppOrWebBySelection()
-    modalKey:exit() end)
+      launchAppOrWebBySelection()
+      modalKey:exit()
+      if (finalTextToType ~= "") then
+        hs.eventtap.keyStrokes(finalTextToType)
+        finalTextToType = ""
+      end
+    end
+    )
   modalKey:bind('', 'return',
     function()
-    launchAppOrWebBySelection()
-    modalKey:exit() end)
+      launchAppOrWebBySelection()
+      modalKey:exit()
+      if (finalTextToType ~= "") then
+        hs.eventtap.keyStrokes(finalTextToType)
+        finalTextToType = ""
+      end
+    end
+    )
 
 
 -- arrow keys, to select app to run
@@ -198,7 +229,7 @@ for key, appInfo in hs.fnutils.sortByKeys(appShortCuts) do
   if string.len(key) == 1 then
     modalAppKey:bind('', key, 'Launching '..appInfo[1],
       function()
-      launchAppOrWeb(appInfo[2])
+      launchAppOrWeb_LA(appInfo[2])
       end,
       function() modalAppKey:exit() end)              -- Key up, leave mode
     end
@@ -211,11 +242,31 @@ for key, webInfo in hs.fnutils.sortByKeys(webShortCuts) do
   if string.len(key) == 1 then
       modalWebKey:bind('', key, 'Opening page: '..webInfo[1],
         function()
-          launchAppOrWeb(webInfo[3])
+          launchAppOrWeb_LA(webInfo[3])
           -- hs.execute("open " .. webInfo[3])
       end,  -- Key down, launch
       function() modalWebKey:exit() end)              -- Key up, leave mode
     end
+end
+
+-- Text entry keys (defined in textShortCuts)
+-- Pick up textShortCuts to offer, sorted by activation key
+-- Any key > 1 character we do not bind to
+for key, textInfo in hs.fnutils.sortByKeys(textShortCuts) do
+  if string.len(key) == 1 then
+    modalTextKey:bind('', key, 'Typing text: '..textInfo[1],
+    function()
+      launchAppOrWeb_LA(textInfo[2])
+    end,  -- Key down, launch
+    function()        -- Key up, leave mode
+      modalTextKey:exit()
+      if (finalTextToType ~= "") then
+        hs.eventtap.keyStrokes(finalTextToType)
+        finalTextToType = ""
+      end
+    end
+    )
+  end
 end
 
 function modalAppKey:entered()
@@ -230,6 +281,13 @@ function modalWebKey:entered()
   centerAndShowPicker(webShortCuts)
 end
 
+function modalTextKey:entered()
+  -- Build a grid of web names
+  inMode = "Text"
+  centerAndShowPicker(textShortCuts)
+end
+
+
 -- Move cursor to "center" and load "web page picker:
 function centerAndShowPicker(pickerTable)
   -- TODO: Re-do these with '1'-based indexing.
@@ -238,9 +296,14 @@ function centerAndShowPicker(pickerTable)
   xmax =3
   ymin =0
 
-  -- Dynamically size # of rows (Y) based upon # of entries in table. Using a fixed 4 columns
+  -- Dynamically size # of rows (Y) based upon # of entries in table. Using a fixed 4 columns, except for Text
+  -- TODO: Remove text HACK for single column. Assume text < 15 and Web / Apps >= 15. Works for me for now.
   tc = countTableElements(pickerTable)
   ymax =math.ceil(tc / 4) -1
+  if tc < 15 then 
+    ymax = tc -1 
+    xmax = 0
+  end
 
   xsel = math.floor((xmax-xmin)/2)
   ysel = math.floor((ymax-ymin)/2)
@@ -258,6 +321,12 @@ function modalWebKey:exited()
   takeDownPicker()
 end
 
+
+function modalTextKey:exited()
+  -- Take down Web page selector
+  takeDownPicker()
+end
+
 function takeDownPicker()
   if pickerView ~= nil then
     pickerView:delete()
@@ -270,24 +339,23 @@ function launchAppOrWebBySelection()
   app = nil
   -- which index, based  on (x, y) cell was selected
   index = ysel * (xmax+1) + xsel
---  debuglog("LaunchType: "..   inMode .."; (x, y) -- index= (" .. xsel .. ", " .. ysel .. ") -- " .. index)
-  dataTable =  (inMode == "App") and appShortCuts or webShortCuts;
+  dataTable =  ((inMode == "App") and appShortCuts) or ((inMode == "Web") and webShortCuts) or textShortCuts;
   for key, appInfo in hs.fnutils.sortByKeys(dataTable) do
     if index == 0 then
-    if (inMode == "App") then
-    app = appInfo[2]
-    else
-    app = appInfo[3]
-    end
+      if (inMode == "App" or inMode == "Text") then
+        app = appInfo[2]
+      else
+        app = appInfo[3]
+      end
   end
     index = index -1
   end
-
-  launchAppOrWeb(app)
+  launchAppOrWeb_LA(app)
 end
 
 -- TODO: Merge/replace with f() of the same name in file: bindFunctionKeys.lua
-function launchAppOrWeb(app)
+-- For now just make the names unique
+function launchAppOrWeb_LA(app)
   if inMode == "App" then
     -- hs.alert.show('Launching app... '..app)
     status = hs.application.launchOrFocus(app)
@@ -297,9 +365,12 @@ function launchAppOrWeb(app)
         output, status = hs.execute("open " .. app)
       end
     end
-  else
+  elseif inMode == "Web" then
     -- Opening webpage, instead of app
-    hs.execute("open " .. app)
+      hs.execute("open " .. app)
+  else
+    -- Typing text, instead of app
+    finalTextToType = app
   end
 end
 
@@ -314,7 +385,7 @@ function reloadPicker()
   bgX = frame.x + frame.w/2 - 750/2
   bgY = frame.y + frame.h/2 - 350/2
 
-    webPageRect = {x = bgX, y = bgY, w = 750, h = 350}
+  webPageRect = {x = bgX, y = bgY, w = 750, h = 350}
   pickerView = hs.webview.new(webPageRect, { developerExtrasEnabled = false, suppressesIncrementalRendering = false })
   :windowStyle("utility")
   :closeOnEscape(true)
@@ -335,8 +406,10 @@ function launchApplications.generateHtml()
   local instructions
   if (  inMode == "App") then
     instructions = {"App", "Application"}
-  else
+  elseif (  inMode == "Web") then
     instructions = {"Webpage", "Webpage"}
+  else
+    instructions = {"Text", "Text snippets"}
   end
     local html = [[
         <!DOCTYPE html>
@@ -422,7 +495,7 @@ function generateAppOrWebTable()
   local y = 0;
   local i = 0;
 
-  for key, appInfo in hs.fnutils.sortByKeys((inMode == "App") and appShortCuts or webShortCuts) do
+  for key, appInfo in hs.fnutils.sortByKeys((inMode == "App") and appShortCuts or (inMode == "Web") and webShortCuts or textShortCuts) do
     tableText = tableText .. "<td class = 'jumpchar' width='3%' align='right'>" ..
       ((string.len(key) == 1) and key..":" or "&nbsp;");  -- skip entries we don't want to use with 1 character (hot key) shortcuts
     tableText = tableText .. "<td class="
