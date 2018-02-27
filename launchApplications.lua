@@ -125,7 +125,7 @@ local textShortCuts = {
   D = {"-------------------------------------------", "-------------------------------------------", nil},  -- D for "dashes"
   E = {"bruceb@earthreflections.com", "bruceb@earthreflections.com", nil},
   I = {"brucebarrett@us.ibm.com", "brucebarrett@us.ibm.com", nil},
-  P = {"Markdown Photo", "```\n      +-----+\n      |photo|\n      +-----+\n      ```\n", nil},
+  P = {"Markdown Photo", "```\r      +-----+\r      |photo|\r      +-----+\r```\r", nil},
   T = {"TODO: ", "TODO: ", nil}
 }
 
@@ -254,7 +254,7 @@ end
 -- Any key > 1 character we do not bind to
 for key, textInfo in hs.fnutils.sortByKeys(textShortCuts) do
   if string.len(key) == 1 then
-    modalTextKey:bind('', key, 'Typing text: '..textInfo[1],
+    modalTextKey:bind('', key,
     function()
       launchAppOrWeb_LA(textInfo[2])
     end,  -- Key down, launch
