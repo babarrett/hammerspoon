@@ -126,8 +126,10 @@ local textShortCuts = {
   E = {"bruceb@earthreflections.com", "bruceb@earthreflections.com", nil},
   I = {"brucebarrett@us.ibm.com", "brucebarrett@us.ibm.com", nil},
   P = {"Markdown Photo", "```\r      +-----+\r      |photo|\r      +-----+\r```\r", nil},
+  S = {"support@aspera", "support@asperasoft.com", nil},
   T = {"TODO: ", "TODO: ", nil},
-  U = {"test-connect", "https://test-connect.asperasoft.com", nil}
+  U = {"test-connect", "https://test-connect.asperasoft.com", nil},
+  W = {"Webex Room", "https://ibm.webex.com/join/brucebarrett", nil}
 }
 
 -- myTable:   the table we want to know how many elements it contains
