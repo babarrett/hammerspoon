@@ -120,16 +120,17 @@ local webShortCuts = {
 
 -- Support text snippets in a single column list
 local textShortCuts = {
-  A = {"bbarrett@asperasoft.com", "bbarrett@asperasoft.com", nil},
-  C = {"communitytwok@e", "communitytwok@earthreflections.com", nil},
-  D = {"-------------------------------------------", "-------------------------------------------", nil},  -- D for "dashes"
-  E = {"bruceb@earthreflections.com", "bruceb@earthreflections.com", nil},
-  I = {"brucebarrett@us.ibm.com", "brucebarrett@us.ibm.com", nil},
-  P = {"Markdown Photo", "```\r      +-----+\r      |photo|\r      +-----+\r```\r", nil},
-  S = {"support@aspera", "support@asperasoft.com", nil},
-  T = {"TODO: ", "TODO: ", nil},
-  U = {"test-connect", "https://test-connect.asperasoft.com", nil},
-  W = {"Webex Room", "https://ibm.webex.com/join/brucebarrett", nil}
+  ["A"] = {"bbarrett@asperasoft.com", "bbarrett@asperasoft.com", nil},
+  ["C"] = {"communitytwok@e", "communitytwok@earthreflections.com", nil},
+  ["D"] = {"-------------------------------------------", "-------------------------------------------", nil},  -- D for "dashes"
+  ["Char_-"] = {"-------------------------------------------", "-------------------------------------------", nil},  -- D for "dashes"
+  ["E"] = {"bruceb@earthreflections.com", "bruceb@earthreflections.com", nil},
+  ["I"] = {"brucebarrett@us.ibm.com", "brucebarrett@us.ibm.com", nil},
+  ["P"] = {"Markdown Photo", "```\r      +-----+\r      |photo|\r      +-----+\r```\r", nil},
+  ["S"] = {"support@aspera", "support@asperasoft.com", nil},
+  ["T"] = {"TODO: ", "TODO: ", nil},
+  ["U"] = {"test-connect", "https://test-connect.asperasoft.com", nil},
+  ["W"] = {"Webex Room", "https://ibm.webex.com/join/brucebarrett", nil}
 }
 
 -- myTable:   the table we want to know how many elements it contains
@@ -256,6 +257,10 @@ end
 -- Pick up textShortCuts to offer, sorted by activation key
 -- Any key > 1 character we do not bind to
 for key, textInfo in hs.fnutils.sortByKeys(textShortCuts) do
+  if string.sub(key, 1, 5) == "Char_" then
+    key = string.sub(key, -1)
+    debuglog("Using Key: ".. key)
+  end
   if string.len(key) == 1 then
     modalTextKey:bind('', key,
     function()

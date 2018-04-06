@@ -5,40 +5,41 @@ switchApplications = {}
 
 --Application switcher, like Cmd+Tab but better. Instead:
 --  * √ A GUI, in a matrix of some sort
---  * √ App images fill the matrix
+--  * √ App icons fill the matrix
 --  * √ Use Hyper+Tab to activate
---  * App name (truncated if needed) below the icon
---  * The matrix may be sparse. Maybe more like a cross than a complete grid
 --  * √ Allow up, down, left, right to select;
---  * (later, large keyboards) Allow NW, NE, SW, SE too;
 --  * √ Indicate the selection with rectangle around App icon
 --  * √ Bring up on active window. Centered
---  * (Later, maybe) Allow click to switch;
---  * (Later, maybe) Bring the matrix up "under" the current mouse location
 --  * √ Only currently running apps
---  * Add a "black list" of apps that show up in doc, but you nemer want to switch to. (SpamSieve)
---  * (Later) Track the time spent *active* in each running app, and/or the number of times switched into.
---		Use that to prioritize the running programs to reduce the number of navigation events
---		to get to the "most used" apps
---  * √ Space to select app we navigated to
---  * (Later) "Badge" each app with number of open windows
---  * √ Use Return key to present list of open windows in chooser for app we switched to
+--  * √ Return to select app we navigated to
+--  * √ Use Space123456789 key to present list of open windows in chooser for app we switched to
 --  * √ Window chooser is also available w/o switching apps. HyperFn+` (back-tick)
---  * (later, maybe) Use {some_modifier_or_combo, maybe Hyper}+ Right Arrow to activate this mode.
---    This way you finger is already on the right arrow and selecting center or next 2 right
---    Apps requires no finger movement.
+--  * (Later) "Badge" each app with number of open windows
+--  * TODO: The matrix may be sparse. Maybe more like a cross than a complete grid, see in-line comments
+--  * TODO: Improve navigation:
+--  *   Large keyboards: Allow N, S, E, W, NW, NE, SW, SE from NumPad #1-#9 too;
+--  *   Allow click to switch;
+--  *   Bring the matrix up "under" the current mouse location to make click easier. (or center mouse on grid)
+--  *   Add a "black list" of apps that do not show up in doc, if you never want to switch to. (SpamSieve)
+--  *   App name (truncated if needed) below the icon
+--  *   Track the time spent *active* in each running app, and/or the number of times switched into.
+--		    Use that to prioritize the running programs to reduce the number of navigation key movements
+--		    to get to the "most used" apps
+--  *    Use {some_modifier_or_combo, maybe Hyper+NumPad-5 Arrow to activate this mode.
+--        This way you middle finger is already centered and selecting center, left or right
+--        Apps requires no finger movement.
 --
 --Keyboard keys:
 --  * Arrows, navigate around the grid
 --  * Space, switch immediately to selected app
---  * Return, if selected app has > 1 window open switch to the window chooser (list), else open immediatly
+--  * Return, if selected app has > 1 window open switch to the window chooser (list), else open immediately
 --  * Escape, cancel the app switch
 
 -- Possible matrix: (# represent # of Key strokes not counting Hyper+Lead to start and <space> to select)
 --  9 apps in 0 or 1 key strokes;
 -- 14 apps in 2 key strokes;
 -- 25 apps in <= 2 keystrokes
---			 Allow	
+--			Allow	
 --			Diagonal (NE, SW, etc.)
 --            22222
 --            21112
@@ -50,7 +51,7 @@ switchApplications = {}
 --        5 apps in 1 keystroke;
 --        9 apps with double-tap keystrokes; (I think I usually have < 9 apps running at a time.)
 --       13 apps in 2 keystrokes or less. Right, then Up for example.
---			  Allow
+--			Allow
 --			Horiz+Vert
 --              2
 --             212
@@ -145,12 +146,12 @@ local switchApp = hs.hotkey.modal.new(HyperFn, 'Tab')
 switchApp:bind('', 'escape',
 	function()
 	switchApp:exit() end)
-switchApp:bind('', 'space',
+switchApp:bind('', 'return',
 	function()
 	switchToCurrentApp()
 	switchApp:exit()
 	end)
-switchApp:bind('', 'return',
+switchApp:bind('', 'space',
 	function()
 		-- If > 1 window allow user to choose which window from list
 		-- Bring up app's windows as a hs.chooser list. Up/Down will then be used to select.
@@ -178,7 +179,18 @@ switchApp:bind('', 'left', nil,
 	  currentSel = math.max(currentSel-1, 1)
 	  displaySelRect(currentSel)
 	end)
+switchApp:bind('', 'pad4', nil,
+	function()
+	  currentSel = math.max(currentSel-1, 1)
+	  displaySelRect(currentSel)
+	end)
+
 switchApp:bind('', 'right', nil,
+	function()
+	  currentSel = math.min(currentSel+1, appCount)
+	  displaySelRect(currentSel)
+	end)
+switchApp:bind('', 'pad6', nil,
 	function()
 	  currentSel = math.min(currentSel+1, appCount)
 	  displaySelRect(currentSel)
@@ -190,9 +202,46 @@ switchApp:bind('', 'up', nil,
 	  currentSel = math.max(currentSel-cellsX, 1)
 	  displaySelRect(currentSel)
 	end)
+switchApp:bind('', 'pad8', nil,
+	function()
+	  currentSel = math.max(currentSel-cellsX, 1)
+	  displaySelRect(currentSel)
+	end)
+
 switchApp:bind('', 'down', nil,
 	function()
 	  currentSel = math.min(currentSel+cellsX, appCount)
+	  displaySelRect(currentSel)
+	end)
+switchApp:bind('', 'pad2', nil,
+	function()
+	  currentSel = math.min(currentSel+cellsX, appCount)
+	  displaySelRect(currentSel)
+	end)
+
+-- NW, NE, SW, SE -------------------------------------------
+switchApp:bind('', 'pad7', nil,
+	function()
+	  currentSel = math.max(currentSel-1, 1)
+	  currentSel = math.max(currentSel-cellsX, 1)
+	  displaySelRect(currentSel)
+	end)
+switchApp:bind('', 'pad9', nil,
+	function()
+	  currentSel = math.max(currentSel+1, appCount)
+	  currentSel = math.max(currentSel-cellsX, 1)
+	  displaySelRect(currentSel)
+	end)
+switchApp:bind('', 'pad1', nil,
+	function()
+	  currentSel = math.max(currentSel-1, 1)
+	  currentSel = math.max(currentSel+cellsX, appCount)
+	  displaySelRect(currentSel)
+	end)
+switchApp:bind('', 'pad3', nil,
+	function()
+	  currentSel = math.max(currentSel+1, appCount)
+	  currentSel = math.max(currentSel+cellsX, appCount)
 	  displaySelRect(currentSel)
 	end)
 
