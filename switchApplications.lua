@@ -1,11 +1,9 @@
 switchApplications = {}
 
--- TODO: Window Chooser: List current window last (or not at all?) Esc would return to it
--- TODO: When canceling window picker no window is selected. Return to orig. selected window.
-
 --Application switcher, like Cmd+Tab but better. Instead:
 --  * √ A GUI, in a matrix of some sort
 --  * √ App icons fill the matrix
+--  * √ Don't list current App, Esc will return to it
 --  * √ Use Hyper+Tab to activate
 --  * √ Allow up, down, left, right to select;
 --  * √ Indicate the selection with rectangle around App icon
@@ -14,10 +12,13 @@ switchApplications = {}
 --  * √ Return to select app we navigated to
 --  * √ Use Space123456789 key to present list of open windows in chooser for app we switched to
 --  * √ Window chooser is also available w/o switching apps. HyperFn+` (back-tick)
+--  * √ Large keyboards: Allow N, S, E, W, NW, NE, SW, SE from NumPad #1-#9;
 --  * (Later) "Badge" each app with number of open windows
 --  * TODO: The matrix may be sparse. Maybe more like a cross than a complete grid, see in-line comments
 --  * TODO: Improve navigation:
---  *   Large keyboards: Allow N, S, E, W, NW, NE, SW, SE from NumPad #1-#9 too;
+--  *    Use {some_modifier_or_combo, maybe Hyper+NumPad-5 Arrow to activate this mode.
+--        This way you middle finger is already centered and selecting center, left or right
+--        Apps requires no finger movement.
 --  *   Allow click to switch;
 --  *   Bring the matrix up "under" the current mouse location to make click easier. (or center mouse on grid)
 --  *   Add a "black list" of apps that do not show up in doc, if you never want to switch to. (SpamSieve)
@@ -25,9 +26,6 @@ switchApplications = {}
 --  *   Track the time spent *active* in each running app, and/or the number of times switched into.
 --		    Use that to prioritize the running programs to reduce the number of navigation key movements
 --		    to get to the "most used" apps
---  *    Use {some_modifier_or_combo, maybe Hyper+NumPad-5 Arrow to activate this mode.
---        This way you middle finger is already centered and selecting center, left or right
---        Apps requires no finger movement.
 --
 --Keyboard keys:
 --  * Arrows, navigate around the grid
@@ -176,72 +174,108 @@ switchApp:bind('', 'space',
 -- arrow keys, for switching to a running app
 switchApp:bind('', 'left', nil,
 	function()
-	  currentSel = math.max(currentSel-1, 1)
-	  displaySelRect(currentSel)
+    if currentSel % cellsX ~= 1 then
+	    currentSel = math.max(currentSel-1, 1)
+	    displaySelRect(currentSel)
+	  end
 	end)
 switchApp:bind('', 'pad4', nil,
 	function()
-	  currentSel = math.max(currentSel-1, 1)
-	  displaySelRect(currentSel)
+    if currentSel % cellsX ~= 1 then
+	    currentSel = math.max(currentSel-1, 1)
+	    displaySelRect(currentSel)
+	  end
 	end)
 
 switchApp:bind('', 'right', nil,
 	function()
-	  currentSel = math.min(currentSel+1, appCount)
-	  displaySelRect(currentSel)
+    if currentSel % cellsX ~= 0 then
+  	  currentSel = math.min(currentSel+1, appCount)
+  	  displaySelRect(currentSel)
+  	end
 	end)
 switchApp:bind('', 'pad6', nil,
 	function()
-	  currentSel = math.min(currentSel+1, appCount)
-	  displaySelRect(currentSel)
+    if currentSel % cellsX ~= 0 then
+  	  currentSel = math.min(currentSel+1, appCount)
+  	  displaySelRect(currentSel)
+  	end
 	end)
 
 -- arrow keys, for switching to a running app, or for choosing a window
 switchApp:bind('', 'up', nil,
 	function()
-	  currentSel = math.max(currentSel-cellsX, 1)
-	  displaySelRect(currentSel)
+    if currentSel > cellsX then
+      currentSel = math.max(currentSel-cellsX, 1)
+      displaySelRect(currentSel)
+    end
 	end)
 switchApp:bind('', 'pad8', nil,
 	function()
-	  currentSel = math.max(currentSel-cellsX, 1)
-	  displaySelRect(currentSel)
+    if currentSel > cellsX then
+      currentSel = math.max(currentSel-cellsX, 1)
+      displaySelRect(currentSel)
+    end
 	end)
 
 switchApp:bind('', 'down', nil,
 	function()
-	  currentSel = math.min(currentSel+cellsX, appCount)
-	  displaySelRect(currentSel)
+    if currentSel <= cellsX * (cellsY-1) then
+      currentSel = math.min(currentSel+cellsX, appCount)
+      displaySelRect(currentSel)
+    end
 	end)
 switchApp:bind('', 'pad2', nil,
 	function()
-	  currentSel = math.min(currentSel+cellsX, appCount)
-	  displaySelRect(currentSel)
+    if currentSel <= cellsX * (cellsY-1) then
+      currentSel = math.min(currentSel+cellsX, appCount)
+      displaySelRect(currentSel)
+    end
 	end)
 
 -- NW, NE, SW, SE -------------------------------------------
 switchApp:bind('', 'pad7', nil,
 	function()
-	  currentSel = math.max(currentSel-1, 1)
-	  currentSel = math.max(currentSel-cellsX, 1)
+	  -- Up, then left
+    if currentSel > cellsX then
+      currentSel = math.max(currentSel-cellsX, 1)
+    end
+    if currentSel % cellsX ~= 1 then
+	    currentSel = math.max(currentSel-1, 1)
+	  end
 	  displaySelRect(currentSel)
 	end)
 switchApp:bind('', 'pad9', nil,
 	function()
-	  currentSel = math.max(currentSel+1, appCount)
-	  currentSel = math.max(currentSel-cellsX, 1)
+	  -- Up, then right
+    if currentSel > cellsX then
+      currentSel = math.max(currentSel-cellsX, 1)
+    end
+    if currentSel % cellsX ~= 0 then
+  	  currentSel = math.min(currentSel+1, appCount)
+  	end
 	  displaySelRect(currentSel)
 	end)
 switchApp:bind('', 'pad1', nil,
 	function()
-	  currentSel = math.max(currentSel-1, 1)
-	  currentSel = math.max(currentSel+cellsX, appCount)
+	  -- Left, then down
+    if currentSel % cellsX ~= 1 then
+	    currentSel = math.max(currentSel-1, 1)
+	  end
+    if currentSel <= cellsX * (cellsY-1) then
+      currentSel = math.min(currentSel+cellsX, appCount)
+    end
 	  displaySelRect(currentSel)
 	end)
 switchApp:bind('', 'pad3', nil,
 	function()
-	  currentSel = math.max(currentSel+1, appCount)
-	  currentSel = math.max(currentSel+cellsX, appCount)
+	  -- Right, then down
+    if currentSel <= cellsX * (cellsY-1) then
+      currentSel = math.min(currentSel+cellsX, appCount)
+    end
+    if currentSel % cellsX ~= 0 then
+  	  currentSel = math.min(currentSel+1, appCount)
+  	end
 	  displaySelRect(currentSel)
 	end)
 
