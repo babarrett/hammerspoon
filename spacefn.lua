@@ -166,12 +166,17 @@ Spc Up:   if keyDownWhileSpaceDown == false then -- We didn't use this as a Spac
 --  D   5         Mod Up        0
 --                Key down + up 5
 
+--  Bruce's simplified Sticky Keys state diagram:
+--  0   Initialized. No keys down, no mod keys active, nothing pending
+--      If key down move to state xx
+--      If mod key down move to state yy
+--  1
 
 mod Dn:    -- Sticky Keys
 
 mod Up:    -- Sticky Keys
 
--- Given 2 lists of modifiers send whatever modifiers are needed to change stare from
+-- Given 2 lists of modifiers send whatever modifiers are needed to change state from
 -- one to the other.
 --  Example:
 --    fromMod = {shift, alt}
@@ -181,6 +186,12 @@ mod Up:    -- Sticky Keys
 --    changeMods(fromMod, toMod)
 --    emit desired key(s)
 --    changeMods(toMod, fromMod)  -- restore state.
+-------------------------------------------
+
+
+
+
+
 function changeMods (fromMod, toMod)
 
 

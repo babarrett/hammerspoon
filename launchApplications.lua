@@ -120,10 +120,9 @@ local webShortCuts = {
 
 -- Support text snippets in a single column list
 local textShortCuts = {
+  ["-"] = {"-------------------------------------------", "-------------------------------------------", nil},  -- D for "dashes"
   ["A"] = {"bbarrett@asperasoft.com", "bbarrett@asperasoft.com", nil},
   ["C"] = {"communitytwok@e", "communitytwok@earthreflections.com", nil},
-  ["D"] = {"-------------------------------------------", "-------------------------------------------", nil},  -- D for "dashes"
-  ["Char_-"] = {"-------------------------------------------", "-------------------------------------------", nil},  -- D for "dashes"
   ["E"] = {"bruceb@earthreflections.com", "bruceb@earthreflections.com", nil},
   ["I"] = {"brucebarrett@us.ibm.com", "brucebarrett@us.ibm.com", nil},
   ["P"] = {"Markdown Photo", "```\r      +-----+\r      |photo|\r      +-----+\r```\r", nil},
@@ -257,10 +256,6 @@ end
 -- Pick up textShortCuts to offer, sorted by activation key
 -- Any key > 1 character we do not bind to
 for key, textInfo in hs.fnutils.sortByKeys(textShortCuts) do
-  if string.sub(key, 1, 5) == "Char_" then
-    key = string.sub(key, -1)
-    debuglog("Using Key: ".. key)
-  end
   if string.len(key) == 1 then
     modalTextKey:bind('', key,
     function()
@@ -308,8 +303,8 @@ function centerAndShowPicker(pickerTable)
   -- TODO: Remove text HACK for single column. Assume text < 15 and Web / Apps >= 15. Works for me for now.
   tc = countTableElements(pickerTable)
   ymax =math.ceil(tc / 4) -1
-  if tc < 15 then 
-    ymax = tc -1 
+  if tc < 15 then
+    ymax = tc -1
     xmax = 0
   end
 
@@ -497,7 +492,7 @@ function launchApplications.generateHtml()
 end
 
 function generateAppOrWebTable()
-    local tableText =  "<tr>"
+  local tableText =  "<tr>"
 
   local x = 0;
   local y = 0;
