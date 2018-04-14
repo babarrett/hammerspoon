@@ -37,7 +37,7 @@ switchApplications = {}
 --  9 apps in 0 or 1 key strokes;
 -- 14 apps in 2 key strokes;
 -- 25 apps in <= 2 keystrokes
---			Allow	
+--			Allow
 --			Diagonal (NE, SW, etc.)
 --            22222
 --            21112
@@ -62,7 +62,7 @@ switchApplications = {}
 --	I often run with 5 or 6 app running. This plan lets me have 17
 --	apps running and still only have 3 rows active. 23 as represented.
 --	We could fill out the entire grid and add 12 more apps for 35 total.
---	
+--
 --	            XX
 -- row 01 02 03 04 05 06 07
 -- --- -- -- -- -- -- -- --
@@ -137,155 +137,171 @@ bgBoarder = 10;
 
 --	HyperFn+Tab starts "Switch Application mode."
 --	It terminates with switching to an app (space or return), or quitting (Esc)
-local switchApp  = hs.hotkey.modal.new(HyperFn, 'Tab')
+local switchApp     = hs.hotkey.modal.new(HyperFn, 'Tab')
+local switchAppPad  = hs.hotkey.modal.new(HyperFn, 'pad5')
 
 --	Bind keys of interest for switching apps
 --	switchApp:bind(mods, key, message, pressedfn, releasedfn, repeatfn) -> hs.hotkey.modal object
 switchApp:bind('', 'escape',
 	function()
-	switchApp:exit() end)
+	  switchApp:exit()
+	end)
+switchAppPad:bind('', 'escape',
+	function()
+	  switchAppPad:exit()
+	end)
 switchApp:bind('', 'return',
 	function()
-	switchToCurrentApp()
-	switchApp:exit()
+	  switchToCurrentApp()
+	  switchApp:exit()
 	end)
-switchApp:bind('', 'space',
+switchAppPad:bind('', 'return',
 	function()
-		-- If > 1 window allow user to choose which window from list
-		-- Bring up app's windows as a hs.chooser list. Up/Down will then be used to select.
-		--		Return to choose and open.
-		-- 		Esc will just ignore window, but we've already done the App selection.
-		listOfApps = hs.application.applicationsForBundleID( appList[currentSel] )
-		appWindowList = listOfApps[1]:allWindows()
+	  switchToCurrentApp()
+	  switchAppPad:exit()
+	end)
 
-		if countTableElements(appWindowList) <= 1 then
-		  -- nothing more to do... zero, or only 1 window anyway.
-		  switchToCurrentApp()
-		  switchApp:exit()
-		  return
-		end
-		switchToCurrentApp()
-		switchApp:exit()		-- Take down the app switcher, stops intercepting arrow keys so hs.chooser gets them.
-		hs.timer.doAfter(0.5, showAppWindows)
+function doSpace()
+  -- If > 1 window allow user to choose which window from list
+  -- Bring up app's windows as a hs.chooser list. Up/Down will then be used to select.
+  --		Return to choose and open.
+  -- 		Esc will just ignore window, but we've already done the App selection.
+  listOfApps = hs.application.applicationsForBundleID( appList[currentSel] )
+  appWindowList = listOfApps[1]:allWindows()
+
+  if countTableElements(appWindowList) <= 1 then
+    -- nothing more to do... zero, or only 1 window anyway.
+    switchToCurrentApp()
+    switchApp:exit()
+    return
+  end
+  switchToCurrentApp()
+  switchApp:exit()		-- Take down the app switcher, stops intercepting arrow keys so hs.chooser gets them.
+  hs.timer.doAfter(0.5, showAppWindows)
 --		hs.timer.usleep(100000)
 --		showAppWindows()
-	end)
+end
+switchApp:bind('', 'space', doSpace)
+switchAppPad:bind('', 'space', doSpace)
 
 -- arrow keys, for switching to a running app
-switchApp:bind('', 'left', nil,
-	function()
-    if currentSel % cellsX ~= 1 then
-	    currentSel = math.max(currentSel-1, 1)
-	    displaySelRect(currentSel)
-	  end
-	end)
-switchApp:bind('', 'pad4', nil,
-	function()
-    if currentSel % cellsX ~= 1 then
-	    currentSel = math.max(currentSel-1, 1)
-	    displaySelRect(currentSel)
-	  end
-	end)
 
-switchApp:bind('', 'right', nil,
-	function()
-    if currentSel % cellsX ~= 0 then
-  	  currentSel = math.min(currentSel+1, appCount)
-  	  displaySelRect(currentSel)
-  	end
-	end)
-switchApp:bind('', 'pad6', nil,
-	function()
-    if currentSel % cellsX ~= 0 then
-  	  currentSel = math.min(currentSel+1, appCount)
-  	  displaySelRect(currentSel)
-  	end
-	end)
+function doLeft()
+  if currentSel % cellsX ~= 1 then
+    currentSel = math.max(currentSel-1, 1)
+    displaySelRect(currentSel)
+  end
+end
+switchApp:bind('', 'left', nil, doLeft)
+switchAppPad:bind('', 'left', nil, doLeft)
+switchApp:bind('', 'pad4', nil, doLeft)
+switchAppPad:bind('', 'pad4', nil, doLeft)
 
--- arrow keys, for switching to a running app, or for choosing a window
-switchApp:bind('', 'up', nil,
-	function()
-    if currentSel > cellsX then
-      currentSel = math.max(currentSel-cellsX, 1)
-      displaySelRect(currentSel)
-    end
-	end)
-switchApp:bind('', 'pad8', nil,
-	function()
-    if currentSel > cellsX then
-      currentSel = math.max(currentSel-cellsX, 1)
-      displaySelRect(currentSel)
-    end
-	end)
+function doRight()
+  if currentSel % cellsX ~= 0 then
+    currentSel = math.min(currentSel+1, appCount)
+    displaySelRect(currentSel)
+  end
+end
+switchApp:bind('', 'right', nil, doRight)
+switchAppPad:bind('', 'right', nil, doRight)
+switchApp:bind('', 'pad6', nil, doRight)
+switchAppPad:bind('', 'pad6', nil, doRight)
 
-switchApp:bind('', 'down', nil,
-	function()
-    if currentSel <= cellsX * (cellsY-1) then
-      currentSel = math.min(currentSel+cellsX, appCount)
-      displaySelRect(currentSel)
-    end
-	end)
-switchApp:bind('', 'pad2', nil,
-	function()
-    if currentSel <= cellsX * (cellsY-1) then
-      currentSel = math.min(currentSel+cellsX, appCount)
-      displaySelRect(currentSel)
-    end
-	end)
+function doUp()
+  if currentSel > cellsX then
+    currentSel = math.max(currentSel-cellsX, 1)
+    displaySelRect(currentSel)
+  end
+end
+switchApp:bind('', 'up', nil, doUp)
+switchAppPad:bind('', 'up', nil, doUp)
+switchApp:bind('', 'pad8', nil, doUp)
+switchAppPad:bind('', 'pad8', nil, doUp)
+
+function doDown()
+  if currentSel <= cellsX * (cellsY-1) then
+    currentSel = math.min(currentSel+cellsX, appCount)
+    displaySelRect(currentSel)
+  end
+end
+switchApp:bind('', 'down', nil, doDown)
+switchAppPad:bind('', 'down', nil, doDown)
+switchApp:bind('', 'pad2', nil, doDown)
+switchAppPad:bind('', 'pad2', nil, doDown)
 
 -- NW, NE, SW, SE -------------------------------------------
-switchApp:bind('', 'pad7', nil,
-	function()
-	  -- Up, then left
-    if currentSel > cellsX then
-      currentSel = math.max(currentSel-cellsX, 1)
-    end
-    if currentSel % cellsX ~= 1 then
-	    currentSel = math.max(currentSel-1, 1)
-	  end
-	  displaySelRect(currentSel)
-	end)
-switchApp:bind('', 'pad9', nil,
-	function()
-	  -- Up, then right
-    if currentSel > cellsX then
-      currentSel = math.max(currentSel-cellsX, 1)
-    end
-    if currentSel % cellsX ~= 0 then
-  	  currentSel = math.min(currentSel+1, appCount)
-  	end
-	  displaySelRect(currentSel)
-	end)
-switchApp:bind('', 'pad1', nil,
-	function()
-	  -- Left, then down
-    if currentSel % cellsX ~= 1 then
-	    currentSel = math.max(currentSel-1, 1)
-	  end
-    if currentSel <= cellsX * (cellsY-1) then
-      currentSel = math.min(currentSel+cellsX, appCount)
-    end
-	  displaySelRect(currentSel)
-	end)
-switchApp:bind('', 'pad3', nil,
-	function()
-	  -- Right, then down
-    if currentSel <= cellsX * (cellsY-1) then
-      currentSel = math.min(currentSel+cellsX, appCount)
-    end
-    if currentSel % cellsX ~= 0 then
-  	  currentSel = math.min(currentSel+1, appCount)
-  	end
-	  displaySelRect(currentSel)
-	end)
+-- Move North-West
+function doNW()
+  -- Up, then left
+  if currentSel > cellsX then
+    currentSel = math.max(currentSel-cellsX, 1)
+  end
+  if currentSel % cellsX ~= 1 then
+    currentSel = math.max(currentSel-1, 1)
+  end
+  displaySelRect(currentSel)
+end
+switchApp:bind('', 'pad7', nil, doNW )
+switchAppPad:bind('', 'pad7', nil, doNW )
+
+-- Move North-East
+function doNE()
+  -- Up, then right
+  if currentSel > cellsX then
+    currentSel = math.max(currentSel-cellsX, 1)
+  end
+  if currentSel % cellsX ~= 0 then
+    currentSel = math.min(currentSel+1, appCount)
+  end
+  displaySelRect(currentSel)
+end
+switchApp:bind('', 'pad9', nil, doNE)
+switchAppPad:bind('', 'pad9', nil, doNE)
+
+-- Move South-West
+function doSW()
+  -- Left, then down
+  if currentSel % cellsX ~= 1 then
+    currentSel = math.max(currentSel-1, 1)
+  end
+  if currentSel <= cellsX * (cellsY-1) then
+    currentSel = math.min(currentSel+cellsX, appCount)
+  end
+  displaySelRect(currentSel)
+end
+switchApp:bind('', 'pad1', nil, doSW)
+switchAppPad:bind('', 'pad1', nil, doSW)
+
+-- Move South-East
+function doSE()
+  -- Right, then down
+  if currentSel <= cellsX * (cellsY-1) then
+    currentSel = math.min(currentSel+cellsX, appCount)
+  end
+  if currentSel % cellsX ~= 0 then
+    currentSel = math.min(currentSel+1, appCount)
+  end
+  displaySelRect(currentSel)
+end
+switchApp:bind('', 'pad3', nil, doSE)
+switchAppPad:bind('', 'pad3', nil, doSE)
 
 function switchApp:entered()
-  -- Build a grid of app names
+  -- Build a grid of app icons
+  bringUpSwitcher()
+end
+function switchAppPad:entered()
+  -- Build a grid of app icons
   bringUpSwitcher()
 end
 
+
 function switchApp:exited()
-  debuglog("***>> exited <<***")
+  takeDownSwitcher()
+end
+
+function switchAppPad:exited()
   takeDownSwitcher()
 end
 
@@ -327,11 +343,11 @@ function bringUpSwitcher()
 	-- apps <Esc> will cancel.
 	frontApp = hs.application.frontmostApplication()
 	frontAppBundleID = frontApp:bundleID()
-	
+
 	-- Lay them out on the screen as grid
 	allApps = hs.application.runningApplications()
 	appCount = countTableElements(allApps, showingTest)
-	
+
 	-- Compute the matrix squares, say 3 x 3, as needed. Depends on # of apps found
 	cellsX = math.ceil(math.sqrt(appCount));
 	cellsY = math.ceil(appCount/cellsX);
@@ -344,14 +360,14 @@ function bringUpSwitcher()
 	-- Compute the matrix area, say 3 x 3, as needed. Depends on # of apps found
 	bgX = frame.x + frame.w/2 - (cellsX*CELLWIDTH/2) - bgBoarder;
 	bgY = frame.y + frame.h/2 - CELLHEIGHT/2 - bgBoarder;
-	
+
 	-- Create on-screen BG rectangle
 	bgRect = hs.drawing.rectangle(hs.geometry.rect(bgX, bgY, cellsWidth+2*bgBoarder, cellsHeight+2*bgBoarder))
 	bgRect:setFillColor({["red"]=0.5,["blue"]=0.5,["green"]=0.5,["alpha"]=0.5}):setFill(true)
 	bgRect:setRoundedRectRadii(10, 10)
 	bgRect:setLevel(hs.drawing.windowLevels["floating"])
 	table.insert(frontDrawingList, bgRect:show() )
-	
+
 	cnt = 1;
 	for index, app in pairs(allApps) do
 		-- Only those in dock, except current
@@ -399,32 +415,27 @@ end
 --    debuglog("chooserCompletion title: ".. selectionTable["text"])
 
     -- Open the requested window, unless user canceled the chooser.
-    debuglog("chooserCompletion")
     takeDownChooser()
     if selectionTable ~= nil then
---      debuglog("  text: ".. selectionTable["text"])
 	  win = hs.window.get(selectionTable["winID"])
---	  debuglog("  win: ".. tostring(win))
 	  win:becomeMain()
 	  win:focus()
 	end
 
   end
   function takeDownChooser()
-    debuglog("takeDownChooser")
     myChooser:delete()
   end
 
 
   function bringUpChooser(chooserChoices)
     --
-    debuglog("bringUpChooser")
-    myChooser = hs.chooser.new(chooserCompletion)	
+    myChooser = hs.chooser.new(chooserCompletion)
     myChooser:choices(chooserChoices)
 	-- Get colors to match Application switcher better
 	myChooser:bgDark(false)
     myChooser:fgColor({["red"]=0.3,["blue"]=0.3,["green"]=0.3,["alpha"]=1.0})
-    
+
     myChooser:width(30)		-- 30% of screen width, centered.
     myChooser:rows(countTableElements(chooserChoices))
     myChooser:show()
