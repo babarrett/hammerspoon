@@ -29,8 +29,8 @@ function showKeyPress(tap_event)
     ["forwarddelete"] = true, ["end"] = true, ["pagedown"] = true,
     ["left"] = true, ["right"] = true, ["down"] = true, ["up"] = true,
     -- These added 4/24/2017 when modifiers added to Hammerspoon. v0.9.53
-	["shift,"] = true, ["rightshift,"] = true, ["cmd,"] = true, 
-	["rightcmd,"] = true, ["alt,"] = true, ["rightalt,"] = true, 
+	["shift,"] = true, ["rightshift,"] = true, ["cmd,"] = true,
+	["rightcmd,"] = true, ["alt,"] = true, ["rightalt,"] = true,
 	["ctrl,"] = true, ["rightctrl,"] = true, ["capslock,"] = true, ["fn,"] = true
   }
 
@@ -72,7 +72,7 @@ function showKeyPress(tap_event)
 
   -- get modifiers' string representation
   if flags.ctrl then
-    modifiers = modifiers .. "C-"
+    modifiers = modifiers .. "^-"
   end
   if flags.cmd then
     modifiers = modifiers .. "⌘-"
