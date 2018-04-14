@@ -4,7 +4,7 @@ switchApplications = {}
 --  * √ A GUI, in a matrix of some sort
 --  * √ App icons fill the matrix
 --  * √ Don't list current App, Esc will return to it
---  * √ Use Hyper+Tab to activate
+--  * √ Use Hyper+Tab or Hyper+Pad5 to activate
 --  * √ Allow up, down, left, right to select;
 --  * √ Indicate the selection with rectangle around App icon
 --  * √ Bring up on active window. Centered
@@ -137,7 +137,7 @@ bgBoarder = 10;
 
 --	HyperFn+Tab starts "Switch Application mode."
 --	It terminates with switching to an app (space or return), or quitting (Esc)
-local switchApp = hs.hotkey.modal.new(HyperFn, 'Tab')
+local switchApp  = hs.hotkey.modal.new(HyperFn, 'Tab')
 
 --	Bind keys of interest for switching apps
 --	switchApp:bind(mods, key, message, pressedfn, releasedfn, repeatfn) -> hs.hotkey.modal object
@@ -512,14 +512,5 @@ end
 
 
 end
--- SH-268 design.
--- SH-579 / 580
--- credentials:
---		u/p: alice@wonderland.com / aspera
---		bo3b@example.com / 456 rty (Bo3b jones)
---		email: bruceb@earthreflections.com		pw: 456 rty		(Name: Org_Admin OS_Org)
---		email: bbarrett@asperasoft.com			pw: 456 rty		(Name: Project_Admin Touch_Project)
---		host: https://shares2-ci.aspera.us
---		https://shares2.aspera.us/
 
 return switchApplications
