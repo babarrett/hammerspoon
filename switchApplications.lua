@@ -26,16 +26,17 @@ switchApplications = {}
 --  *   Track the time spent *active* in each running app, and/or the number of times switched into.
 --		    Use that to prioritize the running programs to reduce the number of navigation key movements
 --		    to get to the "most used" apps
+--  * TODO: Ignore any other keys pressed while in this mode
 --
 --Keyboard keys:
 --  * Arrows, navigate around the grid
---  * Space, switch immediately to selected app
---  * Return, if selected app has > 1 window open switch to the window chooser (list), else open immediately
---  * Escape, cancel the app switch
+--  * Pad: 1,2,3,4,6,7,8 map to movements: SW,S,SE.W,E,NW,N,NE
+--  * Return, switch immediately to selected app
+--  * Space, if selected app has > 1 window open switch to the window chooser (list), else open immediately
+--  * Escape, cancel the app switcher
 
 -- Possible matrix: (# represent # of Key strokes not counting Hyper+Lead to start and <space> to select)
---  9 apps in 0 or 1 key strokes;
--- 14 apps in 2 key strokes;
+--  9 apps in <= 1 keystrokes;
 -- 25 apps in <= 2 keystrokes
 --			Allow
 --			Diagonal (NE, SW, etc.)
@@ -45,21 +46,9 @@ switchApplications = {}
 --            21112
 --            22222
 --
--- Or, with only horizontal and vertical movements:
---        5 apps in 1 keystroke;
---        9 apps with double-tap keystrokes; (I think I usually have < 9 apps running at a time.)
---       13 apps in 2 keystrokes or less. Right, then Up for example.
---			Allow
---			Horiz+Vert
---              2
---             212
---            21012
---             212
---              2
---
 --	Map of the order to add application icons to the grid.
 --	Optimized for: fewest keystrokes, and minimizing number of rows.
---	I often run with 5 or 6 app running. This plan lets me have 17
+--	I often run with 5 or 6 apps running. This plan lets me have 17
 --	apps running and still only have 3 rows active. 23 as represented.
 --	We could fill out the entire grid and add 12 more apps for 35 total.
 --
@@ -449,7 +438,7 @@ end
 	-- If > 0 window allow user to choose which window from list
 	-- Bring up app's windows as a hs.chooser list. Up/Down will then be used to select.
 	--		Return to choose and open.
-	-- 		Esc will just ignore window.
+	-- 		Esc will just ignore window selection and leave front-most active..
 	appWindowList = hs.application.frontmostApplication():allWindows()
 
 	if countTableElements(appWindowList) <= 0 then
@@ -519,8 +508,8 @@ function makeSwitcher()
 end
 
   -- bind to hotkeys; WARNING: at least one modifier key is required!
-  hs.hotkey.bind('alt','tab','Show Window Switcher',function() makeSwitcher() end)
-
+  debuglog('binding alt+tab')
+  hs.hotkey.bind('alt','tab','Show Window Switcher',function()  end)
 
 end
 
