@@ -45,25 +45,21 @@ local appShortCuts = {
   -- hs.application.launchOrFocusByBundleID("com.aspera.connect") works.
   -- Use Z# to support entries without the 1 character (hot key) shortcuts
   --  Multi char strings?
-    A = {'Connect', 'com.aspera.connect', nil}, -- > hs.application.bundleID(hs.application.applicationForPID(58463)) --> com.aspera.connect
     B = {'BBEdit', 'BBEdit', nil},
     C = {'Chrome', 'Google Chrome', nil},
-
     D = {'Chatty (Discuss)', 'Chatty', nil},
-    F = {'Finder', 'Finder', nil},
+
+    F = {'FileMaker Pro', '/Applications/FileMaker Pro 13 Advanced/FileMaker Pro Advanced.app', nil},
     G = {'OmniGraffle', 'OmniGraffle', nil},
+    I = {'iTunes', 'iTunes', nil},
 
-    I = {'IBM Notes', 'IBM Notes', nil},
     J = {'Notes', 'Notes', nil},
-    M = {'Mail', 'Mail', nil},
-
+    M = {'Markoff', 'Markoff', nil},
     N = {'Notetaker', 'Notetaker', nil},
+
     P = {'System Preferences', 'System Preferences', nil},
     R = {'Remote Desktop', '/Applications/Microsoft Remote Desktop.app/', nil}, -- > hs.application.nameForBundleID("com.microsoft.rdc.mac") --> "Microsoft Remote Desktop"
-
     S = {"Secure DMG","/Users/bbarrett/Secure.dmg & open /Users/bruce/Secure.dmg",nil}, -- open Secure.dmg either at work or at home.
-    T = {'Tunnelblick', 'Tunnelblick', nil},
-    V = {'IBM VPN', 'Cisco AnyConnect Secure Mobility Client', nil},
 
     X = {'Firefox', 'Firefox', nil},
     Y = {'Calendar (Year)', 'Calendar', nil},
@@ -71,11 +67,6 @@ local appShortCuts = {
   -- Using Zaa so it sorts after the 1-character shortcuts.
   -- Nothing "sacred" about # of characters in name
   -- Zaa sorts before Zbb so we can keep these in order as we like
-    Zad = {'Adobe Reader', 'Adobe Reader', nil},
-    Zfm = {'FileMaker', '/Applications/FileMaker Pro 13 Advanced/FileMaker Pro Advanced.app', nil},
-    Zgt = {'GoToMeeting', '/Applications/GoToMeeting/GoToMeeting (7155).app', nil},
-    Zit = {'iTunes', 'iTunes', nil},
-    Zma = {'Markoff', 'Markoff', nil},
     Znu = {'Numbers', 'Numbers', nil},
     Zpa = {'Pages', 'Pages', nil},
     Zpr = {'Preview', 'Preview', nil},
