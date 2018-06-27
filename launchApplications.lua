@@ -54,6 +54,7 @@ local appShortCuts = {
     I = {'iTunes', 'iTunes', nil},
 
     J = {'Notes', 'Notes', nil},
+    K = {'KiCad', 'kicad', nil},
     M = {'Markoff', 'Markoff', nil},
     N = {'Notetaker', 'Notetaker', nil},
 
