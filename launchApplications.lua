@@ -20,7 +20,7 @@ launchApplications = {}
 --  TODO: Support NW, NE, SW, SE "arrow keys" for navigating App/Webpage grids. Makes for fewer keystrokes required.
 --  TODO: Go totally wild and support a 3rd dimension. Could access 3x3x3=27 entries w/ 2 arrow key presses, or 5x5x5=125 entries with 4 arrow keys
 --  TODO: "Merge" hot key behavior
---      1. (done) still have 2 tables, appShortCuts and webShortCuts
+--      1. (done) Have 3 tables, appShortCuts, webShortCuts, and text snippits
 --      2. reduce modalAppKey & modalWebKey bindings to 1 table. When both tables use the same keys stroke (or always?)
 --        callout to Handle(key) which will pick the right behavior based upon the global, including "do nothing"
 --        if the current "mode" does not have that key defined.
@@ -39,30 +39,32 @@ finalTextToType = ""
 --   Object with up to 3 items:
 --     DisplayText
 --     App to launch, or bundleID, or nil
---     Web site to open, or nil TODDO: Actually support the web-site option
+--     Web site to open, or nil
 local appShortCuts = {
   -- "/Users/bbarrett/" works, but "~/" does not. :-(
   -- hs.application.launchOrFocusByBundleID("com.aspera.connect") works.
   -- Use Z# to support entries without the 1 character (hot key) shortcuts
   --  Multi char strings?
+    ["3"] = {'FileMaker Pro 13', '/Applications/FileMaker Pro 13 Advanced/FileMaker Pro Advanced.app', nil},
+    ["7"] = {'FileMaker Pro 17', '/Applications/FileMaker Pro 17 Advanced/FileMaker Pro Advanced.app', nil},
     B = {'BBEdit', 'BBEdit', nil},
+
     C = {'Chrome', 'Google Chrome', nil},
     D = {'Chatty (Discuss)', 'Chatty', nil},
-
-    F = {'FileMaker Pro', '/Applications/FileMaker Pro 13 Advanced/FileMaker Pro Advanced.app', nil},
     G = {'OmniGraffle', 'OmniGraffle', nil},
-    I = {'iTunes', 'iTunes', nil},
 
+    I = {'iTunes', 'iTunes', nil},
     J = {'Notes', 'Notes', nil},
     K = {'KiCad', 'kicad', nil},
+
     M = {'Markoff', 'Markoff', nil},
     N = {'Notetaker', 'Notetaker', nil},
-
     P = {'System Preferences', 'System Preferences', nil},
+
     R = {'Remote Desktop', '/Applications/Microsoft Remote Desktop.app/', nil}, -- > hs.application.nameForBundleID("com.microsoft.rdc.mac") --> "Microsoft Remote Desktop"
     S = {"Secure DMG","/Users/bbarrett/Secure.dmg & open /Users/bruce/Secure.dmg",nil}, -- open Secure.dmg either at work or at home.
-
     X = {'Firefox', 'Firefox', nil},
+
     Y = {'Calendar (Year)', 'Calendar', nil},
 
   -- Using Zaa so it sorts after the 1-character shortcuts.
@@ -76,36 +78,32 @@ local appShortCuts = {
 
 local webShortCuts = {
 
-    A = {"Aspera Support", nil, "https://aspera.zendesk.com/agent/dashboard"},
-    B = {"Bluepages", nil, "Bluepages"},
-    C = {"Confluence Connect", nil, "https://confluence.aspera.us/display/CON/Connect+Browser+Plug-in+Home"},
-
-    D = {"Google Docs", nil, "https://docs.google.com/document/u/0/?tgif=c"},
-    F = {"Google Hangouts", nil, "https://hangouts.google.com/"},
-    G = {"Google Drive", nil, "https://drive.google.com/drive/my-drive"},
+--    D = {"Google Docs", nil, "https://docs.google.com/document/u/0/?tgif=c"},
+--    F = {"Google Hangouts", nil, "https://hangouts.google.com/"},
+--    G = {"Google Drive", nil, "https://drive.google.com/drive/my-drive"},
 
     H = {"Home", nil, "http://brucebarrett.com/browserhome/brucehome.html"},
-    J = {"Jira ASCN", nil, "https://jira.aspera.us/projects/ASCN?selectedItem=com.atlassian.jira.jira-projects-plugin%3Arelease-page&status=no-filter"},
+--    J = {"Jira ASCN", nil, "https://jira.aspera.us/projects/ASCN?selectedItem=com.atlassian.jira.jira-projects-plugin%3Arelease-page&status=no-filter"},
     K = {"KLE", nil, "http://www.keyboard-layout-editor.com"},
 
-    L = {"Aspera Downlads", nil, "http://downloads.asperasoft.com"},
-    M = {"IBM Mail", nil, "IBM Mail"},
-    N = {"ADN", nil, "https://developer.asperasoft.com"},
+--    L = {"Aspera Downlads", nil, "http://downloads.asperasoft.com"},
+--    M = {"IBM Mail", nil, "IBM Mail"},
+--    N = {"ADN", nil, "https://developer.asperasoft.com"},
 
-    O = {"Trac, Old bugs", nil, "https://trac.aspera.us"},
+--    O = {"Trac, Old bugs", nil, "https://trac.aspera.us"},
     R = {"Reddit/mk", nil, "https://www.reddit.com/r/MechanicalKeyboards/"},
-    S = {"Google Sheets", nil, "https://sheets.google.com"},
+--    S = {"Google Sheets", nil, "https://sheets.google.com"},
 
-    T = {"Confluence TP", nil, "https://confluence.aspera.us/display/TP/Technical+Publications"},
+--    T = {"Confluence TP", nil, "https://confluence.aspera.us/display/TP/Technical+Publications"},
     W = {"Geekhack", nil, "https://geekhack.org/index.php?action=watched"},   -- Geekhack, Watched
     Y = {'Calendar (Year)', nil, 'https://calendar.google.com/calendar/render#main_7'},
 
-    Z = {'Zendesk', nil, 'https://aspera.zendesk.com/agent/dashboard'},
+--    Z = {'Zendesk', nil, 'https://aspera.zendesk.com/agent/dashboard'},
 
     Zgm = {'Google maps', nil, 'https://www.google.com/maps/' },
-    Ztd = {'trac - docs builds', nil, 'https://trac.aspera.us/process2/test/docs' },
-    Ztr = {'trac - release builds', nil, 'https://trac.aspera.us/process2/release/' },
-    Ztt = {'trac - test builds', nil, 'https://trac.aspera.us/process2/test/' },
+--    Ztd = {'trac - docs builds', nil, 'https://trac.aspera.us/process2/test/docs' },
+--    Ztr = {'trac - release builds', nil, 'https://trac.aspera.us/process2/release/' },
+--    Ztt = {'trac - test builds', nil, 'https://trac.aspera.us/process2/test/' },
 
 
 }
@@ -113,15 +111,15 @@ local webShortCuts = {
 -- Support text snippets in a single column list
 local textShortCuts = {
   ["-"] = {"-------------------------------------------", "-------------------------------------------", nil},  -- D for "dashes"
-  ["A"] = {"bbarrett@asperasoft.com", "bbarrett@asperasoft.com", nil},
+--  ["A"] = {"bbarrett@asperasoft.com", "bbarrett@asperasoft.com", nil},
   ["C"] = {"communitytwok@e", "communitytwok@earthreflections.com", nil},
   ["E"] = {"bruceb@earthreflections.com", "bruceb@earthreflections.com", nil},
   ["I"] = {"brucebarrett@us.ibm.com", "brucebarrett@us.ibm.com", nil},
   ["P"] = {"Markdown Photo", "```\r      +-----+\r      |photo|\r      +-----+\r```\r", nil},
-  ["S"] = {"support@aspera", "support@asperasoft.com", nil},
+--  ["S"] = {"support@aspera", "support@asperasoft.com", nil},
   ["T"] = {"TODO: ", "TODO: ", nil},
-  ["U"] = {"test-connect", "https://test-connect.asperasoft.com", nil},
-  ["W"] = {"Webex Room", "https://ibm.webex.com/join/brucebarrett", nil}
+--  ["U"] = {"test-connect", "https://test-connect.asperasoft.com", nil},
+--  ["W"] = {"Webex Room", "https://ibm.webex.com/join/brucebarrett", nil}
 }
 
 -- myTable:   the table we want to know how many elements it contains
@@ -144,9 +142,7 @@ local developmentShortCuts = {
   A = {"cd algernon-master", nil, nil},
   B = {"cd bruce-ergodox", nil, nil},
   C = {"cd ~/dev/git/qmk_firmware & make keyboard=ergodox keymap=bbarrett", nil, nil}
-
 }
-
 
 
 --  HyperFn+A starts "Launch Application mode."
@@ -281,7 +277,6 @@ function modalTextKey:entered()
   inMode = "Text"
   centerAndShowPicker(textShortCuts)
 end
-
 
 -- Move cursor to "center" and load "web page picker:
 function centerAndShowPicker(pickerTable)
