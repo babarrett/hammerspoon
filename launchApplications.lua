@@ -79,7 +79,7 @@ local appShortCuts = {
 local webShortCuts = {
 
 --    D = {"Google Docs", nil, "https://docs.google.com/document/u/0/?tgif=c"},
---    F = {"Google Hangouts", nil, "https://hangouts.google.com/"},
+    F = {"FileMaker 17 ref", nil, "https://fmhelp.filemaker.com/help/17/fmp/en/index.html"},
 --    G = {"Google Drive", nil, "https://drive.google.com/drive/my-drive"},
 
     H = {"Home", nil, "http://brucebarrett.com/browserhome/brucehome.html"},
