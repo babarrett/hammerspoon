@@ -6,7 +6,7 @@
 --	TODO: Create another modual for KeyToKey mappings such as Numeric Pad to move functions.
 --	TODO: Find some way wo handle NumLock, What's blocking it? No Karibiner == always numeric.
 
-VERSION = "2017-Sept-20"
+VERSION = "2018-July-28"
 hs.console.clearConsole()
 LUA_PATH = os.getenv("HOME") .. "/dev/git/hammerspoon/?"
 
@@ -39,14 +39,15 @@ end
 
 --[[	First we require all modules we'll later use
 	Note, as we bind to each function they add to the help string	--]]
-HF 								= require "helpFunctions"	-- global. Other modules call this too.
-local pasteCurrentSafariUrl 	= require "pasteCurrentSafariUrl"
-local windowManagement 			= require "windowManagement"
-local miscFunctions 			= require "miscFunctions"
-local cheatsheets				= require "cheatsheets"
-local launchApplications		= require "launchApplications"	-- or Webpages
-local switchApplications		= require "switchApplications"
+HF 								              = require "helpFunctions"	-- global. Other modules call this too.
+local pasteCurrentSafariUrl 	  = require "pasteCurrentSafariUrl"
+local windowManagement 			    = require "windowManagement"
+local miscFunctions 			      = require "miscFunctions"
+local cheatsheets				        = require "cheatsheets"
+local launchApplications		    = require "launchApplications"	-- or Webpages
+local switchApplications		    = require "switchApplications"
 local reportLayerModifierChange	= require "reportLayerModifierChange"
+local repeatNextKey             = require "repeatNextKey"
 require "KeyPressShow"			-- Hyper+K shows/hides key presses on screen
 require "bindFunctionKeys"
 --require "characterMapping"

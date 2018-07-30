@@ -50,7 +50,7 @@ local appShortCuts = {
     B = {'BBEdit', 'BBEdit', nil},
 
     C = {'Chrome', 'Google Chrome', nil},
-    D = {'Chatty (Discuss)', 'Chatty', nil},
+    D = {'Slack (Discuss)', 'Slack', nil},
     G = {'OmniGraffle', 'OmniGraffle', nil},
 
     I = {'iTunes', 'iTunes', nil},
@@ -114,6 +114,7 @@ local textShortCuts = {
 --  ["A"] = {"bbarrett@asperasoft.com", "bbarrett@asperasoft.com", nil},
   ["C"] = {"communitytwok@e", "communitytwok@earthreflections.com", nil},
   ["E"] = {"bruceb@earthreflections.com", "bruceb@earthreflections.com", nil},
+  ["F"] = {"FileMaker", "FileMaker", nil},
   ["I"] = {"brucebarrett@us.ibm.com", "brucebarrett@us.ibm.com", nil},
   ["P"] = {"Markdown Photo", "```\r      +-----+\r      |photo|\r      +-----+\r```\r", nil},
 --  ["S"] = {"support@aspera", "support@asperasoft.com", nil},

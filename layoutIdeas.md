@@ -10,6 +10,15 @@ Cleaver things I've heard of and thought of.
 * Option  (⌥) + anything
 * Control (^) + anything
 
+## Mac OS key combinations I don't use, but maybe should
+* https://jblevins.org/log/kbd
+* http://www.gnu.org/software/bash/manual/html_node/Bindable-Readline-Commands.html
+* opt+backspace: delete word left 
+* opt+del (forward delete): delete word right
+* Cmd+backspace: delete to start of line
+* Cmd+del (forward delete): delete to end of line
+* Ctrl-L: recenter current line or web page selected word, vertically in text box.
+
 
 ## Use layer for Shift, not the modifier
 #### Idea
@@ -68,7 +77,8 @@ Hold (or tap in the case of "one-shots") for another "layer"
 
 ## SpaceFn + X,C,V,Z
 #### Idea
-Use SpaceFn for Cut, Copy, Paste, Undo
+Use SpaceFn for Cut, Copy, Paste, Undo.
+Have done, works.
 
 #### Pros
 * Use it all the time on laptop now
@@ -90,12 +100,12 @@ Use SpaceFn for Cut, Copy, Paste, Undo
 #### Cons
 * Can't modify the key you're using as the modifier (unless it's a "long hold?")
 * May be hard to get used to
-* For full coverage you may need FDSA to reflect JKL;
+* For full coverage you need FDSA to reflect JKL;
 * If reflected may need 2 * number of modifiers layers to cover it.
 
 ## Press and hold for additional functionality
 #### Idea
-Hole Delete (Backspace) for Forward delete. Hold "Copy" for "Cut."
+Hold Delete (Backspace) for Forward delete. Hold "Copy" for "Cut."
 
 #### Pros
 * Save a key
@@ -111,7 +121,6 @@ So used to this on Mac!
 #### Pros
 * Less work load on hands
 * Algernon uses only on one side of the keyboard. Saving keys.
-* c
 
 #### Cons
 * Many implementations count the next press, even if another modifier or layer as firing.
@@ -126,7 +135,7 @@ win to me! No layer to switch, no key to hold or have on one-shot, just one
 finger is all it takes.
 
 #### Pros
-* Fake layering: The situation described above: having one key to three things,
+* Fake layering: The situation described above: having one key do three things,
 to reduce movement, and to have similar symbols on the same key.
 
 * Avoiding modifiers: Somewhat similar to the previous example, but different in
