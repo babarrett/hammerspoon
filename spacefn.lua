@@ -1,7 +1,14 @@
 local spacefn = {}
+
+--===
+--=== Note, this file NOT in use at the moment.
+--=== Work in process to eliminate he remaining Karabiner-Elements function I use.
+--===
+
+
 --  Two main functions, melded together:
 -- 1. SpaceFn mappings
---  Keyboard mapping from Space+Key to action. For my current keuboards
+--  Keyboard mapping from Space+Key to action. For my current keyboards
 --    this includes: Navigation, Cut, Copy, Paste, Undo, Backspace, Del,
 --    PgUp, PgDn, Home, End, Load find selection, Find, Find next.
 --
