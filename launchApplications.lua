@@ -59,7 +59,7 @@ local appShortCuts = {
 
     M = {'Markoff', 'Markoff', nil},
     N = {'Notetaker', 'Notetaker', nil},
-    P = {'System Preferences', 'System Preferences', nil},
+    P = {'FMPerception', 'FMPerception', nil},
 
     R = {'Remote Desktop', '/Applications/Microsoft Remote Desktop.app/', nil}, -- > hs.application.nameForBundleID("com.microsoft.rdc.mac") --> "Microsoft Remote Desktop"
     S = {"Secure DMG","/Users/bbarrett/Secure.dmg & open /Users/bruce/Secure.dmg",nil}, -- open Secure.dmg either at work or at home.
