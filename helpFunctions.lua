@@ -3,7 +3,7 @@ local helpFunctions = {}
 -- Hyper+H		Help, for Hammerspoon functions, or dismiss if already up
 
 -- Private fields
--- helpString - brief descriptions of mapped f()s. 
+-- helpString - brief descriptions of mapped f()s.
 local helpAlertUUID = nil
 local helpString = ""		-- start empty, we'll add to it as we go along.
 
@@ -19,13 +19,16 @@ function hammerspoonHelp()
 		hs.alert.closeSpecific(helpAlertUUID)
 		helpAlertUUID = nil
 	else
-		helpAlertUUID = hs.alert.show( 
+		helpAlertUUID = hs.alert.show(
 			helpString
-		, 
-		{textSize=12, textColor={white = 1.0, alpha = 1.00 }, 
+		,
+		{textSize=11,
+		textColor={white = 1.0, alpha = 1.00 },
 		textFont = "Andale Mono",	-- works for me. If missing reverts back to system default
-		fillColor={white = 0.0, alpha = 1.00}, 
-		strokeColor={red = 1, green=0, blue=0}, strokeWidth=4 }
+		fillColor={white = 0.0, alpha = 1.00},
+		strokeColor={red = 1, green=0, blue=0},
+		strokeWidth=4,
+		atScreenEdge=2}
 		, 90	-- display 90 seconds, or usr hits Hyper-H again
 		)
 	end
@@ -46,7 +49,7 @@ function helpFunctions.bind(modifiers, char, functName)
 	hs.hotkey.bind(modifiers, char, funNameToFunction[functName] )	-- bind the key
 	-- Add to the help string
 	-- TODO: Change to accept modifiers (table) and convert to visual (⌘⌥⌃⇧)
-	-- TODO: Change to adjust column widths so  they line up: 
+	-- TODO: Change to adjust column widths so  they line up:
 	--		Col 1: "Hyper+Right" = 11 char
 	--		Col 2: " - " + text
 	HF.add("Hyper+" .. char .. "     - " .. funNameToHelpText[functName] .. "\n")

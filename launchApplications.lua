@@ -79,48 +79,29 @@ local appShortCuts = {
 local webShortCuts = {
 
 --    D = {"Google Docs", nil, "https://docs.google.com/document/u/0/?tgif=c"},
-    F = {"FileMaker 17 ref", nil, "https://fmhelp.filemaker.com/help/17/fmp/en/index.html"},
+    F = {"FileMaker 17 references", nil, "https://fmhelp.filemaker.com/help/17/fmp/en/index.html"},
 --    G = {"Google Drive", nil, "https://drive.google.com/drive/my-drive"},
-
-    H = {"Home", nil, "http://brucebarrett.com/browserhome/brucehome.html"},
---    J = {"Jira ASCN", nil, "https://jira.aspera.us/projects/ASCN?selectedItem=com.atlassian.jira.jira-projects-plugin%3Arelease-page&status=no-filter"},
+    H = {"Hammerspoon API docs", nil, "http://www.hammerspoon.org/docs/index.html"},
     K = {"KLE", nil, "http://www.keyboard-layout-editor.com"},
-
---    L = {"Aspera Downlads", nil, "http://downloads.asperasoft.com"},
---    M = {"IBM Mail", nil, "IBM Mail"},
---    N = {"ADN", nil, "https://developer.asperasoft.com"},
-
---    O = {"Trac, Old bugs", nil, "https://trac.aspera.us"},
     R = {"Reddit/mk", nil, "https://www.reddit.com/r/MechanicalKeyboards/"},
 --    S = {"Google Sheets", nil, "https://sheets.google.com"},
-
---    T = {"Confluence TP", nil, "https://confluence.aspera.us/display/TP/Technical+Publications"},
     W = {"Geekhack", nil, "https://geekhack.org/index.php?action=watched"},   -- Geekhack, Watched
     Y = {'Calendar (Year)', nil, 'https://calendar.google.com/calendar/render#main_7'},
-
---    Z = {'Zendesk', nil, 'https://aspera.zendesk.com/agent/dashboard'},
-
     Zgm = {'Google maps', nil, 'https://www.google.com/maps/' },
---    Ztd = {'trac - docs builds', nil, 'https://trac.aspera.us/process2/test/docs' },
---    Ztr = {'trac - release builds', nil, 'https://trac.aspera.us/process2/release/' },
---    Ztt = {'trac - test builds', nil, 'https://trac.aspera.us/process2/test/' },
-
 
 }
 
 -- Support text snippets in a single column list
 local textShortCuts = {
   ["-"] = {"-------------------------------------------", "-------------------------------------------", nil},  -- D for "dashes"
---  ["A"] = {"bbarrett@asperasoft.com", "bbarrett@asperasoft.com", nil},
+  ["B"] = {"BUG: ", "BUG: ", nil},
   ["C"] = {"communitytwok@e", "communitytwok@earthreflections.com", nil},
   ["E"] = {"bruceb@earthreflections.com", "bruceb@earthreflections.com", nil},
   ["F"] = {"FileMaker", "FileMaker", nil},
   ["I"] = {"brucebarrett@us.ibm.com", "brucebarrett@us.ibm.com", nil},
+  ["K"] = {"keyboard", "keyboard", nil},
   ["P"] = {"Markdown Photo", "```\r      +-----+\r      |photo|\r      +-----+\r```\r", nil},
---  ["S"] = {"support@aspera", "support@asperasoft.com", nil},
   ["T"] = {"TODO: ", "TODO: ", nil},
---  ["U"] = {"test-connect", "https://test-connect.asperasoft.com", nil},
---  ["W"] = {"Webex Room", "https://ibm.webex.com/join/brucebarrett", nil}
 }
 
 -- myTable:   the table we want to know how many elements it contains

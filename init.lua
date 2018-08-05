@@ -6,7 +6,7 @@
 --	TODO: Create another modual for KeyToKey mappings such as Numeric Pad to move functions.
 --	TODO: Find some way wo handle NumLock, What's blocking it? No Karibiner == always numeric.
 
-VERSION = "2018-July-28"
+VERSION = "2018-JAugust-5"
 hs.console.clearConsole()
 LUA_PATH = os.getenv("HOME") .. "/dev/git/hammerspoon/?"
 
@@ -40,6 +40,8 @@ end
 --[[	First we require all modules we'll later use
 	Note, as we bind to each function they add to the help string	--]]
 HF 								              = require "helpFunctions"	-- global. Other modules call this too.
+HF.add("-- Miscellaneous Functions -- "..VERSION.." --\n")
+HF.bind(HyperFn, "H", "hammerspoonHelp")
 local pasteCurrentSafariUrl 	  = require "pasteCurrentSafariUrl"
 local windowManagement 			    = require "windowManagement"
 local miscFunctions 			      = require "miscFunctions"
@@ -56,8 +58,6 @@ require "clipboard"         -- Menu item, does not use SpaceFN or HyperFn keys
 local cu						= require "cuChooser"	-- Custom Chooser
 foo = cu.new(function () end)
 
-HF.add("-- Miscellaneous Functions -- "..VERSION.." --\n")
-HF.bind(HyperFn, "H", "hammerspoonHelp")
 HF.add("Hyper+A     - Enter Application mode, Arrows or Char launches App.\n")
 HF.add("Hyper+W     - Enter Webpage mode, Arrows or Char opens web page.\n")
 

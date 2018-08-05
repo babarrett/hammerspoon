@@ -106,4 +106,4 @@ end
 
 eventTapObject = hs.eventtap.new({ hs.eventtap.event.types.keyDown }, eventTapHandler )
 hs.hotkey.bind("", "f15", startRepeatNextKey, nil, nil )	-- bind the key to pressed and released
-HF.add("F15 (Pause key) - Repeat next 'keypress' n times\n")
+HF.add("F15 (Pause) - Repeat next 'keypress' n times\n")
