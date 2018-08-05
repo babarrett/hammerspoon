@@ -87,8 +87,8 @@ function startRepeatNextKey()
     -- First repeatNextKey detected, set-up to start work
     isAccumulatingCounts = true
     repeatCountString = ""
-    repeatCount = 3
-    priorRepeatCount = 2
+    repeatCount = 5
+    priorRepeatCount = 3
     hs.alert("repeat count: ".. repeatCount)
     eventTapObject:start()
 	else
