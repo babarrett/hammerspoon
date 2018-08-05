@@ -73,7 +73,7 @@ function eventTapHandler(eventObj)
     local i
     for i=1, repeatCount do
     -- TODO: BUG: Need to include modifier array here too
-      hs.eventtap.keyStroke(modifierFlags, kc, 10000)  -- output result AFTER at about 100 CPS
+      hs.eventtap.keyStroke(modifierFlags, kc, 5000)  -- output result AFTER at about 200 CPS
     end
   end
  return SWALLOWEVENT
