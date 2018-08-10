@@ -12,7 +12,8 @@ local repeatNextKey = {}
 --      is the character to repeat. The digit is repeated, the sequence ends.
 --    If a digit is hit it is added to the count string, and the key is swallowed.
 --    If any other key (or key + modifiers) is hit we send that n times, where n is
---      either from the Fibonacci sequence, or the manually entered string of digits.
+--      a) the manually entered string of digits, if that string length >=1,or
+--      b) from the Fibonacci sequence
 --  3. Repeat step 2 until Esc or the key to repeat is struck.
 
 -- Private fields
@@ -33,16 +34,20 @@ function eventTapHandler(eventObj)
   if eventObj:getType() == 10 then updn = "Up" end
   if eventObj:getType() == 11 then updn = "Dn" end
   local kc = eventObj:getKeyCode()
+  local keyStr = string.sub(hs.keycodes.map[kc], -1)  -- last char of key name, could be 0..9
   local flags = eventObj:getFlags()
 
   -- We are already in "Repeat next key mode," if we get another f15
   -- this means we bump the repeat count and continue to run.
-  -- TODO: CAUTION! This code needs to be changed if you change
+  -- Note: If user has already started entering numbers for the repeat count ignore this
+  -- TODO: CAUTION! This code needs to be changed if you change the bound key
   if kc == hs.keycodes.map["f15"] and flags["fn"] then
-    nextRepeatCount = repeatCount + priorRepeatCount
-    priorRepeatCount = repeatCount
-    repeatCount = nextRepeatCount
-    hs.alert("repeat count: ".. repeatCount)
+    if (string.len(repeatCountString) == 0) then
+      nextRepeatCount = repeatCount + priorRepeatCount
+      priorRepeatCount = repeatCount
+      repeatCount = nextRepeatCount
+      hs.alert("repeat count: ".. repeatCount)
+    end
     return SWALLOWEVENT
   end
 
@@ -54,9 +59,15 @@ function eventTapHandler(eventObj)
   if flags["fn"]   then table.insert(modifierFlags, " Fn") end
 --  debuglog("got eventType, KeyCode, Modifiers: " .. updn ..", " .. kc .. ", " .. modifierFlags)
 
-  if (eventObj:getType() ~= 10) then
+  if (updn ~= "Up") then
     debuglog("got non-KeyUp KeyCode: " .. kc)
     goto stopping
+  end
+
+  if "0" <= keyStr and keyStr <= "9" then
+    repeatCountString = repeatCountString..keyStr
+    hs.alert("repeat count: "..repeatCountString)
+    return SWALLOWEVENT
   end
 
   ::stopping::
@@ -70,6 +81,9 @@ function eventTapHandler(eventObj)
   if kc == hs.keycodes.map["escape"] then
     hs.alert("repeat canceled")
   else
+    if string.len(repeatCountString) > 0 then
+      repeatCount = tonumber(repeatCountString)
+    end
     local i
     for i=1, repeatCount do
     -- TODO: BUG: Need to include modifier array here too
@@ -92,15 +106,8 @@ function startRepeatNextKey()
     hs.alert("repeat count: ".. repeatCount)
     eventTapObject:start()
 	else
-    -- This else never gets executed.
-    -- We are already in "Repeat next key mode"
-    -- so this means bump the repeat count and continue to run
-    nextRepeatCount = repeatCount + priorRepeatCount
-    priorRepeatCount = repeatCount
-    repeatCount = nextRepeatCount
-    debuglog("repeat count now: ".. repeatCount)
---    isAccumulatingCounts = false
---    eventTapObject:stop()
+    -- We never come through here
+    debuglog("Unexpected behavior")
 	end
 end
 
