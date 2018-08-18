@@ -1,8 +1,8 @@
---	Move window to (some) 40,..80% of screen (left, right, top, bottom)
+--	Move window to (some) 40,..90% of screen (left, right, top, bottom)
 --	Originally taken from: https://gist.github.com/swo/91ec23d09a3d6da5b684
 --	HyperFn+Left moves window to left part of the screen.
 --	Likewise for other arrows.
---	HyperFn+0 goes to (nearly) full screen
+--	HyperFn+0 centers at the currently selected size of full screen
 --	If the window is already in place (say left edge) and we get another left
 --	command then move it to the *screen* to the left.
 
@@ -39,13 +39,13 @@ function baseMove(x, y, w, h, direction)
 		if (math.abs(wfold.x - wfnew.x) < fudge
 		and math.abs(wfold.y - wfnew.y) < fudge
 		and math.abs(wfold.w - wfnew.w) < fudge
-		and math.abs(wfold.h - wfnew.h) < fudge) then
+		and math.abs(wfo.h - wfnew.h) < fudge) then
 			action = {
 				["left"] =	function () windowManagement.newScreen = screen:toWest(nil, true) end,
 				["right"] =	function () windowManagement.newScreen = screen:toEast(nil, true) end,
 				["up"] =	function () windowManagement.newScreen = screen:toNorth(nil, true) end,
 				["down"] =	function () windowManagement.newScreen = screen:toSouth(nil, true) end,
-				
+
 				["NW"] =	function () windowManagement.newScreen = screen:toWest(nil, true) end,
 				["NE"] =	function () windowManagement.newScreen = screen:toEast(nil, true) end,
 				["SW"] =	function () windowManagement.newScreen = screen:toWest(nil, true) end,
@@ -62,7 +62,7 @@ function baseMove(x, y, w, h, direction)
 				wfnew.y = math.floor(sf.y + sf.h * y)
 				wfnew.w = math.floor(sf.w * w)
 				wfnew.h = math.floor(sf.h * h)
-			
+
 			end
 		end
 		win:setFrame(wfnew, 0)
@@ -76,13 +76,13 @@ local funNameToHelpText = {
 	right = 	'move window to right of screen.',
 	down = 		'move window to bottom of screen.',
 	up =		  'move window to top of screen.',
-		
+
 	home =    'move window to top-left of screen.',
 	pgup =    'move window to top-right of screen.',
 	lineend = 'move window to bottom-left of screen.',
 	pgdn =    'move window to bottom-right of screen.',
-	
-	full =		'center window at current moved window % size.',
+
+	full =		'center window at current % size.',
 	percent40 =	'Set moved window size to 40% of screen',
 	percent50 =	'Set moved window size to 50% of screen',
 	percent60 =	'Set moved window size to 60% of screen',
@@ -169,7 +169,7 @@ end
 -- TODO: Want to save screen & window locations when there are multiple screens
 -- and the computer is about to sleep.
 -- On wake, and there is only 1 screen, leave the location variables untouched.
--- On wake, when there are multiple screens, restore the windows to their old 
--- screens & locations as best we can. Matching screen sizes and positions. 
+-- On wake, when there are multiple screens, restore the windows to their old
+-- screens & locations as best we can. Matching screen sizes and positions.
 
 return windowManagement
