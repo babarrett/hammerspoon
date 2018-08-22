@@ -33,7 +33,7 @@ function dumpTable(myTable)
 end
 
 function typeClipboardAsText()
--- Pause for 0.2 seconds every 20 characters to let app catch up.
+-- Pause for 0.5 seconds every 20 characters to let app catch up.
 -- Without this I was occasionally getting swapped characters: teh
 --	rs = tostring(hs.pasteboard.readStyledText())
 	tx = hs.pasteboard.readString(true)	-- table
@@ -134,13 +134,15 @@ function todo()
 end
 
 function mouseToEdge()
+  -- Move mouse to closest edge of the current window.
+  -- Will move to corner if close to 2 edges.
   -- TODO: BUG: Test more when window is touching edge of screen. May
-  -- need to adjust like we did with "top." 
+  -- need to adjust like we did with "top."
   -- top - OK
   -- bottom on MBP screen = OK
 
 	local win = hs.window.frontmostWindow()
-	local fudge = 40
+	local fudge = 80
 	if win ~= nil then	-- only if there's a window to move
 		local wf = win:frame() -- in absolute coordinates
 

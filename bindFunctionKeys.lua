@@ -41,13 +41,19 @@ hs.hotkey.bind("Shift", "f3", nil, function() launchAppOrWeb( 'Safari', nil) end
 hs.hotkey.bind("Shift", "f4", nil, function() launchAppOrWeb( 'Finder', nil) end )
 hs.hotkey.bind("Shift", "f5", nil, function() launchAppOrWeb( 'Mail', nil) end )
 hs.hotkey.bind("Shift", "f6", nil, function() launchAppOrWeb( nil, nil, {mods='CMD', char="1"} ) end )		-- CMD+1 = View Mail inbox
---hs.hotkey.bind("Shift", "f7", nil, function() launchAppOrWeb( nil, nil, {mods='CMD Shift', char="."}) end )	-- Cmd+Shift+"." = for move email to Done folder
+hs.hotkey.bind("Shift", "f7", nil, -- CMD+T, Paste, and Return to go to clipboard URL in new browser window.
+  function()
+    hs.eventtap.keyStroke({"cmd"}, "t")
+    hs.eventtap.keyStroke({"cmd"}, "v")
+    hs.eventtap.keyStroke({}, "return")
+  end
+  )
 --hs.hotkey.bind("Shift", "f8", nil, function() launchAppOrWeb( nil, nil, {mods='CMD Shift', char=","}) end )	-- Cmd+Shift+"," = for move email to Status folder
 
 -- No idea why, but these (F9 to F11, and Shift-F10 to Shift-F11 fail. (macOS intercepts them?) Replaced with Karabiner.
 hs.hotkey.bind("Shift", "f9", nil, function() hs.eventtap.keyStroke({"cmd", "shift"}, "[") end )  -- Prev browser tab
---hs.hotkey.bind("Shift", "f10", nil, function() hs.alert( 's-f10' ) end )
---hs.hotkey.bind("Shift", "f11", nil, function() hs.alert( 's-f11' ) end )
+--hs.hotkey.bind("Shift", "f10", nil, function() hs.alert( 's-f10' ) end )  -- key strokes not recognized
+--hs.hotkey.bind("Shift", "f11", nil, function() hs.alert( 's-f11' ) end )  -- key strokes not recognized
 hs.hotkey.bind("Shift", "f12", nil, function() hs.eventtap.keyStroke({"cmd", "shift"}, "]") end )  -- Next browser tab
 
 -- www short cuts
