@@ -33,6 +33,14 @@ local DEFAULTBROWSER = 'Safari'
 local pickerView = nil
 inMode = nil          -- I'm not crazy about globals, but this really simplified the code
 finalTextToType = ""
+--  Globals
+xmin = 0
+xmax = 0
+xsel = 0
+ymin = 0
+ymax = 0
+ysel = 0
+
 
 -- Format is:
 --   Key_to_press. A single key
@@ -73,21 +81,26 @@ local appShortCuts = {
     Znu = {'Numbers', 'Numbers', nil},
     Zpa = {'Pages', 'Pages', nil},
     Zpr = {'Preview', 'Preview', nil},
+    Zsp = {'Spotify', 'Spotify', nil},
     Zvi = {'VirtualBox', 'VirtualBox', nil},
 }
 
 local webShortCuts = {
 
---    D = {"Google Docs", nil, "https://docs.google.com/document/u/0/?tgif=c"},
+    A = {"Amazon", nil, "https://www.amazon.com"},
+    E = {"ebay", nil, "https://www.ebay.com"},
     F = {"FileMaker 17 references", nil, "https://fmhelp.filemaker.com/help/17/fmp/en/index.html"},
---    G = {"Google Drive", nil, "https://drive.google.com/drive/my-drive"},
     H = {"Hammerspoon API docs", nil, "http://www.hammerspoon.org/docs/index.html"},
     K = {"KLE", nil, "http://www.keyboard-layout-editor.com"},
+    N = {"Netflix", nil, "https://www.netflix.com/browse"},
     R = {"Reddit/mk", nil, "https://www.reddit.com/r/MechanicalKeyboards/"},
---    S = {"Google Sheets", nil, "https://sheets.google.com"},
+    S = {"Filemaker SERVER localhost", nil, "http://localhost:16001/admin-console/signin"},
+    T = {"youTube", nil, "https://www.youtube.com"},
+    V = {"Amazon Video", nil, "https://www.amazon.com/gp/video/storefront/ref=atv_hm_hom_2_slct"},
     W = {"Geekhack", nil, "https://geekhack.org/index.php?action=watched"},   -- Geekhack, Watched
     Y = {'Calendar (Year)', nil, 'https://calendar.google.com/calendar/render#main_7'},
     Zgm = {'Google maps', nil, 'https://www.google.com/maps/' },
+    Znp = {'The Noun Project', nil, 'https://thenounproject.com/' },
 
 }
 
@@ -139,7 +152,23 @@ local modalWebKey = hs.hotkey.modal.new(HyperFn, 'W')
 --  It terminates with selecting a web page, or <Esc>
 local modalTextKey = hs.hotkey.modal.new(HyperFn, 'T')
 
---  Bind keys of interest, both Apps, Web Pages, and Text
+function moveCursor(direction)
+  if (direction == 'left') then
+    return math.max(xmin, xsel-1)
+  end
+  if (direction == 'right') then
+    return math.min(xmax, xsel+1)
+  end
+  if (direction == 'up') then
+    return math.max(ymin, ysel-1)
+  end
+  if (direction == 'down') then
+    return math.min(ymax, ysel+1)
+  end
+end
+
+
+--  Bind keys of interest, Apps, Web Pages, and Text
 --  hs.hotkey.modal:bind(mods, key, message, pressedfn, releasedfn, repeatfn) -> hs.hotkey.modal object
 for index, modalKey in pairs({modalAppKey, modalWebKey, modalTextKey}) do
   modalKey:bind('', 'escape',
@@ -167,32 +196,106 @@ for index, modalKey in pairs({modalAppKey, modalWebKey, modalTextKey}) do
       end
     end
     )
+  --  Center of num pad navigation == 'return' (select/run app) too
+  modalKey:bind('', 'pad5',
+    function()
+      launchAppOrWebBySelection()
+      modalKey:exit()
+      if (finalTextToType ~= "") then
+        hs.eventtap.keyStrokes(finalTextToType)
+        finalTextToType = ""
+      end
+    end
+    )
 
 
 -- arrow keys, to select app to run
 -- insert jikl or wasd as arrow keys here too, if you wish.
 -- better yet, just map them as you usually would and they'll
 -- pass through here anyway.
+
   modalKey:bind('', 'left', nil,
-    function()
-    xsel = math.max(xmin, xsel-1)
-    reloadPicker()
-    end)
+    function ()
+      xsel = moveCursor('left')
+      reloadPicker()
+      end
+  )
   modalKey:bind('', 'right', nil,
     function()
-    xsel = math.min(xmax, xsel+1)
-    reloadPicker()
-    end)
+      xsel = moveCursor('right')
+      reloadPicker()
+      end
+  )
   modalKey:bind('', 'up', nil,
     function()
-    ysel = math.max(ymin, ysel-1)
-    reloadPicker()
-    end)
+      ysel = moveCursor('up')
+      reloadPicker()
+      end
+  )
   modalKey:bind('', 'down', nil,
     function()
-    ysel = math.min(ymax, ysel+1)
-    reloadPicker()
-    end)
+      ysel = moveCursor('down')
+      reloadPicker()
+      end
+  )
+
+
+-- Using numeric pad for direction
+  modalKey:bind('', 'pad4', nil,
+    function ()
+      xsel = moveCursor('left')
+      reloadPicker()
+      end
+  )
+  modalKey:bind('', 'pad6', nil,
+    function()
+      xsel = moveCursor('right')
+      reloadPicker()
+      end
+  )
+  modalKey:bind('', 'pad8', nil,
+    function()
+      ysel = moveCursor('up')
+      reloadPicker()
+      end
+  )
+  modalKey:bind('', 'pad2', nil,
+    function()
+      ysel = moveCursor('down')
+      reloadPicker()
+      end
+  )
+
+--  Diagonals
+  modalKey:bind('', 'pad7', nil,
+    function ()
+      xsel = moveCursor('left')
+      ysel = moveCursor('up')
+      reloadPicker()
+      end
+  )
+  modalKey:bind('', 'pad9', nil,
+    function()
+      xsel = moveCursor('right')
+      ysel = moveCursor('up')
+      reloadPicker()
+      end
+  )
+  modalKey:bind('', 'pad1', nil,
+    function()
+      ysel = moveCursor('down')
+      xsel = moveCursor('left')
+      reloadPicker()
+      end
+  )
+  modalKey:bind('', 'pad3', nil,
+    function()
+      ysel = moveCursor('down')
+      xsel = moveCursor('right')
+      reloadPicker()
+      end
+  )
+
 end
 
 
@@ -268,13 +371,18 @@ function centerAndShowPicker(pickerTable)
   xmax =3
   ymin =0
 
-  -- Dynamically size # of rows (Y) based upon # of entries in table. Using a fixed 4 columns, except for Text
+  -- Dynamically size # of rows (Y) based upon # of entries in table. Using a fixed 4 columns,
+  -- except for Text (1 column) and Web entries (2 columns).
   -- TODO: Remove text HACK for single column. Assume text < 15 and Web / Apps >= 15. Works for me for now.
   tc = countTableElements(pickerTable)
+  debuglog("TC: "..tc)
   ymax =math.ceil(tc / 4) -1
-  if tc < 15 then
+  if tc < 10 then
     ymax = tc -1
     xmax = 0
+  elseif tc < 20 then
+    ymax =math.ceil(tc / 2) -1
+    xmax = 1
   end
 
   xsel = math.floor((xmax-xmin)/2)
@@ -295,7 +403,7 @@ end
 
 
 function modalTextKey:exited()
-  -- Take down Web page selector
+  -- Take down Text page selector
   takeDownPicker()
 end
 

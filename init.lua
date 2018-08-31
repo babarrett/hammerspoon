@@ -6,8 +6,10 @@
 --	TODO: Create another modual for KeyToKey mappings such as Numeric Pad to move functions.
 --	TODO: Find some way wo handle NumLock, What's blocking it? No Karibiner == always numeric.
 
-VERSION = "2018-JAugust-5"
+VERSION = "2018-JAugust-30"
 hs.console.clearConsole()
+--  hs.alert(hs.hid.capslock.get())
+
 LUA_PATH = os.getenv("HOME") .. "/dev/git/hammerspoon/?"
 
 HyperFn = {"cmd", "alt", "ctrl", "shift"}	-- Mash the 4 modifier keys for some new function
