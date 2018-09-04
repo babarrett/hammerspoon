@@ -39,7 +39,7 @@ function baseMove(x, y, w, h, direction)
 		if (math.abs(wfold.x - wfnew.x) < fudge
 		and math.abs(wfold.y - wfnew.y) < fudge
 		and math.abs(wfold.w - wfnew.w) < fudge
-		and math.abs(wfo.h - wfnew.h) < fudge) then
+		and math.abs(wfold.h - wfnew.h) < fudge) then
 			action = {
 				["left"] =	function () windowManagement.newScreen = screen:toWest(nil, true) end,
 				["right"] =	function () windowManagement.newScreen = screen:toEast(nil, true) end,
@@ -110,13 +110,13 @@ local function home()
 	baseMove(0.01, 0.02, windowSizePercent-0.02,  windowSizePercent-0.02, "NW")
 end
 local function pgup()
-	baseMove(windowSizePercent, 0.02, windowSizePercent-0.02,  windowSizePercent-0.02, "NE")
+	baseMove(1-windowSizePercent+0.01, 0.02, windowSizePercent-0.02,  windowSizePercent-0.02, "NE")
 end
-local function lineend()
-	baseMove(0.01, windowSizePercent, windowSizePercent-0.02,  windowSizePercent-0.02, "SW")
+local function lineend()  -- End key
+	baseMove(0.01, 1-windowSizePercent+0.01, windowSizePercent-0.02,  windowSizePercent-0.02, "SW")
 end
 local function pgdn()
-	baseMove(windowSizePercent, windowSizePercent, windowSizePercent-0.02,  windowSizePercent-0.02, "SE")
+	baseMove(1-windowSizePercent+0.01, 1-windowSizePercent+0.01, windowSizePercent-0.02,  windowSizePercent-0.02, "SE")
 end
 -------------------------------------------
 local function full()
